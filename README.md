@@ -25,11 +25,19 @@ nothing to commit, working tree clean
 
 Step 3: Create a feature branch
 
-Create the local feature branch using a name that follows the common _feature/issue-title_ pattern. An example is:
+Create the local feature branch using a name that follows the common _feature/issue-title_ pattern. After creating the local branch, push the change to the remote repository. An example using the branch name _feature/issue10-standardize-cdm_:
 
-`git branch -m feature/issue10-standardize-cdm`
+```
+git branch -m feature/issue10-standardize-cdm
+git push -u origin feature/issue10-standardize-cdm
+```
 
-and push it to the remote repository with
+## Commiting Code Changes to the Feature Branch
 
-`git push -u origin feature/issue10-standardize-cdm`
+In order to add new files or modified files to the next commit, use the following command:
 
+```
+git add <file_name>
+git -m "This is a short description of the changes"`
+git push
+```
