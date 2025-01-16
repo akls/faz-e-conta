@@ -4,7 +4,14 @@
 
 # Contributing Code
 
-## Creating a Feature Branch
+In short, contributing code involves the following three steps that are outlined in detail below:
+
+1. Creating a feature branch
+2. Commiting code to the feature branch
+3. Create a pull request (PR) from feature branch to `dev` followed by code review
+5. Merge the PR to `dev`
+
+## 1. Creating a Feature Branch
 
 Step 1: Clone the repository
 
@@ -32,7 +39,7 @@ git branch -m feature/issue10-standardize-cdm
 git push -u origin feature/issue10-standardize-cdm
 ```
 
-## Commiting Code Changes to the Feature Branch
+## 2. Commiting Code Changes to the Feature Branch
 
 In order to add new files or modified files to the next commit, use the following command:
 
@@ -41,3 +48,13 @@ git add <file_name>
 git -m "This is a short description of the changes"`
 git push
 ```
+
+## 3. Create a pull request (PR) to merge the feature branch into `dev`
+
+Pull requests (PRs) from the feature branches should be created for the `dev` branch and merged only after completed code review. That is, feature branches should not be merged directly to the `main` branch.
+
+To create a PR for a feature branch, go to the section _Pull Requests_ on the Github website and select _New pull request_. Choose the feature branch and `dev` branch and click `Create pull request`.
+
+## 4. Code review
+
+## 5. Merge the PR to `dev`
