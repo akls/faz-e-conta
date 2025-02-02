@@ -9,6 +9,9 @@ __pycache__/
 # MacOS
 .DS_Store/
 
+# Data folder
+data/
+
 # Local dev folder
 dev_local/
 
