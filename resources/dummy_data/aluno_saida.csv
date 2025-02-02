@@ -1,0 +1,11 @@
+saida_id,aluno_id,hora_entrada,hora_saida,autorizacao_sair,escolaridade
+1,1,08:00:00,12:30:00,Greve do refeitorio no jardim de infancia,Jardim de infancia
+2,2,13:00:00,16:00:00,Consulta médica,Jardim de infancia
+3,3,08:30:00,13:00:00,Levado pelo encarregado,Jardim de infancia
+4,4,09:00:00,11:00:00,Emergência familiar,Jardim de infancia
+5,5,14:00:00,16:30:00,Emergência Medica,Creche
+6,6,08:15:00,12:45:00,Consulta odontológica,Creche
+7,7,13:30:00,16:30:00,Consulta Fiseoterapia,Jardim de infancia
+8,8,09:00:00,11:30:00,Greve de funcionarios na creche,Creche
+9,9,14:00:00,16:00:00,Emergência familiar,Jardim de infancia
+10,10,08:45:00,13:15:00,Levado pelo encarregado,Jardim de infancia
