@@ -1,0 +1,18 @@
+<h1>Alunos</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nome Proprio</th>
+        <th>Apelido</th>
+        <th>Processo</th>
+    </tr>
+    {% for item in data %}
+    <tr>
+        <td>{{ item.aluno_id }}</td>
+        <td>{{ item.nome_proprio }}</td>
+        <td>{{ item.apelido }}</td>
+        <td>{{ item.processo }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'insert_student' %}">Inserir aluno</a>
