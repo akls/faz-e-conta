@@ -1,5 +1,7 @@
 import pandas as pd
 
+# CREATE THE MODELS.PY FILE OR UPDATE IT
+
 def create_model (df, table_name):
     info = f"""class {table_name.capitalize()}(models.Model):
     class Meta:
