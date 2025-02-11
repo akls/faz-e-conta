@@ -38,14 +38,14 @@ def create_model (df, table_name):
     return info
 
 
-def read_cdm(file_path: str, sheet_name = "Table Summary"):
+def read_cdm(file_path: str, models_path:str, sheet_name = "Table Summary"):
     try:
         table_summary_df = pd.read_excel(file_path, sheet_name)
         if "table_name" not in table_summary_df.columns:
             print("Error: Required columns 'table_name' is missing in the 'Table Summary' sheet.")
             return
         
-        arquivo = open("faz_e_conta/data_hub/models.py", "w")
+        arquivo = open(models_path, "w")
         
         arquivo.write(f"from django.db import models\n\n")
         table_names = table_summary_df["table_name"].dropna().tolist()
@@ -67,4 +67,6 @@ def read_cdm(file_path: str, sheet_name = "Table Summary"):
 
 
 file_path = "resources/cdm/cdm_fazeconta.xlsx"
-read_cdm(file_path)
+models_path = "faz_e_conta/data_hub/models.py"
+
+read_cdm(file_path, models_path)
