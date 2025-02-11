@@ -1,0 +1,68 @@
+import pandas as pd
+
+def create_model (df, table_name):
+    info = f"""class {table_name.capitalize()}(models.Model):
+    class Meta:
+        db_table = '{table_name}'
+"""
+
+    for _, row in df.iterrows():
+        remove_last = False
+        info += f"    {row["column_name"]} = models.{row["datatype"]}("
+        
+        # Id
+        if row["auto_id"] == "Yes":
+            info += "primary_key=True, "
+            remove_last = True
+        
+        # Se tiver tamanho definido
+        if pd.isna(row["datatype_parameters"]) != True:
+            info+= f"max_length={int(row["datatype_parameters"])}, "
+            remove_last = True
+        elif row["datatype"] =="CharField":
+            info+= f"max_length=1000, "
+            remove_last = True
+            
+        # Null
+        if row["null_constraint"] != "NOT NULL":
+            info += "null=True, blank=True, "
+            remove_last = True
+        
+        # Fechar string
+        if remove_last:
+            info = info[:-2]
+        info += ")\n"
+        
+    return info
+
+
+def read_cdm(file_path: str, sheet_name = "Table Summary"):
+    try:
+        table_summary_df = pd.read_excel(file_path, sheet_name)
+        if "table_name" not in table_summary_df.columns:
+            print("Error: Required columns 'table_name' is missing in the 'Table Summary' sheet.")
+            return
+        
+        arquivo = open("faz_e_conta/data_hub/models.py", "w")
+        
+        arquivo.write(f"from django.db import models\n\n")
+        table_names = table_summary_df["table_name"].dropna().tolist()
+        for table_name in table_names:
+            try:
+                sheet_df = pd.read_excel(file_path, sheet_name=table_name )
+                if len(sheet_df) > 0:
+                    modle = create_model(sheet_df, table_name)
+                    arquivo.write(f"{modle}\n")
+                    #print(modle)
+            except Exception as e:
+                print(f"Error reading sheet '{table_name}' for table '{table_name}': {e}")
+        arquivo.close()
+    except Exception as e:
+        print(f"Error reading 'Table Summary' sheet: {e}")
+
+
+
+
+
+file_path = "resources/cdm/cdm_fazeconta.xlsx"
+read_cdm(file_path)
