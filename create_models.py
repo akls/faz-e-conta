@@ -10,7 +10,7 @@ def create_model (df, table_name):
 
     for _, row in df.iterrows():
         remove_last = False
-        info += f"    {row["column_name"]} = models.{row["datatype"]}("
+        info += f"    {row["column_name"]} = models.{row["django_field_type"]}("
         
         # Id
         if row["auto_id"] == "Yes":
@@ -21,7 +21,7 @@ def create_model (df, table_name):
         if pd.isna(row["datatype_parameters"]) != True:
             info+= f"max_length={int(row["datatype_parameters"])}, "
             remove_last = True
-        elif row["datatype"] =="CharField":
+        elif row["django_field_type"] =="CharField":
             info+= f"max_length=1000, "
             remove_last = True
             
