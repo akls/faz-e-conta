@@ -45,18 +45,6 @@ class Responsavel_educativo(models.Model):
     morada_emprego = models.CharField(max_length=150, null=True, blank=True)
     horario_trabalho = models.TimeField(null=True, blank=True)
     aluno_id = models.ForeignKey()
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
-    nan = models.nan(null=True, blank=True)
 
 class Aluno_saida(models.Model):
     class Meta:
