@@ -44,13 +44,13 @@ class Responsavel_educativo(models.Model):
     profissao = models.CharField(max_length=150, null=True, blank=True)
     morada_emprego = models.CharField(max_length=150, null=True, blank=True)
     horario_trabalho = models.TimeField(null=True, blank=True)
-    aluno_id = models.ForeignKey()
+    aluno_id = models.ForeignKey(to=aluno, on_delete=models.CASCADE)
 
 class Aluno_saida(models.Model):
     class Meta:
         db_table = 'aluno_saida'
     saida_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey()
+    aluno_id = models.ForeignKey(to=aluno, on_delete=models.CASCADE)
     hora_entrada = models.DateTimeField(null=True, blank=True)
     hora_saida = models.DateTimeField(null=True, blank=True)
     autorizacao_sair = models.CharField(max_length=250, null=True, blank=True)
@@ -60,7 +60,7 @@ class Vacinacao(models.Model):
     class Meta:
         db_table = 'vacinacao'
     vac_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey()
+    aluno_id = models.ForeignKey(to=aluno, on_delete=models.CASCADE)
     vacina_name = models.CharField(max_length=250)
     data_vacina = models.DateField(null=True, blank=True)
     plano_vacina = models.BooleanField(null=True, blank=True)
@@ -78,7 +78,7 @@ class Salario(models.Model):
     class Meta:
         db_table = 'salario'
     salario_id = models.AutoField(primary_key=True)
-    funcionario_id = models.ForeignKey()
+    funcionario_id = models.ForeignKey(to=funcionario, on_delete=models.CASCADE)
     valor = models.FloatField()
     descricao = models.CharField(max_length=250, null=True, blank=True)
     data_pagamento = models.DateField(null=True, blank=True)
@@ -88,7 +88,7 @@ class Salario(models.Model):
 class Filiacao(models.Model):
     class Meta:
         db_table = 'filiacao'
-    aluno_id = models.ForeignKey(primary_key=True)
-    respon_id = models.ForeignKey()
+    aluno_id = models.ForeignKey(primary_key=True, to=aluno, on_delete=models.CASCADE)
+    respon_id = models.ForeignKey(to=responsavel_educativo, on_delete=models.CASCADE)
     filiacao_responsavel = models.CharField(max_length=100)
 

@@ -18,11 +18,15 @@ def create_model (df, table_name):
             remove_last = True
         
         # Se tiver tamanho definido
-        if pd.isna(row["datatype_parameters"]) != True:
-            info+= f"max_length={int(row["datatype_parameters"])}, "
-            remove_last = True
-        elif row["django_field_type"] =="CharField":
-            info+= f"max_length=1000, "
+        if row["django_field_type"] == "CharField":
+            if pd.isna(row["datatype_parameters"]) != True:
+                info+= f"max_length={int(row["datatype_parameters"])}, "
+                remove_last = True
+            elif row["django_field_type"] =="CharField":
+                info+= f"max_length=1000, "
+                remove_last = True
+        elif row["django_field_type"] == "ForeignKey":
+            info+= f"to={row["datatype_parameters"]}, on_delete=models.CASCADE, "
             remove_last = True
             
         # Null
