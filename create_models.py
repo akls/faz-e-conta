@@ -28,6 +28,9 @@ def create_model (df, table_name):
         elif row["django_field_type"] == "ForeignKey":
             info+= f"to={row["datatype_parameters"]}, on_delete=models.CASCADE, "
             remove_last = True
+        elif row["django_field_type"] == "BooleanField":
+            info+= f"default= False, "
+            remove_last = True
             
         # Null
         if row["null_constraint"] != "NOT NULL":

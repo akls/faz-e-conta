@@ -63,7 +63,7 @@ class Vacinacao(models.Model):
     aluno_id = models.ForeignKey(to=aluno, on_delete=models.CASCADE)
     vacina_name = models.CharField(max_length=250)
     data_vacina = models.DateField(null=True, blank=True)
-    plano_vacina = models.BooleanField(null=True, blank=True)
+    plano_vacina = models.BooleanField(default= False, null=True, blank=True)
 
 class Despesa(models.Model):
     class Meta:
