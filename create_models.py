@@ -29,7 +29,10 @@ def create_model (df, table_name):
             info+= f"to={row["datatype_parameters"]}, on_delete=models.CASCADE, "
             remove_last = True
         elif row["django_field_type"] == "BooleanField":
-            info+= f"default= False, "
+            if row["datatype_parameters"] != "nan":
+                info+= f"default= False, "
+            else:
+                info+= f"default= {row["datatype_parameters"]}, "
             remove_last = True
             
         # Null
