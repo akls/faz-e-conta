@@ -58,7 +58,7 @@ def read_cdm(file_path: str, models_path: str, sheet_name="Table Summary"):
             return
 
         with open(models_path, "w", encoding="utf-8") as arquivo:
-            arquivo.write("from django.db import models\nimport datetime\n\n")
+            arquivo.write("from django.db import models\nimport datetime\nimport django.utils as du\n\n")
 
             table_names = table_summary_df["table_name"].dropna().tolist()
             for table_name in table_names:
