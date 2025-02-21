@@ -26,7 +26,7 @@ def create_model (df, table_name):
                 info+= f"max_length=1000, "
                 remove_last = True
         elif row["django_field_type"] == "ForeignKey":
-            info+= f"to={row["datatype_parameters"]}, on_delete=models.CASCADE, "
+            info+= f"to='{row["datatype_parameters"]}', on_delete=models.CASCADE, "
             remove_last = True
         elif row["django_field_type"] == "BooleanField":
             if row["datatype_parameters"] != "nan":
