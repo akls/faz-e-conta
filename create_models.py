@@ -40,6 +40,10 @@ def create_model (df, table_name):
             info += "null=True, blank=True, "
             remove_last = True
         
+        else:
+            info += "null=False, blank=False, default = '', "
+            remove_last = True
+        
         # Fechar string
         if remove_last:
             info = info[:-2]
