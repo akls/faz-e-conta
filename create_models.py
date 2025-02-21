@@ -32,7 +32,7 @@ def create_model(df, table_name):
 
         # Se for DateField, corrigir default inválido
         if row["django_field_type"] == "DateField":
-            params.append("default= django.utils.timezone.now")
+            params.append("default= du.timezone.now")
 
         # Restrições de NULL
         if row["null_constraint"] != "NOT NULL":

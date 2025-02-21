@@ -9,12 +9,12 @@ class Aluno(models.Model):
     nome_proprio = models.CharField(max_length=100, default='')
     apelido = models.CharField(max_length=250, default='')
     processo = models.CharField(max_length=150, null=True, blank=True)
-    data_admissao = models.DateField(default=du.timezone.now)
-    data_ultima_renovacao = models.DateField(default=du.timezone.now, null=True, blank=True)
-    data_nascimento = models.DateField(default=du.timezone.now)
+    data_admissao = models.DateField(default= du.timezone.now)
+    data_ultima_renovacao = models.DateField(default= du.timezone.now, null=True, blank=True)
+    data_nascimento = models.DateField(default= du.timezone.now)
     documento = models.CharField(max_length=250, default='')
     numero_documento = models.CharField(max_length=100, default='')
-    data_validade = models.DateField(default=du.timezone.now)
+    data_validade = models.DateField(default= du.timezone.now)
     niss = models.IntegerField(null=True, blank=True)
     nif = models.IntegerField(null=True, blank=True)
     morada = models.CharField(max_length=150, default='')
@@ -31,10 +31,10 @@ class Responsavel_educativo(models.Model):
     respon_id = models.AutoField(primary_key=True)
     nome_proprio = models.CharField(max_length=100, default='')
     apelido = models.CharField(max_length=250, default='')
-    data_nascimento = models.DateField(default=du.timezone.now)
+    data_nascimento = models.DateField(default= du.timezone.now)
     documento = models.CharField(max_length=150, default='')
     numero_documento = models.IntegerField()
-    data_validade = models.DateField(default=du.timezone.now)
+    data_validade = models.DateField(default= du.timezone.now)
     niss = models.IntegerField(null=True, blank=True)
     nif = models.IntegerField(null=True, blank=True)
     morada = models.CharField(max_length=250, default='')
@@ -64,7 +64,7 @@ class Vacinacao(models.Model):
     vac_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='aluno', on_delete=models.CASCADE)
     vacina_name = models.CharField(max_length=250, default='')
-    data_vacina = models.DateField(default=du.timezone.now, null=True, blank=True)
+    data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
     plano_vacina = models.BooleanField(default=False, null=True, blank=True)
 
 class Despesa(models.Model):
@@ -74,7 +74,7 @@ class Despesa(models.Model):
     categoria = models.CharField(max_length=250, default='')
     valor = models.FloatField()
     descricao = models.CharField(max_length=250, default='')
-    data = models.DateField(default=du.timezone.now)
+    data = models.DateField(default= du.timezone.now)
 
 class Salario(models.Model):
     class Meta:
@@ -83,7 +83,7 @@ class Salario(models.Model):
     funcionario_id = models.ForeignKey(to='responsavel_educativo', on_delete=models.CASCADE)
     valor = models.FloatField()
     descricao = models.CharField(max_length=250, null=True, blank=True)
-    data_pagamento = models.DateField(default=du.timezone.now, null=True, blank=True)
+    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
     subsidio_tipo = models.CharField(max_length=20, null=True, blank=True)
     subsidio_valor = models.FloatField(null=True, blank=True)
 
