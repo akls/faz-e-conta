@@ -50,9 +50,11 @@ def create_model(df, table_name):
     return info
 
 # Função para ler o CDM e criar os modelos automaticamente
-def read_cdm(file_path: str, models_path: str, sheet_name="Table Summary"):
+def read_cdm(file_path: str, models_path: str, admin_path: str, sheet_name="Table Summary"):
     try:
         table_summary_df = pd.read_excel(file_path, sheet_name)
+        class_list = []
+        
         if "table_name" not in table_summary_df.columns:
             print("Erro: A coluna 'table_name' não está presente na planilha 'Table Summary'.")
             return
@@ -67,14 +69,25 @@ def read_cdm(file_path: str, models_path: str, sheet_name="Table Summary"):
                     if not sheet_df.empty:
                         model_code = create_model(sheet_df, table_name)
                         arquivo.write(f"{model_code}\n")
+                        class_list.append(table_name.capitalize())
                 except Exception as e:
                     print(f"Erro ao ler a planilha '{table_name}': {e}")
+        
+        # Adicionar as classes ao arquivo admin.py
+        with open(admin_path, "w", encoding="utf-8") as arquivo:
+            arquivo.write("from django.contrib import admin\n")
+            arquivo.write(f"from .models import {', '.join(class_list)}\n\n")
+            arquivo.write("# Register your models here.\n\n")
+            for table_name in class_list:
+                arquivo.write(f"admin.site.register({table_name})\n")
+        
     except Exception as e:
         print(f"Erro ao ler a planilha 'Table Summary': {e}")
 
 # Caminhos dos arquivos
 file_path = "resources/cdm/cdm_fazeconta.xlsx"
 models_path = "faz_e_conta/data_hub/models.py"
+admin_path = "faz_e_conta/data_hub/admin.py"
 
 # Executar o gerador
-read_cdm(file_path, models_path)
+read_cdm(file_path, models_path, admin_path)
