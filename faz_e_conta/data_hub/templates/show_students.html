@@ -4,7 +4,7 @@
 <table border="1">
     <tr>
         {% for item in head %}
-            {% if item != 'aluno_id' %}
+            {% if item != id %}
                 <th align = "center">{{ item }}</th>
             {% endif %}
         {% endfor %}
@@ -12,7 +12,7 @@
     {% for item in data_dict %}
     <tr>
         {% for field in head %}
-            {% if field != 'aluno_id' %}
+            {% if field != id %}
             <td align = "center">{{ item|get_item:field }}</td>
             {% endif %}
         {% endfor %}

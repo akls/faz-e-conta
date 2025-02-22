@@ -9,7 +9,7 @@ def show_students(request):
     # Melhorando a criação da lista de dicionários
     data_dict = list(data.values(*head))
     
-    return render(request, "show_students.html", {"data": data, "head": head, "data_dict": data_dict})
+    return render(request, "show_students.html", {"head": head, "data_dict": data_dict, "id": head[0]})
 
 def insert_student(request):
     if request.method == "POST":
