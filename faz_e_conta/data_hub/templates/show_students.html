@@ -1,19 +1,19 @@
 {% load custom_filters %}
 
 <h1>Alunos</h1>
-<table border="1">
-    <tr>
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+    <tr style="background-color: #f2f2f2;">
         {% for item in head %}
             {% if item != id %}
-                <th align = "center">{{ item }}</th>
+            <th style="border: 1px solid #ddd; padding: 10px;">{{ item }}</th>
             {% endif %}
         {% endfor %}
     </tr>
     {% for item in data_dict %}
-    <tr>
+    <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
         {% for field in head %}
             {% if field != id %}
-            <td align = "center">{{ item|get_item:field }}</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">{{ item|get_item:field }}</td>
             {% endif %}
         {% endfor %}
     </tr>
