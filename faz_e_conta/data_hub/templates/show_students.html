@@ -1,13 +1,21 @@
+{% load custom_filters %}
+
 <h1>Alunos</h1>
-<table>
+<table border="1">
     <tr>
         {% for item in head %}
-        <th>{{ item }}</th>
+            {% if item != 'aluno_id' %}
+                <th align = "center">{{ item }}</th>
+            {% endif %}
         {% endfor %}
     </tr>
     {% for item in data_dict %}
     <tr>
-        <td>{{ item.aluno_id }}</td>
+        {% for field in head %}
+            {% if field != 'aluno_id' %}
+            <td align = "center">{{ item|get_item:field }}</td>
+            {% endif %}
+        {% endfor %}
     </tr>
     {% endfor %}
 </table>
