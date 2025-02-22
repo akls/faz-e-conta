@@ -50,7 +50,7 @@ def create_model(df, table_name):
     return info
 
 # Função para ler o CDM e criar os modelos automaticamente
-def read_cdm(file_path: str, models_path: str, admin_path: str, sheet_name="Table Summary"):
+def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str, sheet_name="Table Summary"):
     try:
         table_summary_df = pd.read_excel(file_path, sheet_name)
         class_list = []
@@ -80,6 +80,17 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, sheet_name="Tabl
             arquivo.write("# Register your models here.\n\n")
             for table_name in class_list:
                 arquivo.write(f"admin.site.register({table_name})\n")
+                
+        # Adicionar as classes ao arquivo forms.py
+        with open(forms_path, "w", encoding="utf-8") as arquivo:
+            arquivo.write("from django import forms\n")
+            arquivo.write(f"from .models import {', '.join(class_list)}\n\n")
+            for table_name in class_list:
+                sheet_df = pd.read_excel(file_path, sheet_name=table_name.lower())
+                arquivo.write(f"class {table_name}Form(forms.ModelForm):\n")
+                arquivo.write("    class Meta:\n")
+                arquivo.write(f"        model = {table_name}\n")
+                arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
         
     except Exception as e:
         print(f"Erro ao ler a planilha 'Table Summary': {e}")
@@ -88,6 +99,7 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, sheet_name="Tabl
 file_path = "resources/cdm/cdm_fazeconta.xlsx"
 models_path = "faz_e_conta/data_hub/models.py"
 admin_path = "faz_e_conta/data_hub/admin.py"
+forms_path = "faz_e_conta/data_hub/forms.py"
 
 # Executar o gerador
-read_cdm(file_path, models_path, admin_path)
+read_cdm(file_path, models_path, admin_path, forms_path)
