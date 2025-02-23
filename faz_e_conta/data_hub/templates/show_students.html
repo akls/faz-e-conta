@@ -16,6 +16,9 @@
             <td style="border: 1px solid #ddd; padding: 10px;">{{ item|get_item:field }}</td>
             {% endif %}
         {% endfor %}
+        <td style="border: 1px solid #ddd; padding: 10px;">
+            <a href="{% url 'show_student' aluno_id=item.aluno_id %}">Ver detalhes</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
