@@ -1,6 +1,10 @@
 import pandas as pd
 import datetime
 
+
+
+
+
 # Função para criar os modelos
 def create_model(df, table_name):
     info = f"""class {table_name.capitalize()}(models.Model):
