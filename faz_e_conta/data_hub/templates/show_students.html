@@ -14,10 +14,16 @@
     <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
         {% for field in head %}
             {% if field != id %}
-            <td style="border: 1px solid #ddd; padding: 10px;">{{ item|get_item:field }}</td>
+            {%if item|get_item:field == None%}
+                        <td>
+                            <hr style="border: none; border-top: 2px dashed black;">
+                        </td>
+                    {% else %}
+                        <td>{{ item|get_item:field }}</td>
+                    {% endif %}
             {% endif %}
         {% endfor %}
-        <td style="border: 1px solid #ddd; padding: 10px;">
+        <td>
             <a href="{% url 'show_student' aluno_id=item.aluno_id %}">Ver detalhes</a>
         </td>
     </tr>

@@ -88,14 +88,17 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
         # Adicionar as classes ao arquivo forms.py
         with open(forms_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django import forms\n")
-            arquivo.write(f"from .models import {', '.join(class_list)}\n\n")
+            arquivo.write(f"from .models import {', '.join(class_list)}\n")
+            arquivo.write("from .widgets import *\n")
+            arquivo.write("\n")
             for table_name in class_list:
                 sheet_df = pd.read_excel(file_path, sheet_name=table_name.lower())
                 arquivo.write(f"class {table_name}Form(forms.ModelForm):\n")
                 arquivo.write("    class Meta:\n")
                 arquivo.write(f"        model = {table_name}\n")
                 arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
-        
+                arquivo.write("        # Adiciona atributos aos campos do formulário\n")
+                arquivo.write(f"        widgets = {table_name}_widget()\n\n")
     except Exception as e:
         print(f"Erro ao ler a planilha 'Table Summary': {e}")
 
