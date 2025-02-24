@@ -80,7 +80,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Inserir</button>
+        <a href="{% url 'show_students' %}">Voltar</a>
     </form>
-    <a href="{% url 'show_students' %}">Voltar</a>
 </body>
 </html>
