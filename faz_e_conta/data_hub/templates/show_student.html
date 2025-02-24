@@ -9,12 +9,18 @@
 </head>
 <body>
     <h1>Student Information</h1>
-    <table>
+    <table >
         {% for field in head %}
-            {% if item != id %}
+            {% if field != id %}
                 <tr align = "left">
                     <th>{{ field|replace:"_, "  }} </th>
-                    <td>{{ data_dict|get_item:field }}</td>
+                    {%if data_dict|get_item:field == None%}
+                        <td>
+                            <hr style="border: none; border-top: 3px dashed black;">
+                        </td>
+                    {% else %}
+                        <td>{{ data_dict|get_item:field }}</td>
+                    {% endif %}
                 </tr>
             {% endif %}
         {% endfor %}
