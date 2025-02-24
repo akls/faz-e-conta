@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
-from .forms import AlunoForm
-from .models import Aluno
+from .forms import *
+from .models import *
 
 def show_students(request):
     data = Aluno.objects.all()
@@ -12,8 +12,6 @@ def show_students(request):
     data_dict = list(data.values(*head))
     
     return render(request, "show_students.html", {"head": head, "data_dict": data_dict, "id": head[0]})
-
-
 
 
 def show_student(request, aluno_id):

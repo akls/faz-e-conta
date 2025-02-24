@@ -1,10 +1,24 @@
 from django import forms
 from .models import Aluno, Responsavel_educativo, Aluno_saida, Vacinacao, Despesa, Salario, Filiacao
 
+from django import forms
+from .models import Aluno
+
 class AlunoForm(forms.ModelForm):
     class Meta:
         model = Aluno
-        fields = ['aluno_id', 'nome_proprio', 'apelido', 'processo', 'data_admissao', 'data_ultima_renovacao', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'escolaridade_anterior', 'motivo_admissao', 'cuidados_especias']
+        fields = ['aluno_id', 'nome_proprio', 'apelido', 'processo', 'data_admissao', 
+                  'data_ultima_renovacao', 'data_nascimento', 'documento', 'numero_documento', 
+                  'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 
+                  'fregesia', 'escolaridade_anterior', 'motivo_admissao', 'cuidados_especias']
+        
+        # Adiciona atributos aos campos do formulário
+        widgets = {
+            'data_admissao': forms.DateInput(attrs={'type': 'date'}),
+            'data_ultima_renovacao': forms.DateInput(attrs={'type': 'date'}),
+            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+            'data_validade': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 class Responsavel_educativoForm(forms.ModelForm):
     class Meta:
