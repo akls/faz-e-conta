@@ -4,8 +4,9 @@ from .models import Aluno
 
 def show_students(request):
     data = Aluno.objects.all()
-    head = [field.name for field in Aluno._meta.fields]
-    #head = ["aluno_id", "nome_proprio", "apelido"]
+    #head = [field.name for field in Aluno._meta.fields]
+    
+    head = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao"]
     
     # Melhorando a criação da lista de dicionários
     data_dict = list(data.values(*head))
