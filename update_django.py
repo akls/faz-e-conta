@@ -6,8 +6,7 @@ import datetime
 def create_model(df, table_name):
     info = f"""class {table_name.capitalize()}(models.Model):
     class Meta:
-        db_table = '{table_name}'
-"""
+        db_table = '{table_name}'\n"""
 
     for _, row in df.iterrows():
         field_declaration = f"    {row['column_name']} = models.{row['django_field_type']}("
@@ -53,6 +52,8 @@ def create_model(df, table_name):
 # Função para ler o CDM e criar os modelos automaticamente
 def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str, form_views_path:str , sheet_name="Table Summary"):
     try:
+
+# criar models.py
         table_summary_df = pd.read_excel(file_path, sheet_name)
         class_list = []
         
@@ -75,14 +76,18 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
                     print(f"Erro ao ler a planilha '{table_name}': {e}")
         
 # Adicionar as classes ao arquivo admin.py
+        print("A criar admin para os modelos...")
+
         with open(admin_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.contrib import admin\n")
             arquivo.write(f"from .models import {', '.join(class_list)}\n\n")
             arquivo.write("# Register your models here.\n\n")
             for table_name in class_list:
                 arquivo.write(f"admin.site.register({table_name})\n")
-                
+        
 # Adicionar as classes ao arquivo forms.py
+        print("A criar formulários para os modelos...")        
+
         with open(forms_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django import forms\n")
             arquivo.write(f"from .models import {', '.join(class_list)}\n")
@@ -96,8 +101,10 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
                 arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
                 arquivo.write("        # Adiciona atributos aos campos do formulário\n")
                 arquivo.write(f"        widgets = {table_name}_widget()\n\n")
-                
-# Adicionar as views ao arquivo form_views.py      
+        
+# Adicionar as views ao arquivo form_views.py
+        print("A criar views para os formulários...")        
+
         with open(form_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
             arquivo.write("from django.urls import reverse\n")
@@ -114,8 +121,10 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
                 arquivo.write(f"    else:\n")
                 arquivo.write(f"        form = {table_name}Form()\n")
                 arquivo.write(f"    return render(request, 'insert_{table_name.lower()}.html', {{'form': form}})\n\n")
-    
+
 # Criar paginas html para os forms
+        print("A criar páginas html para os formulários...")
+
         for table_name in class_list:
             form_html_path = f"faz_e_conta/data_hub/templates/insert_{table_name.lower()}.html"
             with open(form_html_path, "w", encoding="utf-8") as arquivo:
@@ -206,6 +215,8 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
                 arquivo.write("</html>\n")
     
 # Adicionar as classes ao arquivo url_tools.py
+        print("A criar urls para os formulários...")
+        
         with open("faz_e_conta/data_hub/url_tools.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
             arquivo.write("from . import views\n\n")
@@ -215,6 +226,8 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
             arquivo.write("\n    return urlpatterns\n")
 
 # Adicionar os links ao arquivo links.html
+        print("A criar links para os formulários...")
+        
         with open("faz_e_conta/data_hub/templates/links.html", "w", encoding="utf-8") as arquivo:
             
             arquivo.write("{% block links %}\n")
@@ -223,6 +236,8 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
             for table_name in class_list:
                 arquivo.write(f"    <a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a><br>\n")
             arquivo.write("{% endblock %}\n")
+
+# End
     except Exception as e:
         print(f"Erro ao ler a planilha 'Table Summary': {e}")
 
