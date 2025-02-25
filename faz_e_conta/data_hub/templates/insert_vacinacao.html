@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt">
+<html lang='pt'>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inserir Aluno</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Inserir Vacinacao</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -75,11 +74,11 @@
     </style>
 </head>
 <body>
-    <h1>Inserir Aluno</h1>
-    <form method="post">
+    <h1>Inserir Vacinacao</h1>
+    <form method='post'>
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Inserir</button>
+        <button type='submit'>Inserir</button>
         <a href="{% url 'show_students' %}">Voltar</a>
     </form>
 </body>

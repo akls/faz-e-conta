@@ -1,6 +1,9 @@
 from django.shortcuts import redirect, render
 from .forms import *
 from .models import *
+from .form_views import *
+
+
 
 def show_students(request):
     data = Aluno.objects.all()
@@ -21,15 +24,3 @@ def show_student(request, aluno_id):
     data_dict = {head[i]: data.__dict__[head[i]] for i in range(1, len(head))}
     
     return render(request, "show_student.html", {"head": head, "data_dict": data_dict, "data":data, "id": head[0]})
-
-
-def insert_student(request):
-    if request.method == "POST":
-        form = AlunoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("show_students")
-    else:
-        form = AlunoForm()
-    
-    return render(request, "insert_student.html", {"form": form})
