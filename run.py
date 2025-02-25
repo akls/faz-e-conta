@@ -19,12 +19,19 @@ def main():
     print(f"Loading dummy data from {source_path}...")
     db.load_dummy_data(source_path, truncate=True, conn=conn)
 
-    # Get all data from table
-    query = "SELECT * FROM aluno;"
-    rows = db.fetchall(query, conn)
-    conn.close()
-    for row in rows:
-        print(row)
+    # # Fetch all tables in the database
+    # tables_query = "SELECT name FROM sqlite_master WHERE type='table';"
+    # tables = db.fetchall(tables_query, conn)
+
+    # # Display data from all tables
+    # print("\n=== DATABASE CONTENT ===")
+    # for (table_name,) in tables:
+    #     print(f"\nTable: {table_name}")
+    #     rows = db.fetchall(f"SELECT * FROM {table_name};", conn)
+    #     for row in rows:
+    #         print(row)
+    #     if not rows:
+    #         print("[No data]")
 
 if __name__ == "__main__":
     main()
