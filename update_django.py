@@ -1,6 +1,9 @@
 import pandas as pd
 import datetime
 
+# Automatizar criação view by id     
+
+
 
 # Função para criar os modelos
 def create_model(df, table_name):
@@ -48,6 +51,7 @@ def create_model(df, table_name):
         info += field_declaration + "\n"
         
     return info
+
 
 # Função para ler o CDM e criar os modelos automaticamente
 def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str, form_views_path:str , sheet_name="Table Summary"):
