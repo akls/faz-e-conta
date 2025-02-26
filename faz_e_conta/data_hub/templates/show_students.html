@@ -24,7 +24,7 @@
             {% endif %}
         {% endfor %}
         <td>
-            <a href="{% url 'show_student' aluno_id=item.aluno_id %}">Ver detalhes</a>
+            <a href="{% url 'show_aluno_view' aluno_id=item.aluno_id %}">Ver detalhes</a>
         </td>
     </tr>
     {% endfor %}
