@@ -54,7 +54,15 @@ def create_model(df, table_name):
 
 
 # Função para ler o CDM e criar os modelos automaticamente
-def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str, form_views_path:str , sheet_name="Table Summary"):
+def read_cdm(sheet_name="Table Summary"):
+# Caminhos dos arquivos
+    file_path = "resources/cdm/cdm_fazeconta.xlsx"
+    models_path = "faz_e_conta/data_hub/models.py"
+    admin_path = "faz_e_conta/data_hub/admin.py"
+    forms_path = "faz_e_conta/data_hub/forms.py"
+    form_views_path = models_path.replace("models.py", "form_views.py")
+    id_views_path = models_path.replace("models.py", "id_views.py")
+    
     try:
 
 # criar models.py
@@ -241,16 +249,14 @@ def read_cdm(file_path: str, models_path: str, admin_path: str, forms_path: str,
                 arquivo.write(f"    <a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a><br>\n")
             arquivo.write("{% endblock %}\n")
 
+
+
+
 # End
     except Exception as e:
         print(f"Erro ao ler a planilha 'Table Summary': {e}")
 
-# Caminhos dos arquivos
-file_path = "resources/cdm/cdm_fazeconta.xlsx"
-models_path = "faz_e_conta/data_hub/models.py"
-admin_path = "faz_e_conta/data_hub/admin.py"
-forms_path = "faz_e_conta/data_hub/forms.py"
-form_views_path = models_path.replace("models.py", "form_views.py")
+
 
 # Executar o gerador
-read_cdm(file_path, models_path, admin_path, forms_path, form_views_path)
+read_cdm()
