@@ -4,7 +4,6 @@ from .models import *
 from .form_views import *
 
 
-
 def show_students(request):
     data = Aluno.objects.all()
     #head = [field.name for field in Aluno._meta.fields]
@@ -24,3 +23,5 @@ def show_student(request, aluno_id):
     data_dict = {head[i]: data.__dict__[head[i]] for i in range(1, len(head))}
     
     return render(request, "show_student.html", {"head": head, "data_dict": data_dict, "data":data, "id": head[0]})
+
+
