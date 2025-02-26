@@ -226,13 +226,13 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("</body>\n")
                 arquivo.write("</html>\n")
     
-# Adicionar as classes ao arquivo url_tools.py
+# Adicionar as classes ao arquivo form_url.py
         print("A criar urls para os formulários...")
         
-        with open("faz_e_conta/data_hub/url_tools.py", "w", encoding="utf-8") as arquivo:
+        with open("faz_e_conta/data_hub/form_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
             arquivo.write("from . import views\n\n")
-            arquivo.write("def add_urlpatterns(urlpatterns):\n")
+            arquivo.write("def add_form_urlpatterns(urlpatterns):\n")
             for table_name in class_list:
                 arquivo.write(f"    urlpatterns.append(path('insert_{table_name.lower()}/', views.insert_{table_name.lower()}_view, name='insert_{table_name.lower()}_view'))\n")
             arquivo.write("\n    return urlpatterns\n")
@@ -249,14 +249,75 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"    <a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a><br>\n")
             arquivo.write("{% endblock %}\n")
 
+# Adicionar views por id
+        print("A criar views para ids...")
+        
+        with open(id_views_path, "a", encoding="utf-8") as arquivo:
+            arquivo.write("from django.shortcuts import render, redirect\n")
+            arquivo.write("from django.urls import reverse\n")
+            arquivo.write(f"from .models import {', '.join(class_list)}\n")
+            arquivo.write(f"from .forms import {', '.join([f'{table_name}Form' for table_name in class_list])}\n\n")
+            
+            for table_name in class_list:
+                arquivo.write(f"def show_{table_name.lower()}_view(request, {table_name.lower()}_id):\n")
+                arquivo.write(f"    data = {table_name}.objects.get({table_name.lower()}_id={table_name.lower()}_id)\n")
+                arquivo.write(f"    head = [field.name for field in {table_name}._meta.fields]\n")
+                arquivo.write(f"    data_dict = {{head[i]: data.__dict__[head[i]] for i in range(1, len(head))}}\n")
+                arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
+                
 
+# Adicionar HTML para views por id
+        print("A criar páginas html para as views por id...")
+        
+        for table_name in class_list:
+            view_html_path = f"faz_e_conta/data_hub/templates/show_{table_name.lower()}.html"
+            with open(view_html_path, "w", encoding="utf-8") as arquivo:
+                arquivo.write("{% load custom_filters %}\n")
+                arquivo.write("<!DOCTYPE html>\n")
+                arquivo.write("<html lang='en'>\n")
+                arquivo.write("<head>\n")
+                arquivo.write("    <meta charset='UTF-8'>\n")
+                arquivo.write("    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n")
+                arquivo.write(f"    <title>{table_name.replace('_', ' ').title()} Information</title>\n")
+                arquivo.write("</head>\n")
+                arquivo.write("<body>\n")
+                arquivo.write(f"    <h1>{{{{ data_dict.nome_proprio }}}} {{{{ data_dict.apelido }}}}</h1>\n")
+                arquivo.write("    <table>\n")
+                arquivo.write("        {% for field in head %}\n")
+                arquivo.write("            {% if field != 'id' %}\n")
+                arquivo.write("                <tr align='left'>\n")
+                arquivo.write("                    <th>{{ field|replace:'_, ' }}</th>\n")
+                arquivo.write("                    {% if data_dict|get_item:zfield == None %}\n")
+                arquivo.write("                        <td>\n")
+                arquivo.write("                            <hr style='border: none; border-top: 3px dashed black;'>\n")
+                arquivo.write("                        </td>\n")
+                arquivo.write("                    {% else %}\n")
+                arquivo.write("                        <td>{{ data_dict|get_item:field }}</td>\n")
+                arquivo.write("                    {% endif %}\n")
+                arquivo.write("                </tr>\n")
+                arquivo.write("            {% endif %}\n")
+                arquivo.write("        {% endfor %}\n")
+                arquivo.write("    </table>\n")
+                arquivo.write("    <a href=\"{% url 'show_students' %}\">Voltar</a>\n")
+                arquivo.write("</body>\n")
+                arquivo.write("</html>\n")
 
+# Adicionar urls para views por id
+        print("A criar urls para os views por id...")
+        
+        with open("faz_e_conta/data_hub/show_id_url.py", "w", encoding="utf-8") as arquivo:
+            arquivo.write("from django.urls import path\n")
+            arquivo.write("from . import views\n\n")
+            arquivo.write("def add_show_id_urlpatterns(urlpatterns):\n")
+            for table_name in class_list:
+                arquivo.write(f"    urlpatterns.append(path('{table_name.lower()}/<int:{table_name.lower()}_id>/', views.show_{table_name.lower()}_view, name='{table_name.lower()}_view'))\n")
+            arquivo.write("\n    return urlpatterns\n")
 
 # End
     except Exception as e:
         print(f"Erro ao ler a planilha 'Table Summary': {e}")
 
 
-
 # Executar o gerador
 read_cdm()
+print("Processo concluído com sucesso!")

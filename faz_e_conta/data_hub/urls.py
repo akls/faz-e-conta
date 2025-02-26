@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from .url_tools import *
+from .form_url import *
+from .show_id_url import *
 
 urlpatterns = [
     path('', views.show_students, name='index'),
@@ -8,4 +9,5 @@ urlpatterns = [
     path('student/<int:aluno_id>/', views.show_student, name='show_student'),
 ]
 
-urlpatterns = add_urlpatterns(urlpatterns)
+urlpatterns = add_form_urlpatterns(urlpatterns)
+urlpatterns = add_show_id_urlpatterns(urlpatterns)
