@@ -5,8 +5,9 @@ import datetime
 
 
 
-# Função para criar os modelos
 def create_model(df, table_name):
+# Função para criar os modelos
+
     info = f"""class {table_name.capitalize()}(models.Model):
     class Meta:
         db_table = '{table_name}'\n"""
@@ -52,7 +53,6 @@ def create_model(df, table_name):
         
     return info
 
-
 # Função para ler o CDM e criar os modelos automaticamente
 def read_cdm(sheet_name="Table Summary"):
 # Caminhos dos arquivos
@@ -68,6 +68,7 @@ def read_cdm(sheet_name="Table Summary"):
 # criar models.py
         table_summary_df = pd.read_excel(file_path, sheet_name)
         class_list = []
+        print("A criar modelos...")
         
         if "table_name" not in table_summary_df.columns:
             print("Erro: A coluna 'table_name' não está presente na planilha 'Table Summary'.")
@@ -243,28 +244,40 @@ def read_cdm(sheet_name="Table Summary"):
         with open("faz_e_conta/data_hub/templates/links.html", "w", encoding="utf-8") as arquivo:
             
             arquivo.write("{% block links %}\n")
-            arquivo.write("    <h1>Links:</h1>\n")
-            style = 'style="display: inline-block; margin-top: 10px; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;"'
+            style = 'style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;"'
+            arquivo.write("<table>\n")
+            arquivo.write("    <tr>\n")
+            arquivo.write(f"        <th>Inserir</th>\n")
+            arquivo.write(f"        <th>Ver id1</th>\n")
+            arquivo.write("    </tr>\n")
             for table_name in class_list:
-                arquivo.write(f"    <a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a><br>\n")
+                arquivo.write("    <tr>\n")
+                arquivo.write(f"        <td><center><a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a></center></td>\n")
+                arquivo.write(f"        <td><center><a href=\"{{% url '{table_name.lower()}_view' {table_name.lower()}_id=1 %}}\" {style}>Ver {table_name.replace('_', ' ').title()} com id 1</a></center></td>\n")
+                arquivo.write("    </tr>\n")
             arquivo.write("{% endblock %}\n")
 
 # Adicionar views por id
         print("A criar views para ids...")
         
-        with open(id_views_path, "a", encoding="utf-8") as arquivo:
+        with open(id_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
             arquivo.write("from django.urls import reverse\n")
             arquivo.write(f"from .models import {', '.join(class_list)}\n")
             arquivo.write(f"from .forms import {', '.join([f'{table_name}Form' for table_name in class_list])}\n\n")
-            
+            arquivo.write(f"from django.http import Http404\n")
+            arquivo.write("from django.http import HttpResponse\n\n")
+
             for table_name in class_list:
                 arquivo.write(f"def show_{table_name.lower()}_view(request, {table_name.lower()}_id):\n")
-                arquivo.write(f"    data = {table_name}.objects.get({table_name.lower()}_id={table_name.lower()}_id)\n")
+                arquivo.write(f"    try:\n")
+                arquivo.write(f"        data = {table_name}.objects.get({table_name.lower()}_id={table_name.lower()}_id)  # Verifique se 'id' é o nome correto do campo\n")
+                arquivo.write(f"    except {table_name}.DoesNotExist:\n")
+                arquivo.write(f"        return HttpResponse(f'<h1>{table_name.replace("_", " ").title()} with id= " + '{' + f"{table_name.lower()}_id" + "}" + " not found</h1><a href=\"/\">Voltar para o índice</a>')\n")
                 arquivo.write(f"    head = [field.name for field in {table_name}._meta.fields]\n")
-                arquivo.write(f"    data_dict = {{head[i]: data.__dict__[head[i]] for i in range(1, len(head))}}\n")
+                arquivo.write(f"    data_dict = {{head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}}\n\n")
                 arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
-                
+
 
 # Adicionar HTML para views por id
         print("A criar páginas html para as views por id...")
@@ -284,10 +297,10 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"    <h1>{{{{ data_dict.nome_proprio }}}} {{{{ data_dict.apelido }}}}</h1>\n")
                 arquivo.write("    <table>\n")
                 arquivo.write("        {% for field in head %}\n")
-                arquivo.write("            {% if field != 'id' %}\n")
+                arquivo.write("            {% if field != id %}\n")
                 arquivo.write("                <tr align='left'>\n")
                 arquivo.write("                    <th>{{ field|replace:'_, ' }}</th>\n")
-                arquivo.write("                    {% if data_dict|get_item:zfield == None %}\n")
+                arquivo.write("                    {% if data_dict|get_item:field == None %}\n")
                 arquivo.write("                        <td>\n")
                 arquivo.write("                            <hr style='border: none; border-top: 3px dashed black;'>\n")
                 arquivo.write("                        </td>\n")

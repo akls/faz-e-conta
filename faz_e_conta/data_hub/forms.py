@@ -13,7 +13,7 @@ class AlunoForm(forms.ModelForm):
 class Responsavel_educativoForm(forms.ModelForm):
     class Meta:
         model = Responsavel_educativo
-        fields = ['respon_id', 'nome_proprio', 'apelido', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'telefone', 'email', 'profissao', 'morada_emprego', 'horario_trabalho', 'aluno_id']
+        fields = ['responsavel_educativo_id', 'nome_proprio', 'apelido', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'telefone', 'email', 'profissao', 'morada_emprego', 'horario_trabalho', 'aluno_id']
 
         # Adiciona atributos aos campos do formulário
         widgets = Responsavel_educativo_widget()
@@ -21,7 +21,7 @@ class Responsavel_educativoForm(forms.ModelForm):
 class Aluno_saidaForm(forms.ModelForm):
     class Meta:
         model = Aluno_saida
-        fields = ['saida_id', 'aluno_id', 'hora_entrada', 'hora_saida', 'autorizacao_sair', 'escolaridade']
+        fields = ['aluno_saida_id', 'aluno_id', 'hora_entrada', 'hora_saida', 'autorizacao_sair', 'escolaridade']
 
         # Adiciona atributos aos campos do formulário
         widgets = Aluno_saida_widget()
@@ -29,7 +29,7 @@ class Aluno_saidaForm(forms.ModelForm):
 class VacinacaoForm(forms.ModelForm):
     class Meta:
         model = Vacinacao
-        fields = ['vac_id', 'aluno_id', 'vacina_name', 'data_vacina', 'plano_vacina']
+        fields = ['vacinacao_id', 'aluno_id', 'vacina_name', 'data_vacina', 'plano_vacina']
 
         # Adiciona atributos aos campos do formulário
         widgets = Vacinacao_widget()

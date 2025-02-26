@@ -28,7 +28,7 @@ class Aluno(models.Model):
 class Responsavel_educativo(models.Model):
     class Meta:
         db_table = 'responsavel_educativo'
-    respon_id = models.AutoField(primary_key=True)
+    responsavel_educativo_id = models.AutoField(primary_key=True)
     nome_proprio = models.CharField(max_length=100, default='')
     apelido = models.CharField(max_length=250, default='')
     data_nascimento = models.DateField(default= du.timezone.now)
@@ -51,7 +51,7 @@ class Responsavel_educativo(models.Model):
 class Aluno_saida(models.Model):
     class Meta:
         db_table = 'aluno_saida'
-    saida_id = models.AutoField(primary_key=True)
+    aluno_saida_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='aluno', on_delete=models.CASCADE)
     hora_entrada = models.DateTimeField(null=True, blank=True)
     hora_saida = models.DateTimeField(null=True, blank=True)
@@ -61,7 +61,7 @@ class Aluno_saida(models.Model):
 class Vacinacao(models.Model):
     class Meta:
         db_table = 'vacinacao'
-    vac_id = models.AutoField(primary_key=True)
+    vacinacao_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='aluno', on_delete=models.CASCADE)
     vacina_name = models.CharField(max_length=250, default='')
     data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
