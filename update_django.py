@@ -7,11 +7,13 @@ import datetime
 
 def create_model(df, table_name):
 # Função para criar os modelos
+
     info = f"""class {table_name.capitalize()}(models.Model):
     class Meta:
         db_table = '{table_name}'\n"""
-
+    atributes = []
     for _, row in df.iterrows():
+        atributes.append(row["column_name"])
         field_declaration = f"    {row['column_name']} = models.{row['django_field_type']}("
         params = []
         
@@ -45,10 +47,13 @@ def create_model(df, table_name):
                 params.append("default=''")
             elif row["django_field_type"] == "BooleanField":
                 params.append("default=False")
-
         # Montar a linha final do campo
         field_declaration += ", ".join(params) + ")"
         info += field_declaration + "\n"
+    
+    info += """
+    def __str__(self):
+        return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + f"{atributes[3].replace("_", " ").title()}: " + "{" + f"self.{atributes[3]}" + '}"'
         
     return info
 

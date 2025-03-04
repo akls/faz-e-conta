@@ -25,6 +25,8 @@ class Aluno(models.Model):
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.nome_proprio} {self. apelido}, Processo: {self.processo}"
 class Responsavel_educativo(models.Model):
     class Meta:
         db_table = 'responsavel_educativo'
@@ -48,6 +50,8 @@ class Responsavel_educativo(models.Model):
     horario_trabalho = models.TimeField(null=True, blank=True)
     aluno_id = models.ForeignKey(to='aluno', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.nome_proprio} {self. apelido}, Data Nascimento: {self.data_nascimento}"
 class Aluno_saida(models.Model):
     class Meta:
         db_table = 'aluno_saida'
@@ -58,6 +62,8 @@ class Aluno_saida(models.Model):
     autorizacao_sair = models.CharField(max_length=250, null=True, blank=True)
     escolaridade = models.CharField(max_length=100, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.aluno_id} {self. hora_entrada}, Hora Saida: {self.hora_saida}"
 class Vacinacao(models.Model):
     class Meta:
         db_table = 'vacinacao'
@@ -67,6 +73,8 @@ class Vacinacao(models.Model):
     data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
     plano_vacina = models.BooleanField(default=False, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.aluno_id} {self. vacina_name}, Data Vacina: {self.data_vacina}"
 class Despesa(models.Model):
     class Meta:
         db_table = 'despesa'
@@ -76,6 +84,8 @@ class Despesa(models.Model):
     descricao = models.CharField(max_length=250, default='')
     data = models.DateField(default= du.timezone.now)
 
+    def __str__(self):
+        return f"{self.categoria} {self. valor}, Descricao: {self.descricao}"
 class Salario(models.Model):
     class Meta:
         db_table = 'salario'
@@ -87,6 +97,8 @@ class Salario(models.Model):
     subsidio_tipo = models.CharField(max_length=20, null=True, blank=True)
     subsidio_valor = models.FloatField(null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.funcionario_id} {self. valor}, Descricao: {self.descricao}"
 class Filiacao(models.Model):
     class Meta:
         db_table = 'filiacao'
@@ -95,3 +107,5 @@ class Filiacao(models.Model):
     respon_id = models.ForeignKey(to='responsavel_educativo', on_delete=models.CASCADE)
     filiacao_responsavel = models.CharField(max_length=100, default='')
 
+    def __str__(self):
+        return f"{self.aluno_id} {self. respon_id}, Filiacao Responsavel: {self.filiacao_responsavel}"
