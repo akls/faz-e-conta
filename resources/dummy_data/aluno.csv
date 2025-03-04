@@ -1,4 +1,4 @@
-aluno_id,nome_proprio,apelido,processo,data_admissao,data_renovacao,data_nascimento,documento,numero_documentc,data_validade,niss,nif,morada,codigo_postal,concelho,freguesia,exclaridade_anterio,motivo_admissao,cuidados_especias
+aluno_id,nome_proprio,apelido,processo,data_admissao,data_ultima_renovacao,data_nascimento,documento,numero_documento,data_validade,niss,nif,morada,codigo_postal,concelho,fregesia,escolaridade_anterior,motivo_admissao,cuidados_especias
 1,João,Silva,202301,2023-09-01,2024-09-01,2017-01-01,RG,123456789,2025-01-01,123456789,123456789,"Rua das Flores, 123",12345-678,São Paulo,Centro,Escola Municipal,Ingresso no Ensino Médio,Nenhum
 2,Maria,Santos,202302,2023-09-01,2024-09-01,2018-05-15,Passaporte,AB1234567,2026-05-15,987654321,987654321,"Avenida Brasil, 456",45678-901,Rio de Janeiro,Copacabana,Transferência,Mudança de cidade,Alergia a amendoim
 3,Pedro,Almeida,202303,2023-09-01,2024-09-01,2018-11-20,BI,987654321,2025-11-20,876543210,876543210,"Rua da Liberdade, 789",78901-234,Belo Horizonte,Savassi,Novo aluno,Interesse em Ciências,Diabetes
