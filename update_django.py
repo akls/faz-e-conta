@@ -7,7 +7,6 @@ import datetime
 
 def create_model(df, table_name):
 # Função para criar os modelos
-
     info = f"""class {table_name.capitalize()}(models.Model):
     class Meta:
         db_table = '{table_name}'\n"""
