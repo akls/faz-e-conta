@@ -6,7 +6,6 @@ from .auto_gen_show_id_url import *
 urlpatterns = [
     path('', views.show_students, name='index'),
     path('view_students/', views.show_students, name='show_students'),
-    path('student/<int:aluno_id>/', views.show_student, name='show_student'),
 ]
 
 urlpatterns = add_form_urlpatterns(urlpatterns)
