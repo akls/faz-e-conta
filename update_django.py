@@ -1,9 +1,6 @@
 import pandas as pd
 import datetime
 
-# Automatizar criação view by id     
-
-
 def create_model(df, table_name):
 # Função para criar os modelos
 
