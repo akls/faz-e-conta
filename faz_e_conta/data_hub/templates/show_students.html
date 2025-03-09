@@ -1,5 +1,6 @@
+{% extends 'links.html' %}
 {% load custom_filters %}
-
+{%block links%}
 <h1>Alunos</h1>
 <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
     <tr style="background-color: #f2f2f2;">
@@ -29,8 +30,4 @@
     </tr>
     {% endfor %}
 </table>
-
-
-{% include 'links.html' %}
-{%block "links"%}
 {%endblock%}

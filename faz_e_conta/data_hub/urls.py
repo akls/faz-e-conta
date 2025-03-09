@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
-from .form_url import *
-from .show_id_url import *
+from .auto_gen_form_url import *
+from .auto_gen_show_id_url import *
 
 urlpatterns = [
     path('', views.show_students, name='index'),

@@ -4,7 +4,6 @@ import datetime
 # Automatizar criação view by id     
 
 
-
 def create_model(df, table_name):
 # Função para criar os modelos
 
@@ -53,8 +52,12 @@ def create_model(df, table_name):
     
     info += """
     def __str__(self):
-        return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + f"{atributes[3].replace("_", " ").title()}: " + "{" + f"self.{atributes[3]}" + '}"'
-        
+        return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + f"{atributes[0].replace("_", " ").title()}: " + "{" + f"self.{atributes[0]}" + '}"\n'
+    
+    # info += """
+    # def __str__(self):
+    #     return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + "{" + f"self.{atributes[0]}" + '}"\n'
+    
     return info
 
 # Função para ler o CDM e criar os modelos automaticamente
@@ -64,8 +67,8 @@ def read_cdm(sheet_name="Table Summary"):
     models_path = "faz_e_conta/data_hub/models.py"
     admin_path = "faz_e_conta/data_hub/admin.py"
     forms_path = "faz_e_conta/data_hub/forms.py"
-    form_views_path = models_path.replace("models.py", "form_views.py")
-    id_views_path = models_path.replace("models.py", "id_views.py")
+    form_views_path = models_path.replace("models.py", "auto_gen_form_views.py")
+    id_views_path = models_path.replace("models.py", "auto_gen_id_views.py")
     
     try:
 
@@ -234,7 +237,7 @@ def read_cdm(sheet_name="Table Summary"):
 # Adicionar as classes ao arquivo form_url.py
         print("A criar urls para os formulários...")
         
-        with open("faz_e_conta/data_hub/form_url.py", "w", encoding="utf-8") as arquivo:
+        with open("faz_e_conta/data_hub/auto_gen_form_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
             arquivo.write("from . import views\n\n")
             arquivo.write("def add_form_urlpatterns(urlpatterns):\n")
@@ -244,23 +247,25 @@ def read_cdm(sheet_name="Table Summary"):
 
 # Adicionar os links ao arquivo links.html
         print("A criar links para os formulários...")
-        
+        table = ""
         with open("faz_e_conta/data_hub/templates/links.html", "w", encoding="utf-8") as arquivo:
-            
-            arquivo.write("{% block links %}\n")
             style = 'style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;"'
-            arquivo.write("<table>\n")
-            arquivo.write("    <tr>\n")
-            arquivo.write(f"        <th>Inserir</th>\n")
-            arquivo.write(f"        <th>Ver id1</th>\n")
-            arquivo.write("    </tr>\n")
+            table += "<table>\n"
+            table += ("    <tr>\n")
+            table += (f"        <th>Inserir</th>\n")
+            table += (f"        <th>Ver id1</th>\n")
+            table += ("    </tr>\n")
             for table_name in class_list:
-                arquivo.write("    <tr>\n")
-                arquivo.write(f"        <td><center><a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a></center></td>\n")
-                arquivo.write(f"        <td><center><a href=\"{{% url '{table_name.lower()}_view' {table_name.lower()}_id=1 %}}\" {style}>Ver {table_name.replace('_', ' ').title()} com id 1</a></center></td>\n")
-                arquivo.write("    </tr>\n")
-            arquivo.write("{% endblock %}\n")
-
+                table += ("    <tr>\n")
+                table += (f"        <td><center><a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\" {style}>Inserir {table_name.replace('_', ' ').title()}</a></center></td>\n")
+                table += (f"        <td><center><a href=\"{{% url '{table_name.lower()}_view' {table_name.lower()}_id=1 %}}\" {style}>Ver {table_name.replace('_', ' ').title()} com id 1</a></center></td>\n")
+                table += ("    </tr>\n")
+            table += "</table>\n"
+            arquivo.write(table)
+            arquivo.write("{%block links%}\n")
+            arquivo.write("{%endblock%}\n")
+            arquivo.write(table)
+            
 # Adicionar views por id
         print("A criar views para ids...")
         
@@ -322,7 +327,7 @@ def read_cdm(sheet_name="Table Summary"):
 # Adicionar urls para views por id
         print("A criar urls para os views por id...")
         
-        with open("faz_e_conta/data_hub/show_id_url.py", "w", encoding="utf-8") as arquivo:
+        with open("faz_e_conta/data_hub/auto_gen_show_id_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
             arquivo.write("from . import views\n\n")
             arquivo.write("def add_show_id_urlpatterns(urlpatterns):\n")

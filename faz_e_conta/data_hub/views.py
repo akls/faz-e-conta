@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from .forms import *
 from .models import *
-from .form_views import *
-from .id_views import *
+from .auto_gen_form_views import *
+from .auto_gen_id_views import *
 
 
 def show_students(request):
