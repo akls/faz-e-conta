@@ -95,7 +95,7 @@ class Salario(models.Model):
     class Meta:
         db_table = 'salario'
     salario_id = models.AutoField(primary_key=True)
-    funcionario_id = models.ForeignKey(to='responsavel_educativo', on_delete=models.CASCADE)
+    responsavel_educativo_id = models.ForeignKey(to='responsavel_educativo', on_delete=models.CASCADE)
     valor = models.FloatField()
     descricao = models.CharField(max_length=250, null=True, blank=True)
     data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
@@ -103,16 +103,16 @@ class Salario(models.Model):
     subsidio_valor = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.funcionario_id} {self. valor}, Salario Id: {self.salario_id}"
+        return f"{self.responsavel_educativo_id} {self. valor}, Salario Id: {self.salario_id}"
 
 class Filiacao(models.Model):
     class Meta:
         db_table = 'filiacao'
     filiacao_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='aluno', on_delete=models.CASCADE)
-    respon_id = models.ForeignKey(to='responsavel_educativo', on_delete=models.CASCADE)
+    responsavel_educativo_id = models.ForeignKey(to='responsavel_educativo', on_delete=models.CASCADE)
     filiacao_responsavel = models.CharField(max_length=100, default='')
 
     def __str__(self):
-        return f"{self.aluno_id} {self. respon_id}, Filiacao Id: {self.filiacao_id}"
+        return f"{self.aluno_id} {self. responsavel_educativo_id}, Filiacao Id: {self.filiacao_id}"
 

@@ -280,7 +280,14 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"        data = {table_name}.objects.get({table_name.lower()}_id={table_name.lower()}_id)  # Verifique se 'id' é o nome correto do campo\n")
                 arquivo.write(f"    except {table_name}.DoesNotExist:\n")
                 arquivo.write(f"        return HttpResponse(f'<h1>{table_name.replace("_", " ").title()} with id= " + '{' + f"{table_name.lower()}_id" + "}" + " not found</h1><a href=\"/\">Voltar para o índice</a>')\n")
-                arquivo.write(f"    head = [field.name for field in {table_name}._meta.fields]\n")
+                arquivo.write(f"    head = [field.name.replace('_id','_id_id') for field in {table_name}._meta.fields]\n")
+                arquivo.write(f'''
+    for i in range(1, len(head)):
+        if head[i].endswith('_id_id'):
+            related_model_name = head[i].replace('_id_id', '')
+            related_model = globals()[related_model_name.capitalize()]
+            related_instance = related_model.objects.get(pk=data.__dict__.get(head[i]))
+            data.__dict__[head[i]] = related_instance\n''')
                 arquivo.write(f"    data_dict = {{head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}}\n\n")
                 arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
 
@@ -305,7 +312,7 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("        {% for field in head %}\n")
                 arquivo.write("            {% if field != id %}\n")
                 arquivo.write("                <tr align='left'>\n")
-                arquivo.write("                    <th>{{ field|replace:'_, ' }}</th>\n")
+                arquivo.write("                    <th>{{ field|replace:'_id_id, '|replace:'_, '}}</th>\n")
                 arquivo.write("                    {% if data_dict|get_item:field == None %}\n")
                 arquivo.write("                        <td>\n")
                 arquivo.write("                            <hr style='border: none; border-top: 3px dashed black;'>\n")

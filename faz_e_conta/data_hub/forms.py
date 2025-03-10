@@ -45,7 +45,7 @@ class DespesaForm(forms.ModelForm):
 class SalarioForm(forms.ModelForm):
     class Meta:
         model = Salario
-        fields = ['salario_id', 'funcionario_id', 'valor', 'descricao', 'data_pagamento', 'subsidio_tipo', 'subsidio_valor']
+        fields = ['salario_id', 'responsavel_educativo_id', 'valor', 'descricao', 'data_pagamento', 'subsidio_tipo', 'subsidio_valor']
 
         # Adiciona atributos aos campos do formulário
         widgets = Salario_widget()
@@ -53,7 +53,7 @@ class SalarioForm(forms.ModelForm):
 class FiliacaoForm(forms.ModelForm):
     class Meta:
         model = Filiacao
-        fields = ['filiacao_id', 'aluno_id', 'respon_id', 'filiacao_responsavel']
+        fields = ['filiacao_id', 'aluno_id', 'responsavel_educativo_id', 'filiacao_responsavel']
 
         # Adiciona atributos aos campos do formulário
         widgets = Filiacao_widget()
