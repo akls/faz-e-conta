@@ -28,7 +28,7 @@ class Aluno(models.Model):
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Aluno Id: {self.aluno_id}"
 
-class Responsavel_educativo(models.Model):
+class ResponsavelEducativo(models.Model):
     class Meta:
         db_table = 'responsavel_educativo'
     responsavel_educativo_id = models.AutoField(primary_key=True)
@@ -54,7 +54,7 @@ class Responsavel_educativo(models.Model):
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"
 
-class Aluno_saida(models.Model):
+class AlunoSaida(models.Model):
     class Meta:
         db_table = 'aluno_saida'
     aluno_saida_id = models.AutoField(primary_key=True)

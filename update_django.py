@@ -4,7 +4,7 @@ import datetime
 def create_model(df, table_name):
 # Função para criar os modelos
 
-    info = f"""class {table_name.capitalize()}(models.Model):
+    info = f"""class {table_name.title().replace("_","")}(models.Model):
     class Meta:
         db_table = '{table_name}'\n"""
     atributes = []
@@ -290,7 +290,6 @@ def read_cdm(sheet_name="Table Summary"):
             data.__dict__[head[i]] = related_instance\n''')
                 arquivo.write(f"    data_dict = {{head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}}\n\n")
                 arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
-
 
 # Adicionar HTML para views por id
         print("A criar páginas html para as views por id...")
