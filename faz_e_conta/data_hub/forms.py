@@ -1,5 +1,5 @@
 from django import forms
-from .models import Aluno, Responsavel_educativo, Aluno_saida, Vacinacao, Despesa, Salario, Filiacao
+from .models import *
 from .widgets import *
 
 class AlunoForm(forms.ModelForm):
@@ -12,7 +12,7 @@ class AlunoForm(forms.ModelForm):
 
 class Responsavel_educativoForm(forms.ModelForm):
     class Meta:
-        model = Responsavel_educativo
+        model = ResponsavelEducativo
         fields = ['responsavel_educativo_id', 'nome_proprio', 'apelido', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'telefone', 'email', 'profissao', 'morada_emprego', 'horario_trabalho', 'aluno_id']
 
         # Adiciona atributos aos campos do formulário
@@ -20,7 +20,7 @@ class Responsavel_educativoForm(forms.ModelForm):
 
 class Aluno_saidaForm(forms.ModelForm):
     class Meta:
-        model = Aluno_saida
+        model = AlunoSaida
         fields = ['aluno_saida_id', 'aluno_id', 'hora_entrada', 'hora_saida', 'autorizacao_sair', 'escolaridade']
 
         # Adiciona atributos aos campos do formulário

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Aluno, Responsavel_educativo, Aluno_saida, Vacinacao, Despesa, Salario, Filiacao
-from .forms import AlunoForm, Responsavel_educativoForm, Aluno_saidaForm, VacinacaoForm, DespesaForm, SalarioForm, FiliacaoForm
+from .models import *
+from .forms import *
 
 def insert_aluno_view(request):
     if request.method == 'POST':

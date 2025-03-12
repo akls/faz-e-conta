@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Aluno, Responsavel_educativo, Aluno_saida, Vacinacao, Despesa, Salario, Filiacao
-from .forms import AlunoForm, Responsavel_educativoForm, Aluno_saidaForm, VacinacaoForm, DespesaForm, SalarioForm, FiliacaoForm
+from .models import *
+from .forms import *
 
 from django.http import Http404
 from django.http import HttpResponse
@@ -25,10 +25,10 @@ def show_aluno_view(request, aluno_id):
 
 def show_responsavel_educativo_view(request, responsavel_educativo_id):
     try:
-        data = Responsavel_educativo.objects.get(responsavel_educativo_id=responsavel_educativo_id)  # Verifique se 'id' é o nome correto do campo
-    except Responsavel_educativo.DoesNotExist:
+        data = ResponsavelEducativo.objects.get(responsavel_educativo_id=responsavel_educativo_id)  # Verifique se 'id' é o nome correto do campo
+    except ResponsavelEducativo.DoesNotExist:
         return HttpResponse(f'<h1>Responsavel Educativo with id= {responsavel_educativo_id} not found</h1><a href="/">Voltar para o índice</a>')
-    head = [field.name.replace('_id','_id_id') for field in Responsavel_educativo._meta.fields]
+    head = [field.name.replace('_id','_id_id') for field in ResponsavelEducativo._meta.fields]
 
     for i in range(1, len(head)):
         if head[i].endswith('_id_id'):
@@ -42,10 +42,10 @@ def show_responsavel_educativo_view(request, responsavel_educativo_id):
 
 def show_aluno_saida_view(request, aluno_saida_id):
     try:
-        data = Aluno_saida.objects.get(aluno_saida_id=aluno_saida_id)  # Verifique se 'id' é o nome correto do campo
-    except Aluno_saida.DoesNotExist:
+        data = AlunoSaida.objects.get(aluno_saida_id=aluno_saida_id)  # Verifique se 'id' é o nome correto do campo
+    except AlunoSaida.DoesNotExist:
         return HttpResponse(f'<h1>Aluno Saida with id= {aluno_saida_id} not found</h1><a href="/">Voltar para o índice</a>')
-    head = [field.name.replace('_id','_id_id') for field in Aluno_saida._meta.fields]
+    head = [field.name.replace('_id','_id_id') for field in AlunoSaida._meta.fields]
 
     for i in range(1, len(head)):
         if head[i].endswith('_id_id'):

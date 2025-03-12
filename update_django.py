@@ -24,7 +24,7 @@ def create_model(df, table_name):
 
         # Se for ForeignKey, definir corretamente
         if row["django_field_type"] == "ForeignKey":
-            params.append(f"to='{row['datatype_parameters']}', on_delete=models.CASCADE")
+            params.append(f"to='{row['datatype_parameters'].title().replace("_","")}', on_delete=models.CASCADE")
 
         # Se for BooleanField, definir default corretamente
         if row["django_field_type"] == "BooleanField":
@@ -97,24 +97,24 @@ def read_cdm(sheet_name="Table Summary"):
 
         with open(admin_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.contrib import admin\n")
-            arquivo.write(f"from .models import {', '.join(class_list)}\n\n")
+            arquivo.write(f"from .models import *\n\n")
             arquivo.write("# Register your models here.\n\n")
             for table_name in class_list:
-                arquivo.write(f"admin.site.register({table_name})\n")
+                arquivo.write(f"admin.site.register({table_name.title().replace("_","")})\n")
         
 # Adicionar as classes ao arquivo forms.py
         print("A criar formulários para os modelos...")        
 
         with open(forms_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django import forms\n")
-            arquivo.write(f"from .models import {', '.join(class_list)}\n")
+            arquivo.write(f"from .models import *\n")
             arquivo.write("from .widgets import *\n")
             arquivo.write("\n")
             for table_name in class_list:
                 sheet_df = pd.read_excel(file_path, sheet_name=table_name.lower())
                 arquivo.write(f"class {table_name}Form(forms.ModelForm):\n")
                 arquivo.write("    class Meta:\n")
-                arquivo.write(f"        model = {table_name}\n")
+                arquivo.write(f"        model = {table_name.title().replace("_","")}\n")
                 arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
                 arquivo.write("        # Adiciona atributos aos campos do formulário\n")
                 arquivo.write(f"        widgets = {table_name}_widget()\n\n")
@@ -125,8 +125,8 @@ def read_cdm(sheet_name="Table Summary"):
         with open(form_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
             arquivo.write("from django.urls import reverse\n")
-            arquivo.write(f"from .models import {', '.join(class_list)}\n")
-            arquivo.write(f"from .forms import {', '.join([f'{table_name}Form' for table_name in class_list])}\n\n")
+            arquivo.write(f"from .models import *\n")
+            arquivo.write(f"from .forms import *\n\n")
             
             for table_name in class_list:
                 arquivo.write(f"def insert_{table_name.lower()}_view(request):\n")
@@ -269,18 +269,18 @@ def read_cdm(sheet_name="Table Summary"):
         with open(id_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
             arquivo.write("from django.urls import reverse\n")
-            arquivo.write(f"from .models import {', '.join(class_list)}\n")
-            arquivo.write(f"from .forms import {', '.join([f'{table_name}Form' for table_name in class_list])}\n\n")
+            arquivo.write(f"from .models import *\n")
+            arquivo.write(f"from .forms import *\n\n")
             arquivo.write(f"from django.http import Http404\n")
             arquivo.write("from django.http import HttpResponse\n\n")
 
             for table_name in class_list:
                 arquivo.write(f"def show_{table_name.lower()}_view(request, {table_name.lower()}_id):\n")
                 arquivo.write(f"    try:\n")
-                arquivo.write(f"        data = {table_name}.objects.get({table_name.lower()}_id={table_name.lower()}_id)  # Verifique se 'id' é o nome correto do campo\n")
-                arquivo.write(f"    except {table_name}.DoesNotExist:\n")
+                arquivo.write(f"        data = {table_name.title().replace("_","")}.objects.get({table_name.lower()}_id={table_name.lower()}_id)  # Verifique se 'id' é o nome correto do campo\n")
+                arquivo.write(f"    except {table_name.title().replace("_","")}.DoesNotExist:\n")
                 arquivo.write(f"        return HttpResponse(f'<h1>{table_name.replace("_", " ").title()} with id= " + '{' + f"{table_name.lower()}_id" + "}" + " not found</h1><a href=\"/\">Voltar para o índice</a>')\n")
-                arquivo.write(f"    head = [field.name.replace('_id','_id_id') for field in {table_name}._meta.fields]\n")
+                arquivo.write(f"    head = [field.name.replace('_id','_id_id') for field in {table_name.title().replace("_","")}._meta.fields]\n")
                 arquivo.write(f'''
     for i in range(1, len(head)):
         if head[i].endswith('_id_id'):
