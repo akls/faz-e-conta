@@ -2,40 +2,43 @@ import pandas as pd
 import datetime
 
 def create_model(df, table_name):
-# Função para criar os modelos
+    # Function to create models
 
+    # Start the class definition
     info = f"""class {table_name.title().replace("_","")}(models.Model):
     class Meta:
         db_table = '{table_name}'\n"""
     atributes = []
+    
+    # Iterate over each row in the dataframe to define fields
     for _, row in df.iterrows():
         atributes.append(row["column_name"])
         field_declaration = f"    {row['column_name']} = models.{row['django_field_type']}("
         params = []
         
-        # ID automático
+        # Auto ID field
         if row["auto_id"] == "Yes":
             params.append("primary_key=True")
         
-        # Se for CharField, verificar max_length
+        # If CharField, check for max_length
         if row["django_field_type"] == "CharField":
             max_length = int(row["datatype_parameters"]) if pd.notna(row["datatype_parameters"]) else 255
             params.append(f"max_length={max_length}")
 
-        # Se for ForeignKey, definir corretamente
+        # If ForeignKey, set correctly
         if row["django_field_type"] == "ForeignKey":
             params.append(f"to='{row['datatype_parameters'].title().replace("_","")}', on_delete=models.CASCADE")
 
-        # Se for BooleanField, definir default corretamente
+        # If BooleanField, set default correctly
         if row["django_field_type"] == "BooleanField":
             default_value = False if pd.isna(row["datatype_parameters"]) else row["datatype_parameters"]
             params.append(f"default={default_value}")
 
-        # Se for DateField, corrigir default inválido
+        # If DateField, correct invalid default
         if row["django_field_type"] == "DateField":
             params.append("default= du.timezone.now")
 
-        # Restrições de NULL
+        # NULL constraints
         if row["null_constraint"] != "NOT NULL":
             params.append("null=True, blank=True")
         else:
@@ -43,23 +46,21 @@ def create_model(df, table_name):
                 params.append("default=''")
             elif row["django_field_type"] == "BooleanField":
                 params.append("default=False")
-        # Montar a linha final do campo
+        
+        # Construct the final field declaration line
         field_declaration += ", ".join(params) + ")"
         info += field_declaration + "\n"
     
+    # Add the __str__ method for the model
     info += """
     def __str__(self):
         return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + f"{atributes[0].replace("_", " ").title()}: " + "{" + f"self.{atributes[0]}" + '}"\n'
     
-    # info += """
-    # def __str__(self):
-    #     return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + "{" + f"self.{atributes[0]}" + '}"\n'
-    
     return info
 
-# Função para ler o CDM e criar os modelos automaticamente
+# Function to read the CDM and create the models automatically
 def read_cdm(sheet_name="Table Summary"):
-# Caminhos dos arquivos
+# File paths
     file_path = "resources/cdm/cdm_fazeconta.xlsx"
     models_path = "faz_e_conta/data_hub/models.py"
     admin_path = "faz_e_conta/data_hub/admin.py"
@@ -69,10 +70,10 @@ def read_cdm(sheet_name="Table Summary"):
     
     try:
 
-# criar models.py
+# Create models on models.py
         table_summary_df = pd.read_excel(file_path, sheet_name)
         class_list = []
-        print("A criar modelos...")
+        print("Creating models on models.py...")
         
         if "table_name" not in table_summary_df.columns:
             print("Erro: A coluna 'table_name' não está presente na planilha 'Table Summary'.")
@@ -92,8 +93,8 @@ def read_cdm(sheet_name="Table Summary"):
                 except Exception as e:
                     print(f"Erro ao ler a planilha '{table_name}': {e}")
         
-# Adicionar as classes ao arquivo admin.py
-        print("A criar admin para os modelos...")
+# Add classes to admin.py
+        print("Adding classes to admin.py...")
 
         with open(admin_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.contrib import admin\n")
@@ -102,8 +103,8 @@ def read_cdm(sheet_name="Table Summary"):
             for table_name in class_list:
                 arquivo.write(f"admin.site.register({table_name.title().replace("_","")})\n")
         
-# Adicionar as classes ao arquivo forms.py
-        print("A criar formulários para os modelos...")        
+# Add classes to forms.py 
+        print("Adding classes to forms.py...")        
 
         with open(forms_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django import forms\n")
@@ -119,8 +120,8 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("        # Adiciona atributos aos campos do formulário\n")
                 arquivo.write(f"        widgets = {table_name}_widget()\n\n")
         
-# Adicionar as views ao arquivo form_views.py
-        print("A criar views para os formulários...")        
+# Add views to form_views.py
+        print("Adding views to form_views.py...")        
 
         with open(form_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
@@ -139,8 +140,8 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"        form = {table_name}Form()\n")
                 arquivo.write(f"    return render(request, 'insert_{table_name.lower()}.html', {{'form': form}})\n\n")
 
-# Criar paginas html para os forms
-        print("A criar páginas html para os formulários...")
+# Create HTML files for forms
+        print("Creating HTML files for forms...")
 
         for table_name in class_list:
             form_html_path = f"faz_e_conta/data_hub/templates/insert_{table_name.lower()}.html"
@@ -231,8 +232,9 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("</body>\n")
                 arquivo.write("</html>\n")
     
-# Adicionar as classes ao arquivo form_url.py
-        print("A criar urls para os formulários...")
+# Add classes to form_url.py
+
+        print("Adding classes to form_url.py...")
         
         with open("faz_e_conta/data_hub/auto_gen_form_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
@@ -242,8 +244,8 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"    urlpatterns.append(path('insert_{table_name.lower()}/', views.insert_{table_name.lower()}_view, name='insert_{table_name.lower()}_view'))\n")
             arquivo.write("\n    return urlpatterns\n")
 
-# Adicionar os links ao arquivo links.html
-        print("A criar links para os formulários...")
+# Add links to links.html
+        print("Adding links to links.html...")
         table = ""
         with open("faz_e_conta/data_hub/templates/links.html", "w", encoding="utf-8") as arquivo:
             style = 'style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;"'
@@ -263,8 +265,8 @@ def read_cdm(sheet_name="Table Summary"):
             arquivo.write("{%endblock%}\n")
             arquivo.write(table)
             
-# Adicionar views por id
-        print("A criar views para ids...")
+# Add views to id_views.py
+        print("Adding views to id_views.py...")
         
         with open(id_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
@@ -291,8 +293,8 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"    data_dict = {{head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}}\n\n")
                 arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
 
-# Adicionar HTML para views por id
-        print("A criar páginas html para as views por id...")
+# Add HTML files for views by id
+        print("Adding HTML files for views by id...")
         
         for table_name in class_list:
             view_html_path = f"faz_e_conta/data_hub/templates/show_{table_name.lower()}.html"
@@ -327,8 +329,8 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("</body>\n")
                 arquivo.write("</html>\n")
 
-# Adicionar urls para views por id
-        print("A criar urls para os views por id...")
+# Add urls to id_views.py
+        print("Adding urls to id_views.py...")
         
         with open("faz_e_conta/data_hub/auto_gen_show_id_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
@@ -345,4 +347,4 @@ def read_cdm(sheet_name="Table Summary"):
 
 # Executar o gerador
 read_cdm()
-print("Processo concluído com sucesso!")
+print("Process finished successfully!")
