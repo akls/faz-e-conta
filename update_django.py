@@ -1,5 +1,9 @@
 import pandas as pd
 import datetime
+import socket
+hostname = socket.gethostname()
+IPAddr = socket.gethostbyname(hostname)
+
 
 def create_model(df, table_name):
     # Function to create models
@@ -348,3 +352,4 @@ def read_cdm(sheet_name="Table Summary"):
 # Executar o gerador
 read_cdm()
 print("Process finished successfully!")
+print("https://"+IPAddr+":8000/")
