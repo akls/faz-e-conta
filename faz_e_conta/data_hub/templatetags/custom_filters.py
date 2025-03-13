@@ -6,7 +6,9 @@ register = template.Library()
 def get_item(dictionary, key):
     if key.endswith("_id"):
         return dictionary.get(key, "") if dictionary.get(key, "") != None else "Aluno"
-    return dictionary.get(key, "")
+    if key.startswith("hora_"):
+        return dictionary.get(key, "") if dictionary.get(key, "") != None else key
+    return dictionary.get(key, "")  
 
 @register.filter
 def replace(value, arg):

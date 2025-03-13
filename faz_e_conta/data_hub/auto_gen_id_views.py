@@ -53,6 +53,10 @@ def show_aluno_saida_view(request, aluno_saida_id):
             related_model = globals()[related_model_name.capitalize()]
             related_instance = related_model.objects.get(pk=data.__dict__.get(head[i]))
             data.__dict__[head[i]] = related_instance
+        if head[i].startswith('hora_'):
+            print(data.__dict__)
+            data.__dict__[head[i]] = data.__dict__.get(head[i], "_____")
+    
     data_dict = {head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}
 
     return render(request, 'show_aluno_saida.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
@@ -124,4 +128,3 @@ def show_filiacao_view(request, filiacao_id):
     data_dict = {head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}
 
     return render(request, 'show_filiacao.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
-
