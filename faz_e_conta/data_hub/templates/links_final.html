@@ -1,0 +1,70 @@
+<table>
+    <tr>
+        <th>Inserir</th>
+        <th>Ver id1</th>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_aluno_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Aluno</a></center></td>
+        <td><center><a href="{% url 'aluno_view' aluno_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Aluno com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_responsavel_educativo_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Responsavel Educativo</a></center></td>
+        <td><center><a href="{% url 'responsavel_educativo_view' responsavel_educativo_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Responsavel Educativo com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_aluno_saida_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Aluno Saida</a></center></td>
+        <td><center><a href="{% url 'aluno_saida_view' aluno_saida_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Aluno Saida com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_vacinacao_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Vacinacao</a></center></td>
+        <td><center><a href="{% url 'vacinacao_view' vacinacao_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Vacinacao com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_despesa_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Despesa</a></center></td>
+        <td><center><a href="{% url 'despesa_view' despesa_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Despesa com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_salario_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Salario</a></center></td>
+        <td><center><a href="{% url 'salario_view' salario_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Salario com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_filiacao_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Filiacao</a></center></td>
+        <td><center><a href="{% url 'filiacao_view' filiacao_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Filiacao com id 1</a></center></td>
+    </tr>
+</table>
+{%block links%}
+{% endblock %}
+<table>
+    <tr>
+        <th>Inserir</th>
+        <th>Ver id1</th>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_aluno_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Aluno</a></center></td>
+        <td><center><a href="{% url 'aluno_view' aluno_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Aluno com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_responsavel_educativo_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Responsavel Educativo</a></center></td>
+        <td><center><a href="{% url 'responsavel_educativo_view' responsavel_educativo_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Responsavel Educativo com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_aluno_saida_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Aluno Saida</a></center></td>
+        <td><center><a href="{% url 'aluno_saida_view' aluno_saida_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Aluno Saida com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_vacinacao_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Vacinacao</a></center></td>
+        <td><center><a href="{% url 'vacinacao_view' vacinacao_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Vacinacao com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_despesa_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Despesa</a></center></td>
+        <td><center><a href="{% url 'despesa_view' despesa_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Despesa com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_salario_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Salario</a></center></td>
+        <td><center><a href="{% url 'salario_view' salario_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Salario com id 1</a></center></td>
+    </tr>
+    <tr>
+        <td><center><a href="{% url 'insert_filiacao_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Filiacao</a></center></td>
+        <td><center><a href="{% url 'filiacao_view' filiacao_id=1 %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Ver Filiacao com id 1</a></center></td>
+    </tr>
+</table>

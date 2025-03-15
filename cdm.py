@@ -1,5 +1,7 @@
 import pandas as pd
 
+# CREATE A TABLE IN SQL
+
 def create_table (df, table_name):
     info = ""
     for _, row in df.iterrows():

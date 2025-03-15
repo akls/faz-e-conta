@@ -1,18 +1,34 @@
+{% extends 'links.html' %}
+{% load custom_filters %}
+{%block links%}
 <h1>Alunos</h1>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Nome Proprio</th>
-        <th>Apelido</th>
-        <th>Processo</th>
+<p>Total de alunos: {{ data_dict|length }}</p>
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+    <tr style="background-color: #f2f2f2;">
+        {% for item in head %}
+            {% if item != id %}
+            <th style="border: 1px solid #ddd; padding: 10px;">{{ item|replace:"_, " }}</th>
+            {% endif %}
+        {% endfor %}
+        <th style="border: 1px solid #ddd; padding: 10px;">Detalhes</th>
     </tr>
-    {% for item in data %}
-    <tr>
-        <td>{{ item.aluno_id }}</td>
-        <td>{{ item.nome_proprio }}</td>
-        <td>{{ item.apelido }}</td>
-        <td>{{ item.processo }}</td>
+    {% for item in data_dict %}
+    <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+        {% for field in head %}
+            {% if field != id %}
+            {%if item|get_item:field == None%}
+                        <td>
+                            <hr style="border: none; border-top: 2px dashed black;">
+                        </td>
+                    {% else %}
+                        <td>{{ item|get_item:field }}</td>
+                    {% endif %}
+            {% endif %}
+        {% endfor %}
+        <td>
+            <a href="{% url 'aluno_view' aluno_id=item.aluno_id %}">Ver detalhes</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
-<a href="{% url 'insert_student' %}">Inserir aluno</a>
+{%endblock%}
