@@ -26,7 +26,13 @@ SECRET_KEY = 'django-insecure-9^nc5!64_^88c!f!+&+gvt-!tg+r9&+q&2l^cyy-!d1e9k*c=%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 # Allowed hosts for external connections to the server
+# ALLOWED_HOSTS = [] => Original value
+# If we want we can add only a specific host, like:
+# ALLOWED_HOSTS = ['localhost']
+# But if we want to allow all hosts we can use the wildcard '*'
+
 ALLOWED_HOSTS = ['*']
 
 

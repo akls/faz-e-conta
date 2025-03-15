@@ -117,7 +117,7 @@ def read_cdm(sheet_name="Table Summary"):
             arquivo.write("\n")
             for table_name in class_list:
                 sheet_df = pd.read_excel(file_path, sheet_name=table_name.lower())
-                arquivo.write(f"class {table_name}Form(forms.ModelForm):\n")
+                arquivo.write(f"class {table_name.title().replace("_","")}Form(forms.ModelForm):\n")
                 arquivo.write("    class Meta:\n")
                 arquivo.write(f"        model = {table_name.title().replace("_","")}\n")
                 arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
@@ -355,5 +355,5 @@ print("Process finished successfully!")
 
 
 # python manage.py runserver 0.0.0.0:8000 
-print("URL to external axcess:")
-print("https://"+IPAddr+":8000/")
+# print("URL to external axcess:")
+# print("https://"+IPAddr+":8000/")
