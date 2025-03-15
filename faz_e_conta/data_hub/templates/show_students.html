@@ -2,6 +2,7 @@
 {% load custom_filters %}
 {%block links%}
 <h1>Alunos</h1>
+<p>Total de alunos: {{ data_dict|length }}</p>
 <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
     <tr style="background-color: #f2f2f2;">
         {% for item in head %}
