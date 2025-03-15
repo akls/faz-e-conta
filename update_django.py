@@ -352,4 +352,8 @@ def read_cdm(sheet_name="Table Summary"):
 # Executar o gerador
 read_cdm()
 print("Process finished successfully!")
+
+
+# python manage.py runserver 0.0.0.0:8000 
+print("URL to external axcess:")
 print("https://"+IPAddr+":8000/")
