@@ -10,7 +10,7 @@ class AlunoForm(forms.ModelForm):
         # Adiciona atributos aos campos do formulário
         widgets = Aluno_widget()
 
-class ResponsavelEducativoForm(forms.ModelForm):
+class Responsavel_educativoForm(forms.ModelForm):
     class Meta:
         model = ResponsavelEducativo
         fields = ['responsavel_educativo_id', 'nome_proprio', 'apelido', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'telefone', 'email', 'profissao', 'morada_emprego', 'horario_trabalho', 'aluno_id']
@@ -18,7 +18,7 @@ class ResponsavelEducativoForm(forms.ModelForm):
         # Adiciona atributos aos campos do formulário
         widgets = Responsavel_educativo_widget()
 
-class AlunoSaidaForm(forms.ModelForm):
+class Aluno_saidaForm(forms.ModelForm):
     class Meta:
         model = AlunoSaida
         fields = ['aluno_saida_id', 'aluno_id', 'hora_entrada', 'hora_saida', 'autorizacao_sair', 'escolaridade']
