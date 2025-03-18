@@ -7,6 +7,35 @@ import socket
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 
+def read_cdm(sheet_name="Table Summary"):
+    file_path = "resources/cdm/cdm_fazeconta.xlsx"
+    models_path = "faz_e_conta/data_hub/models.py"
+    admin_path = "faz_e_conta/data_hub/admin.py"
+    forms_path = "faz_e_conta/data_hub/forms.py"
+    form_views_path = models_path.replace("models.py", "auto_gen_form_views.py")
+    id_views_path = models_path.replace("models.py", "auto_gen_id_views.py")
+
+    try:
+        table_summary_df = pd.read_excel(file_path, sheet_name)
+        if "table_name" not in table_summary_df.columns:
+            print("Erro: A coluna 'table_name' não está presente na planilha 'Table Summary'.")
+            return
+
+        class_list = generate_models(table_summary_df, file_path, models_path)
+        generate_admin(class_list, admin_path)
+        generate_forms(class_list, file_path, forms_path)
+        generate_form_views(class_list, form_views_path)
+        generate_html_forms(class_list)
+        generate_form_urls(class_list)
+        generate_links_html(class_list)
+        generate_id_views(class_list, id_views_path)
+        generate_show_id_urls(class_list)
+        
+        print("Process finished successfully!")
+    except Exception as e:
+        print(f"Erro ao ler a planilha 'Table Summary': {e}")
+    
+
 def create_model(df, table_name):
     # Function to create models
 
@@ -64,34 +93,6 @@ def create_model(df, table_name):
     
     return info
 
-
-def read_cdm(sheet_name="Table Summary"):
-    file_path = "resources/cdm/cdm_fazeconta.xlsx"
-    models_path = "faz_e_conta/data_hub/models.py"
-    admin_path = "faz_e_conta/data_hub/admin.py"
-    forms_path = "faz_e_conta/data_hub/forms.py"
-    form_views_path = models_path.replace("models.py", "auto_gen_form_views.py")
-    id_views_path = models_path.replace("models.py", "auto_gen_id_views.py")
-
-    try:
-        table_summary_df = pd.read_excel(file_path, sheet_name)
-        if "table_name" not in table_summary_df.columns:
-            print("Erro: A coluna 'table_name' não está presente na planilha 'Table Summary'.")
-            return
-
-        class_list = generate_models(table_summary_df, file_path, models_path)
-        generate_admin(class_list, admin_path)
-        generate_forms(class_list, file_path, forms_path)
-        generate_form_views(class_list, form_views_path)
-        generate_html_forms(class_list)
-        generate_form_urls(class_list)
-        generate_links_html(class_list)
-        generate_id_views(class_list, id_views_path)
-        generate_show_id_urls(class_list)
-        print("Process finished successfully!")
-    except Exception as e:
-        print(f"Erro ao ler a planilha 'Table Summary': {e}")
-    
     
 def generate_models(table_summary_df, file_path, models_path):
     print("Creating models on models.py...")
@@ -246,6 +247,7 @@ def generate_html_forms(class_list):
             arquivo.write("</body>\n")
             arquivo.write("</html>\n")
 
+
 def generate_form_urls(class_list):
     print("Adding classes to form_url.py...")
     with open("faz_e_conta/data_hub/auto_gen_form_url.py", "w", encoding="utf-8") as arquivo:
@@ -277,6 +279,7 @@ def generate_links_html(class_list):
             arquivo.write("{%block links%}\n")
             arquivo.write("{%endblock%}\n")
             arquivo.write(table)
+
 
 def generate_id_views(class_list, id_views_path):
     print("Adding views to id_views.py...")
@@ -315,7 +318,6 @@ def generate_show_id_urls(class_list):
         for table_name in class_list:
             arquivo.write(f"    urlpatterns.append(path('{table_name.lower()}/<int:{table_name.lower()}_id>/', views.show_{table_name.lower()}_view, name='{table_name.lower()}_view'))\n")
         arquivo.write("\n    return urlpatterns\n")
-
 
 
 # Executar o gerador
