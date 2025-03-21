@@ -1,10 +1,11 @@
 {% extends 'navigation.html' %}
 {% load custom_filters %}
-{%block links%}
+
+{% block links %}
 <h1>Responsáveis Educativos</h1>
 <p>Total de Responsáveis Educativos: {{ data_dict|length }}</p>
-<button onclick="exportCSV()" style="margin-bottom: 10px; padding: 8px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Exportar CSV</button>
-<table id="responsaveisTable" style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
     <tr style="background-color: #f2f2f2;">
         {% for item in head %}
             {% if item != id %}
@@ -32,55 +33,4 @@
     </tr>
     {% endfor %}
 </table>
-
-<script>
-// Função para corrigir caracteres mal codificados
-function fixEncoding(text) {
-    const textDecoder = new TextDecoder("windows-1252");
-    const encoder = new TextEncoder();
-    return textDecoder.decode(encoder.encode(text));
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".fixEncoding").forEach(td => {
-        td.innerText = fixEncoding(td.innerText);
-    });
-});
-
-function exportCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    let rows = document.querySelectorAll("#responsaveisTable tr");
-    
-    rows.forEach((row, rowIndex) => {
-        let cols = row.querySelectorAll("th, td");
-        let rowData = [];
-        
-        // Para a primeira linha (header), inclui todas as colunas
-        if (rowIndex === 0) {
-            cols.forEach((col, colIndex) => {
-                // Exclui a coluna "Detalhes" (que é a última)
-                if (colIndex !== cols.length - 1) {
-                    rowData.push(fixEncoding(col.innerText.replace(/,/g, " ")));
-                }
-            });
-        } else {
-            // Para as outras linhas, ignora a última coluna (Detalhes)
-            cols.forEach((col, colIndex) => {
-                if (colIndex !== cols.length - 1) {
-                    rowData.push(fixEncoding(col.innerText.replace(/,/g, " ")));
-                }
-            });
-        }
-
-        csvContent += rowData.join(",") + "\n";
-    });
-    
-    let encodedUri = encodeURI(csvContent);
-    let link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "responsavel_educativo.csv");
-    document.body.appendChild(link);
-    link.click();
-}
-</script>
 {% endblock %}
