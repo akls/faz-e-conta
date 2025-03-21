@@ -1,7 +1,7 @@
-sala_id;sala_nome;sala_local;sala_valencia;responsavel_sala
-1;Joaninha;Sala 2.1;Berçário;1
-2;Coelho;Sala 2.2;Creche;2
-3;Canguru;Sala 2.5;Creche;5
-4;Leao;Sala 1.4;Pré-escolar;4
-5;Papagaio;Sala 1.2;Pré-escolar;3
-6;Ourico;Sala 1.3;Pré-escolar;9
+sala_id,sala_nome,sala_local,sala_valencia,responsavel_sala
+1,Joaninha,Sala 2.1,Berçário,1
+2,Coelho,Sala 2.2,Creche,2
+3,Canguru,Sala 2.5,Creche,5
+4,Leao,Sala 1.4,Pré-escolar,4
+5,Papagaio,Sala 1.2,Pré-escolar,3
+6,Ourico,Sala 1.3,Pré-escolar,9
