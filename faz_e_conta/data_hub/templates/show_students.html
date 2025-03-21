@@ -1,4 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block title %}Alunos{% endblock %}
+
+{% block content %}
 <h1>Alunos</h1>
+
+<!-- Filter Form -->
+<form method="GET" action="{% url 'show_students' %}">
+    <input type="text" name="q" placeholder="Pesquisar alunos..." value="{{ query }}">
+    <button type="submit">Buscar</button>
+</form>
+
 <table>
     <tr>
         <th>ID</th>
@@ -16,3 +29,4 @@
     {% endfor %}
 </table>
 <a href="{% url 'insert_student' %}">Inserir aluno</a>
+{% endblock %}
