@@ -4,8 +4,9 @@ from .auto_gen_form_url import *
 from .auto_gen_show_id_url import *
 
 urlpatterns = [
-    path('', views.show_students, name='index'),
-    path('view_students/', views.show_students, name='show_students'),
+    path('', views.index, name='index'),
+    path('alunos/', views.show_students, name='show_students'),
+    path('responsaveis_educativos/', views.show_responsaveis_educativos, name='show_responsaveis_educativos'),
 ]
 
 urlpatterns = add_form_urlpatterns(urlpatterns)
