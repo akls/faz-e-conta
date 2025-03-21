@@ -1,11 +1,11 @@
 aluno_mensalidade_id;aluno_id_id;ano_letivo;periodo_inicio;periodo_fim;mensalidade_calc;mensalidade_retific;mensalidade_paga;data_pagamento;acordo
-1;1;2024-2025;01/03/2025;31/3/2025;265,50;;0;;
-2;2;2024-2025;01/03/2025;31/3/2025;129,30;15,00;15,00;8/3/2025;Paga apenas as atividades até um dos pais arranjar emprego. Passa então a pagar baseado nos cálculos dos novos rendimentos.
-3;3;2024-2025;01/03/2025;31/3/2025;456,80;;456,00;10/3/2025;
-4;4;2024-2025;01/03/2025;31/3/2025;380,40;159,00;159,00;6/3/2025;Paga a mens. retificada até pai recomeçar no antigo emprego depois de recuperar de lesão
-5;5;2024-2025;01/03/2025;31/3/2025;25,00;;25,0;27/9/2024;
-6;6;2024-2025;01/03/2025;31/3/2025;89,00;;125,00;8/3/2025;Paga a mensalidade mais 25% da dívida durante 4 meses (Jan - Abril 2025)
-7;7;2024-2025;01/03/2025;31/3/2025;25,00;;25,00;7/3/2025;
-8;8;2024-2025;01/03/2025;31/3/2025;15,00;;15,00;8/3/2025;
-9;9;2024-2025;01/03/2025;31/3/2025;122,00;;122,00;15/3/2025;
-10;10;2024-2025;01/03/2025;31/3/2025;65,80;;0;;
+1;1;2024/2025;2025-03-01;2025-03-31;265,50;;0;;
+2;2;2024/2025;2025-03-01;2025-03-31;129,30;15,00;15,00;2025-03-08;Paga apenas as atividades até um dos pais arranjar emprego. Passa então a pagar baseado nos cálculos dos novos rendimentos.
+3;3;2024/2025;2025-03-01;2025-03-31;456,80;;456,00;2025-03-10;
+4;4;2024/2025;2025-03-01;2025-03-31;380,40;159,00;159,00;2025-03-06;Paga a mens. retificada até pai recomeçar no antigo emprego depois de recuperar de lesão
+5;5;2024/2025;2025-03-01;2025-03-31;25,00;;25,0;2024-09-27;
+6;6;2024/2025;2025-03-01;2025-03-31;89,00;;125,00;2025-03-08;Paga a mensalidade mais 25% da dívida durante 4 meses (Jan - Abril 2025)
+7;7;2024/2025;2025-03-01;2025-03-31;25,00;;25,00;2025-03-07;
+8;8;2024/2025;2025-03-01;2025-03-31;15,00;;15,00;2025-03-08;
+9;9;2024/2025;2025-03-01;2025-03-31;122,00;;122,00;2025-03-15;
+10;10;2024/2025;2025-03-01;2025-03-31;65,80;;0;;
