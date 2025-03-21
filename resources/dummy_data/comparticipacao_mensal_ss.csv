@@ -1,0 +1,11 @@
+aluno_mensalidade_id;aluno_id_id;ano_letivo;periodo_inicio;periodo_fim;comparticipacao_valor;comparticipacao_paga;data_pagamento;programa_ss;acordo
+1;1;2024-2025;01/03/2025;31/3/2025;208,00;208,00;8/4/2025;Comparticipação Jardim infancia;
+2;2;2024-2025;01/03/2025;31/3/2025;208,00;208,00;8/4/2025;Comparticipação Jardim infancia;
+3;3;2024-2025;01/03/2025;31/3/2025;208,00;208,00;8/4/2025;Comparticipação Jardim infancia;
+4;4;2024-2025;01/03/2025;31/3/2025;208,00;208,00;8/4/2025;Comparticipação Jardim infancia;
+5;5;2024-2025;01/03/2025;31/3/2025;473,80;473,80;8/4/2025;Creche Feliz;
+6;6;2024-2025;01/03/2025;31/3/2025;239,85;239,85;8/4/2025;Comparticipação Creche;
+7;7;2024-2025;01/03/2025;31/3/2025;473,80;473,80;8/4/2025;Creche Feliz;
+8;8;2024-2025;01/03/2025;31/3/2025;473,80;473,80;8/4/2025;Creche Feliz;
+9;9;2024-2025;01/03/2025;31/3/2025;208,00;208,00;8/4/2025;Comparticipação Jardim infancia;
+10;10;2024-2025;01/03/2025;31/3/2025;239,85;239,85;8/4/2025;Comparticipação Creche;
