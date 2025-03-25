@@ -32,7 +32,7 @@ def create_model(df, table_name):
         # If ForeignKey, set correctly
         if row["django_field_type"] == "ForeignKey":
             params.append(f"to='{row['datatype_parameters'].title().replace("_","")}', on_delete=models.CASCADE")
-
+            
         # If BooleanField, set default correctly
         if row["django_field_type"] == "BooleanField":
             default_value = False if pd.isna(row["datatype_parameters"]) else row["datatype_parameters"]
@@ -41,6 +41,7 @@ def create_model(df, table_name):
         # If DateField, correct invalid default
         if row["django_field_type"] == "DateField":
             params.append("default= du.timezone.now")
+        
 
         # NULL constraints
         if row["null_constraint"] != "NOT NULL":

@@ -1,0 +1,21 @@
+﻿func_id,nome_proprio,apelido,data_nascimento,tipo_documento_identificacao,numero_documento_identificacao,data_validade,niss,nif,morada,codigo_postal,concelho,freguesia_residencia,contacto_telefonico,email,funcao,salario,escalao_profissional,ativo
+1,Ana,Santos,1985-03-15,CC,12345678,2030-06-15,123456789,987654321,Rua das Flores,1000-001,Lisboa,Santa Maria Maior,912345678,ana.santos@email.com,Educadora,1,A,TRUE
+2,Carlos,Silva,1979-07-20,CC,87654321,2028-12-01,234567891,876543210,Avenida Central,2000-002,Porto,Cedofeita,913456789,carlos.silva@email.com,Auxiliar,2,B,TRUE
+3,Mariana,Pereira,1992-01-10,Passaporte,AB1234567,2032-08-22,345678912,765432109,Rua Nova,3000-003,Coimbra,Sé Nova,914567890,mariana.pereira@email.com,Coordenadora,3,C,FALSE
+4,João,Martins,1988-09-25,CC,56781234,2031-05-19,456789123,654321098,Largo dos Poetas,4000-004,Braga,São Vicente,915678901,joao.martins@email.com,Professor,4,A,TRUE
+5,Sofia,Almeida,1995-06-30,Passaporte,CD7890123,2033-10-05,567891234,543210987,Rua Verde,5000-005,Faro,Montenegro,916789012,sofia.almeida@email.com,Educadora,5,B,TRUE
+6,Ricardo,Oliveira,1980-12-12,CC,90123456,2027-11-11,678912345,432109876,Rua Azul,6000-006,Setúbal,São Sebastião,917890123,ricardo.oliveira@email.com,Auxiliar,6,C,FALSE
+7,Teresa,Moreira,1986-05-08,Passaporte,EF3456789,2030-07-21,789123456,321098765,Praça Central,7000-007,Évora,Malagueira,918901234,teresa.moreira@email.com,Coordenadora,7,A,TRUE
+8,Pedro,Costa,1991-04-14,CC,67890123,2029-03-30,891234567,210987654,Travessa das Laranjeiras,8000-008,Funchal,São Pedro,919012345,pedro.costa@email.com,Professor,8,B,TRUE
+9,Helena,Carvalho,1975-08-18,Passaporte,GH4567890,2031-12-14,912345678,109876543,Rua Branca,9000-009,Ponta Delgada,São José,920123456,helena.carvalho@email.com,Educadora,9,C,FALSE
+10,Fernando,Lopes,1983-11-22,CC,23456789,2026-09-09,123456789,987654321,Avenida das Palmeiras,1000-010,Viseu,Repeses,921234567,fernando.lopes@email.com,Auxiliar,10,A,TRUE
+11,Rita,Neves,1997-02-27,Passaporte,IJ5678901,2034-02-02,234567891,876543210,Rua da Paz,1100-011,Guimarães,São Paio,922345678,rita.neves@email.com,Coordenadora,11,B,TRUE
+12,Manuel,Barros,1984-10-05,CC,34567890,2028-07-15,345678912,765432109,Largo do Castelo,1200-012,Leiria,Pousos,923456789,manuel.barros@email.com,Professor,12,C,FALSE
+13,Patrícia,Ramos,1990-09-13,Passaporte,KL6789012,2032-06-23,456789123,654321098,Rua Alegre,1300-013,Aveiro,Glória,924567890,patricia.ramos@email.com,Educadora,13,A,TRUE
+14,André,Tavares,1981-06-29,CC,45678901,2027-05-17,567891234,543210987,Avenida dos Pinheiros,1400-014,Santarém,Marvila,925678901,andre.tavares@email.com,Auxiliar,14,B,TRUE
+15,Cláudia,Nascimento,1987-07-07,Passaporte,MN7890123,2031-04-30,678912345,432109876,Rua da Escola,1500-015,Bragança,Sé,926789012,claudia.nascimento@email.com,Coordenadora,15,C,FALSE
+16,Luís,Ferreira,1993-05-19,CC,56789012,2030-01-25,789123456,321098765,Praça do Comércio,1600-016,Beja,São João,927890123,luis.ferreira@email.com,Professor,16,A,TRUE
+17,Vanessa,Cardoso,1989-12-08,Passaporte,OP8901234,2033-11-11,891234567,210987654,Rua do Mercado,1700-017,Viana do Castelo,Monserrate,928901234,vanessa.cardoso@email.com,Educadora,17,B,TRUE
+18,Hugo,Gomes,1978-03-03,CC,67890123,2029-02-18,912345678,109876543,Travessa das Rosas,1800-018,Portalegre,Assunção,929012345,hugo.gomes@email.com,Auxiliar,18,C,FALSE
+19,Beatriz,Mendes,1996-04-27,Passaporte,QR9012345,2035-03-07,123456789,987654321,Largo da Sé,1900-019,Castelo Branco,Alcains,930123456,beatriz.mendes@email.com,Coordenadora,19,A,TRUE
+20,Diogo,Rocha,1982-01-15,CC,78901234,2026-12-29,234567891,876543210,Avenida das Estrelas,2000-020,Guarda,Sé,931234567,diogo.rocha@email.com,Professor,20,B,TRUE
