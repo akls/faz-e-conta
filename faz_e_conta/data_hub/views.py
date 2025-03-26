@@ -8,9 +8,9 @@ import csv
 from django.apps import apps
 
 
-
 def index(request):
-    return render(request, "index.html")
+    return render(request, "index.html", {"model": "Aluno"})
+
 
 def show_alunos(request):
     data = Aluno.objects.all()
@@ -36,6 +36,8 @@ def show_responsaveis_educativos(request):
     model = "ResponsavelEducativo"
     
     return render(request, "show_responsaveis_educativos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model})
+
+    
 
 def export(request, model):
     # Tente procurar o modelo no Django, usando o nome passado
@@ -72,7 +74,6 @@ def export(request, model):
         row = []
         for field in field_names:
             value = getattr(obj, field)
-
             # Verificar se o valor é um objeto relacionado (chave estrangeira ou similar)
             if isinstance(value, Model):  # Verifica se é uma instância de um modelo
                 # Pode-se decidir aqui qual atributo do objeto relacionado exportar, por exemplo, o ID
