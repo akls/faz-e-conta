@@ -25,7 +25,7 @@ class Aluno(models.Model):
     escolaridade_anterior = models.CharField(max_length=150, null=True, blank=True)
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
-    sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE)
+    sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Aluno Id: {self.aluno_id}"
@@ -51,7 +51,7 @@ class ResponsavelEducativo(models.Model):
     profissao = models.CharField(max_length=150, null=True, blank=True)
     morada_emprego = models.CharField(max_length=150, null=True, blank=True)
     horario_trabalho = models.TimeField(null=True, blank=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"
@@ -60,11 +60,11 @@ class AlunoSaida(models.Model):
     class Meta:
         db_table = 'aluno_saida'
     saida_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
     hora_entrada = models.DateTimeField(null=True, blank=True)
     hora_saida = models.DateTimeField(null=True, blank=True)
     autorizacao_sair = models.CharField(max_length=250, null=True, blank=True)
-    valencia = models.ForeignKey(to='AlunoFinacasCalc', on_delete=models.CASCADE)
+    valencia = models.ForeignKey(to='AlunoFinacasCalc', on_delete=models.CASCADE, db_column='valencia')
 
     def __str__(self):
         return f"{self.aluno_id} {self. hora_entrada}, Saida Id: {self.saida_id}"
@@ -73,7 +73,7 @@ class Vacinacao(models.Model):
     class Meta:
         db_table = 'vacinacao'
     vac_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
     vacina_name = models.CharField(max_length=250, default='')
     data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
     plano_vacina = models.BooleanField(default=False, null=True, blank=True)
@@ -125,8 +125,8 @@ class LinkFiliacao(models.Model):
     class Meta:
         db_table = 'link_filiacao'
     filiacao_id = models.AutoField(primary_key=True)
-    aluno_id = models.OneToOneField(to='Aluno', on_delete=models.CASCADE)
-    re_id = models.OneToOneField(to='ResponsavelEducativo', on_delete=models.CASCADE)
+    aluno_id = models.OneToOneField(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    re_id = models.OneToOneField(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='re_id')
     type = models.CharField(max_length=100, default='')
     encarr_educacao = models.BooleanField(default=False, null=True, blank=True)
 
@@ -141,7 +141,7 @@ class Sala(models.Model):
     sala_nome = models.CharField(max_length=255, default='')
     sala_local = models.CharField(max_length=255, null=True, blank=True)
     sala_valencia = models.CharField(max_length=255, default='')
-    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True)
+    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True, db_column='func_id')
 
     def __str__(self):
         return f"{self.sala_nome} {self. sala_local}, Sala Id: {self.sala_id}"
@@ -151,8 +151,8 @@ class MensalidadeAluno(models.Model):
     class Meta:
         db_table = 'mensalidade_aluno'
     ma_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
-    ano_letivo = models.ForeignKey(to='AlunoFinancas', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    ano_letivo = models.ForeignKey(to='AlunoFinancas', on_delete=models.CASCADE, db_column='ano_letivo')
     periodo_inicio = models.DateField(default= du.timezone.now)
     periodo_fim = models.DateField(default= du.timezone.now, null=True, blank=True)
     mensalidade_calc = models.IntegerField(null=True, blank=True)
@@ -171,7 +171,7 @@ class AlunoFinancas(models.Model):
         db_table = 'aluno_financas'
     af_id = models.AutoField(primary_key=True)
     ano_letivo = models.CharField(max_length=255, default='')
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
     data = models.DateTimeField(null=True, blank=True)
     agregado = models.IntegerField()
     rendim_líquido = models.IntegerField()
@@ -194,7 +194,7 @@ class AlunoFinacasCalc(models.Model):
     nome = models.CharField(max_length=255, default='')
     local = models.CharField(max_length=255, null=True, blank=True)
     valencia = models.CharField(max_length=255, default='')
-    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True)
+    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True, db_column='func_id')
 
     def __str__(self):
         return f"{self.nome} {self. local}, Sala Id: {self.sala_id}"
@@ -218,7 +218,7 @@ class Funcionario(models.Model):
     contacto_telefonico = models.CharField(max_length=255, default='')
     email = models.EmailField()
     funcao = models.CharField(max_length=255, default='')
-    salario = models.ForeignKey(to='Salario', on_delete=models.CASCADE, null=True, blank=True)
+    salario = models.ForeignKey(to='Salario', on_delete=models.CASCADE, null=True, blank=True, db_column='salario')
     escalao_profissional = models.CharField(max_length=255, null=True, blank=True)
     ativo = models.BooleanField(default=False, null=True, blank=True)
 

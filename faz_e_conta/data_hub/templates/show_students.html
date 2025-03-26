@@ -1,42 +1,58 @@
-{% extends 'links.html' %}
+{% extends 'base.html' %}
 {% load custom_filters %}
-{%block links%}
-<h1>Alunos</h1>
 
+
+{% block content %}
+<h1>Alunos</h1>
 
 <!-- Filter Form -->
 <form method="GET" action="{% url 'show_students' %}">
     <input type="text" name="q" placeholder="Pesquisar alunos..." value="{{ query }}">
+    <select name="sala">
+        <option value="">Todas as Valências</option>
+        {% for sala in salas %}
+        <option value="{{ sala|escape }}" {% if sala == sala_filter %}selected{% endif %}>
+            {{ sala|escape }}
+        </option>
+        {% endfor %}
+    </select>
     <button type="submit">Buscar</button>
 </form>
 
 <p>Total de alunos: {{ data_dict|length }}</p>
 <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
-    <tr style="background-color: #f2f2f2;">
-        {% for item in head %}
-        {% if item != id %}
-        <th style="border: 1px solid #ddd; padding: 10px;">{{ item|replace:"_, " }}</th>
-        {% endif %}
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            {% for item in head %}
+            {% if item != id %}
+            <th style="border: 1px solid #ddd; padding: 10px;">
+                {{ item|replace:"_, " }}
+            </th>
+            {% endif %}
+            {% endfor %}
+            <th style="border: 1px solid #ddd; padding: 10px;">Detalhes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data_dict %}
+        <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+            {% for field in head %}
+            {% if field != id %}
+            <td>
+                {% if item|get_item:field == None %}
+                <hr style="border: none; border-top: 2px dashed black;">
+                {% else %}
+                {{ item|get_item:field }}
+                {% endif %}
+            </td>
+            {% endif %}
+            {% endfor %}
+            <td>
+                <a href="{% url 'aluno_view' aluno_id=item.aluno_id %}">Ver detalhes</a>
+            </td>
+        </tr>
         {% endfor %}
-        <th style="border: 1px solid #ddd; padding: 10px;">Detalhes</th>
-    </tr>
-    {% for item in data_dict %}
-    <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
-        {% for field in head %}
-        {% if field != id %}
-        {%if item|get_item:field == None%}
-        <td>
-            <hr style="border: none; border-top: 2px dashed black;">
-        </td>
-        {% else %}
-        <td>{{ item|get_item:field }}</td>
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-        <td>
-            <a href="{% url 'aluno_view' aluno_id=item.aluno_id %}">Ver detalhes</a>
-        </td>
-    </tr>
-    {% endfor %}
+    </tbody>
 </table>
-{%endblock%}
+
+{% endblock %}
