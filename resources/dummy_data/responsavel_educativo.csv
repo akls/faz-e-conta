@@ -1,4 +1,4 @@
-responsavel_educativo_id,nome_proprio,apelido,data_nascimento,documento,numero_documento,data_validade,niss,nif,morada,codigo_postal,concelho,fregesia,telefone,email,profissao,morada_emprego,horario_trabalho,aluno_id_id
+responsavel_educativo_id,nome_proprio,apelido,data_nascimento,documento,numero_documento,data_validade,niss,nif,morada,codigo_postal,concelho,fregesia,telefone,email,profissao,morada_emprego,horario_trabalho,aluno_id
 1,Ana,Silva,1975-03-12,RG,987654321,2025-03-12,987654321,987654321,"Rua da Paz, 100",12345-678,São Paulo,Centro,1198765432,ana.silva@email.com,Enfermeira,Hospital Municipal,12:00-20:00,1
 2,Carlos,Santos,1980-05-25,Passaporte,AB1234567,2026-05-25,987654321,987654321,"Avenida dos Pinheiros, 456",45678-901,Rio de Janeiro,Copacabana,2198765432,carlos.santos@email.com,Engenheiro,Empresa de Construção,08:00-17:00,2
 3,Maria,Oliveira,1978-11-20,BI,987654321,2025-11-20,876543210,876543210,"Rua da Liberdade, 789",78901-234,Belo Horizonte,Savassi,3198765432,maria.oliveira@email.com,Professora,Escola Estadual,08:00-12:00,3

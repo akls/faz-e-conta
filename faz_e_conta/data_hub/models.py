@@ -49,7 +49,7 @@ class ResponsavelEducativo(models.Model):
     profissao = models.CharField(max_length=150, null=True, blank=True)
     morada_emprego = models.CharField(max_length=150, null=True, blank=True)
     horario_trabalho = models.TimeField(null=True, blank=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"
@@ -58,7 +58,7 @@ class AlunoSaida(models.Model):
     class Meta:
         db_table = 'aluno_saida'
     aluno_saida_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
     hora_entrada = models.DateTimeField(null=True, blank=True)
     hora_saida = models.DateTimeField(null=True, blank=True)
     autorizacao_sair = models.CharField(max_length=250, null=True, blank=True)
@@ -71,7 +71,7 @@ class Vacinacao(models.Model):
     class Meta:
         db_table = 'vacinacao'
     vacinacao_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
     vacina_name = models.CharField(max_length=250, default='')
     data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
     plano_vacina = models.BooleanField(default=False, null=True, blank=True)
@@ -95,7 +95,7 @@ class Salario(models.Model):
     class Meta:
         db_table = 'salario'
     salario_id = models.AutoField(primary_key=True)
-    responsavel_educativo_id = models.ForeignKey(to='ResponsavelEducativo', on_delete=models.CASCADE)
+    responsavel_educativo_id = models.ForeignKey(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='responsavel_educativo_id')
     valor = models.FloatField()
     descricao = models.CharField(max_length=250, null=True, blank=True)
     data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
@@ -109,8 +109,8 @@ class Filiacao(models.Model):
     class Meta:
         db_table = 'filiacao'
     filiacao_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE)
-    responsavel_educativo_id = models.ForeignKey(to='ResponsavelEducativo', on_delete=models.CASCADE)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    responsavel_educativo_id = models.ForeignKey(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='responsavel_educativo_id')
     filiacao_responsavel = models.CharField(max_length=100, default='')
 
     def __str__(self):

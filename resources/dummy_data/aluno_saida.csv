@@ -1,4 +1,4 @@
-aluno_saida_id,aluno_id_id,hora_entrada,hora_saida,autorizacao_sair,escolaridade
+aluno_saida_id,aluno_id,hora_entrada,hora_saida,autorizacao_sair,escolaridade
 1,1,08:00:00,12:30:00,Greve do refeitorio no jardim de infancia,Jardim de infancia
 2,2,13:00:00,16:00:00,Consulta médica,Jardim de infancia
 3,3,08:30:00,13:00:00,Levado pelo encarregado,Jardim de infancia
