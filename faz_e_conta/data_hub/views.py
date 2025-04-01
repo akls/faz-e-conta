@@ -44,3 +44,26 @@ def show_students(request):
         "salas": salas,
     }
     return render(request, "show_students.html", context)
+
+def show_financas(request):
+    query = request.GET.get("q", "")  # Get search query from the URL
+
+    # Base queryset
+    data = AlunoFinancas.objects.all()
+
+    # Apply search filter by student ID
+    if query:
+        data = data.filter(aluno_id__aluno_id__icontains=query)
+
+    # Define the fields to display
+    head = ["ano_letivo", "despesa_anual", "rendim_líquido", "aluno_id__nome_proprio", "aluno_id__apelido", "aluno_id__numero_documento"]
+    data_dict = list(data.values(*head))
+
+    # Render the template with context
+    context = {
+        "head": head,
+        "data_dict": data_dict,
+        "id": "aluno_id__nome_proprio",  # Use student name as identifier
+        "query": query,
+    }
+    return render(request, "show_aluno_financas.html", context)
