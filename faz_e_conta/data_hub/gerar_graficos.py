@@ -2,12 +2,48 @@ import json
 import os
 import base64
 import io
+import random
 
+from django.conf import settings
 import matplotlib.pyplot as plt
 from .models import *
 
+def get_random_palette_color(last_color=None):
+    # Defina sua paleta de cores RGB
+    palette = [
+        (1.0, 0.0, 0.0),  # Vermelho
+        (0.0, 1.0, 0.0),  # Verde
+        (0.0, 0.0, 1.0),  # Azul
+        (1.0, 1.0, 0.0),  # Amarelo
+        (1.0, 0.0, 1.0),  # Magenta
+        (0.0, 1.0, 1.0),  # Ciano
+        (0.5, 0.5, 0.5),  # Cinza
+        (1.0, 0.5, 0.0),  # Laranja
+        (0.5, 0.0, 1.0),  # Roxo
+        (0.5, 1.0, 0.5),  # Verde claro
+        (1.0, 0.5, 1.0),  # Rosa
+        (0.5, 0.5, 1.0)   # Azul claro
+    ]
+    
+    # Se a última cor for fornecida, filtre para garantir que a próxima cor será diferente
+    if last_color:
+        available_colors = [color for color in palette if color != last_color]
+    else:
+        available_colors = palette
+    
+    # Escolhe uma cor aleatória que seja diferente da última cor
+    return random.choice(available_colors)
 
-def gerar_grafico_barras(x,y, title:str, rotation:int=0):
+
+
+def json_exist(model):
+    json_dir = os.path.join(settings.BASE_DIR, 'resources', 'jsons')
+    os.makedirs(json_dir, exist_ok=True)
+    file_path = os.path.join(json_dir, f'{model}.json')
+    print(file_path)
+    return os.path.exists(file_path)
+    
+def gerar_grafico_barras(x,y, title:str, rotation:int=0, multi_color:bool=False):
     # Criar gráfico de barras
     plt.figure(figsize=(12, 6),
                dpi=100, facecolor='white',
@@ -15,7 +51,17 @@ def gerar_grafico_barras(x,y, title:str, rotation:int=0):
                linewidth=1.5,
                tight_layout=True,
                frameon=True)
-    plt.bar(x[1], y[1], color='blue')
+    
+    last_color = None  # Inicializa a última cor como None
+
+    # Ao criar o gráfico
+    colors = []
+    for i in range(len(y[1])):
+        color = get_random_palette_color(last_color)  # Chama a função passando a última cor
+        colors.append(color)
+        last_color = color  # Atualiza a última cor
+        
+    plt.bar(x[1], y[1], color=[get_random_palette_color(last_color) for last_color in [None] + colors] if multi_color else "blue")
     plt.xlabel(f"{x[0]}")
     plt.ylabel(f"{y[0]}")
     plt.title(f"{title}")
@@ -57,7 +103,6 @@ def ResponsavelEducativo_HorariosEntradaQuantidade():
     
     return grafico
 
-
 def Vacina_Quantidade():
     json_name = "vacinacao.json"
     try:
@@ -76,6 +121,8 @@ def Vacina_Quantidade():
     grafico = gerar_grafico_barras(["Vacina", dict_vacinas.keys()],
                                   ["Numero de Vacinas", dict_vacinas.values()], 
                                   "Numero de Vacinas por Tipo",
-                                  rotation=45)
+                                  rotation=45,
+                                  multi_color=True)
     
     return grafico
+

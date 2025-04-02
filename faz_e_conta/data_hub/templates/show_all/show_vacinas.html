@@ -1,7 +1,7 @@
 {% extends 'show_all/show_all_functions.html' %}
 {% load custom_filters %}
 {%block content%}
-<h1>Vacinações</h1>
+<h1>Vacinas</h1>
 <p>Total de Vacinações: {{ data_dict|length }}</p>
 
 <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
@@ -32,4 +32,11 @@
     </tr>
     {% endfor %}
 </table>
+
+<table>
+    <tr>
+        <td><a href="{% url 'insert_vacinacao_view' %}" class="search"><center>Inserir</center></a></td>
+    </tr>
+</table>
+
 {%endblock%}

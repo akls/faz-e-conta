@@ -16,21 +16,22 @@ from .auto_gen_id_views import *
 from django.db.models import Model
 from django.apps import apps
 from datetime import date, datetime, time
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.conf import settings
-
 
 
 folder = "show_all/"
 
 
 
-def index(request, counter:int=1):
+def index(request, counter:int=5):
     graficos = []
     graficos.append(ResponsavelEducativo_HorariosEntradaQuantidade())
     graficos.append(Vacina_Quantidade())
     
     return render(request, "index.html", {"counter":counter, "graficos": graficos})
+
+
 
 
 def show_alunos(request):
@@ -42,21 +43,20 @@ def show_alunos(request):
     # Melhorando a criação da lista de dicionários
     data_dict = list(data.values(*head))
     model = "Aluno"
-    
-    return render(request, f"{folder}show_alunos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model})
+    file_exists = json_exist(Aluno._meta.db_table.lower())
+    return render(request, f"{folder}show_alunos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
 
 
 def show_responsaveis_educativos(request):
-    data = ResponsavelEducativo.objects.all()
-    #head = [field.name for field in Aluno._meta.fields]
-    
+    data = ResponsavelEducativo.objects.all()    
     head = ["responsavel_educativo_id", "nome_proprio", "apelido", "numero_documento", "data_nascimento", "aluno_id"]
     
     # Melhorando a criação da lista de dicionários
     data_dict = list(data.values(*head))
     model = "ResponsavelEducativo"
+    file_exists = json_exist(ResponsavelEducativo._meta.db_table.lower())
     
-    return render(request, f"{folder}show_responsaveis_educativos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model})
+    return render(request, f"{folder}show_responsaveis_educativos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
 
 
 def show_vacinas(request):
@@ -66,10 +66,12 @@ def show_vacinas(request):
     # Melhorando a criação da lista de dicionários
     data_dict = list(data.values(*head))
     model = "Vacinacao"
+    file_exists = json_exist(Vacinacao._meta.db_table.lower())
     
-    return render(request, f"{folder}show_vacinas.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model})
+    return render(request, f"{folder}show_vacinas.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
 
 
+# Exports
 def export_json(request, model):
     model_class = None
     for app in apps.get_app_configs():
@@ -156,4 +158,23 @@ def export_csv(request, model):
         writer.writerow(row)
 
     return response
+
+def download_json(request, model):
+    for app in apps.get_app_configs():
+        try:
+            model_class = apps.get_model(app.label, model)
+            break
+        except LookupError:
+            continue
+    
+    table = model_class._meta.db_table.lower()
+    
+    json_dir = os.path.join(settings.BASE_DIR, 'resources', 'jsons')
+    os.makedirs(json_dir, exist_ok=True)
+    json_file_path = os.path.join(json_dir, f'{table.lower()}.json')
+    
+    if os.path.exists(json_file_path):
+        return FileResponse(open(json_file_path, 'rb'), as_attachment=True, filename=f"{table.lower()}.json")
+    
+    raise Http404("Ficheiro não encontrado")
 

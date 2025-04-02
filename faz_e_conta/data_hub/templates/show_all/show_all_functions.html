@@ -5,8 +5,12 @@
         <tr>
             <td><a href="{% url 'export_csv' model=model %}" class="search"><center>Backup</center></a></td>
             <td><a href="{% url 'export_json' model=model %}" class="search"><center>Generate Json</center></a></td>
+            {% if file_exists %}
+                <td colspan="2"><a href="{% url 'download_json' model=model %}" class="search"><center>Download JSON</center></a></td>
+            {% endif %}
         </tr>
     </table>
+    <br>
     {%block content%}
     {%endblock%}
 {%endblock%}

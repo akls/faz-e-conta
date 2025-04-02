@@ -11,7 +11,17 @@
           {% for grafico in graficos %}
             <td>
               <div class="chart-container">
-                <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 100%; height: auto;">
+                <a href="" onclick="openImagePopup(this)">
+                  <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 100%; height: auto;">
+                </a>
+                <script>
+                  function openImagePopup(element) {
+                      let imgSrc = element.querySelector("img").src;
+                      let popup = window.open("", "_blank", "width=800,height=600");
+                      popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
+                      popup.document.close();
+                  }
+                  </script> 
               </div>
             </td>
             {% if forloop.counter|divisibleby:counter and not forloop.last %}
@@ -23,3 +33,4 @@
     </center>
   </div>
 {% endblock %}
+

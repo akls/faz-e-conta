@@ -9,6 +9,8 @@ urlpatterns = [
     
     path('export_csv/<str:model>/', views.export_csv, name='export_csv'),
     path('export_json/<str:model>/', views.export_json, name='export_json'),
+    path('<str:model>/download_json/', views.download_json, name='download_json'),
+
     
     path('alunos/', views.show_alunos, name='show_alunos'),
     path('responsaveis_educativos/', views.show_responsaveis_educativos, name='show_responsaveis_educativos'),

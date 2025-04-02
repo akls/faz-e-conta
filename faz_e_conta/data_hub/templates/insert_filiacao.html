@@ -79,7 +79,8 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type='submit'>Inserir</button>
-        <a href="{% url 'index' %}">Voltar</a>
+        <br>
+        <a href='javascript:history.back()'>Voltar</a>
     </form>
 </body>
 </html>
