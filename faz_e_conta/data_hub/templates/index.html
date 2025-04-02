@@ -1,4 +1,16 @@
 {% extends 'navigation.html' %}
 {% load custom_filters %}
-{%block links%}
-{%endblock%}
+
+{% block links %}
+
+  <div class="container">
+    <center>
+      <h1>Dashboard</h1>
+      {% for grafico in graficos%}
+        <div class="chart-container">
+          <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 50%; height: auto;">
+        </div>
+      {% endfor %}
+    </center>
+  </div>
+{% endblock %}

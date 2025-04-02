@@ -11,25 +11,24 @@
             height: 100;
         }
 
+        .search:hover {
+            background-color: rgb(89, 1, 148);
+            color: white;
+        }
     </style>
-<table>
+<table style="width: 100%; height: 20%; overflow-x: auto; border-collapse: collapse;">
     <tr>
+        <td><center><a href="{% url 'index' %}" class='search'>Inicio</a></center></td>
         <td><center><a href="{% url 'show_alunos' %}" class='search'>Alunos</a></center></td>
         <td><center><a href="{% url 'show_responsaveis_educativos' %}" class='search'>Responsavel educativo</a></center></td>
+        <td><center><a href="{% url 'show_vacinas' %}" class='search'>Vacinas</a></center></td>
     </tr>
-</table>
-<br>
-<table>
     <tr>
-        <td><a href="{% url 'export' model=model %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color:rgb(244, 182, 58); color: white; text-decoration: none; border-radius: 5px;"><center>Backup</center></a></td>
+        <td><a href="{% url 'export_csv' model=model %}" class="search"><center>Backup</center></a></td>
+        <td><a href="{% url 'export_json' model=model %}" class="search"><center>Json</center></a></td>
     </tr>
 </table>
-{% block links %}
-{% endblock %}
-<table>
-    <tr>
-        <td><center><a href="{% url 'show_alunos' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Alunos</a></center></td>
-        <td><center><a href="{% url 'insert_aluno_view' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Inserir Aluno</a></center></td>
-        <td><center><a href="{% url 'show_responsaveis_educativos' %}" style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Responsavel educativo</a></center></td>
-    </tr>
-</table>
+<div style="margin-top: 20px; height: 70%; overflow-y: auto;">
+    {% block links %}
+    {% endblock %}
+</div>

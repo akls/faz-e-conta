@@ -329,7 +329,7 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("            {% endif %}\n")
                 arquivo.write("        {% endfor %}\n")
                 arquivo.write("    </table>\n")
-                arquivo.write("    <a href=\"{% url 'show_students' %}\">Voltar</a>\n")
+                arquivo.write("    <a href=\"{% url 'index' %}\">Voltar</a>\n")
                 arquivo.write("</body>\n")
                 arquivo.write("</html>\n")
 
