@@ -1,11 +1,7 @@
-﻿sala_id,sala_nome,sala_local,sala_valencia,func_id
-1,Sala Azul,Bloco A,Pre-escolar,3
-2,Sala Verde,Bloco B,Creche,5
-3,Sala Amarela,Bloco C,Jardim Infancia,7
-4,Sala Vermelha,Bloco A,Bercario,2
-5,Sala Rosa,Bloco B,Pre-escolar,6
-6,Sala Laranja,Bloco C,Creche,8
-7,Sala Branca,Bloco A,Jardim Infancia,1
-8,Sala Roxa,Bloco B,Bercario,4
-9,Sala Cinza,Bloco C,Pre-escolar,9
-10,Sala Dourada,Bloco A,Creche,10
+sala_id,sala_nome,sala_local,sala_valencia,responsavel_sala
+1,Joaninha,Sala 2.1,Berçário,1
+2,Coelho,Sala 2.2,Creche,2
+3,Canguru,Sala 2.5,Creche,5
+4,Leao,Sala 1.4,Pré-escolar,4
+5,Papagaio,Sala 1.2,Pré-escolar,3
+6,Ourico,Sala 1.3,Pré-escolar,9
