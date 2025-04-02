@@ -1,4 +1,4 @@
-﻿ma_id,aluno_id,ano_letivo,periodo_inicio,periodo_fim,mensalidade_calc,mensalidade_retific,mensalidade_paga,data_pagamento,modo_pagamento,acordo
+ma_id,aluno_id,ano_letivo,periodo_inicio,periodo_fim,mensalidade_calc,mensalidade_retific,mensalidade_paga,data_pagamento,modo_pagamento,acordo
 1,1,2023/2024,2023-09-01,2023-09-30,200,180,180,2023-09-05,Transferência,Desconto por bolsa
 2,2,2023/2024,2023-09-01,2023-09-30,220,220,220,2023-09-07,Débito Direto,
 3,3,2023/2024,2023-09-01,2023-09-30,250,240,240,2023-09-10,Cheque,Atraso justificado
