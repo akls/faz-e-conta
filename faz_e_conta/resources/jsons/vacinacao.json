@@ -1,0 +1,72 @@
+[
+    {
+        "vacinacao_id": 1,
+        "aluno_id": 1,
+        "vacina_name": "BCG",
+        "data_vacina": "2023-01-05",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 2,
+        "aluno_id": 2,
+        "vacina_name": "Hepatite B (1ª dose)",
+        "data_vacina": "2023-02-10",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 3,
+        "aluno_id": 3,
+        "vacina_name": "Pentavalente (1ª dose)",
+        "data_vacina": "2023-03-15",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 4,
+        "aluno_id": 4,
+        "vacina_name": "Rotavírus (1ª dose)",
+        "data_vacina": "2023-04-20",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 5,
+        "aluno_id": 5,
+        "vacina_name": "Pentavalente (2ª dose)",
+        "data_vacina": "2023-05-25",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 6,
+        "aluno_id": 6,
+        "vacina_name": "Pneumocócica 10-valente",
+        "data_vacina": "2023-06-30",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 7,
+        "aluno_id": 7,
+        "vacina_name": "Meningocócica C",
+        "data_vacina": "2023-07-15",
+        "plano_vacina": false
+    },
+    {
+        "vacinacao_id": 8,
+        "aluno_id": 8,
+        "vacina_name": "Febre Amarela",
+        "data_vacina": "2023-08-20",
+        "plano_vacina": false
+    },
+    {
+        "vacinacao_id": 9,
+        "aluno_id": 9,
+        "vacina_name": "Tríplice Viral",
+        "data_vacina": "2023-09-25",
+        "plano_vacina": true
+    },
+    {
+        "vacinacao_id": 10,
+        "aluno_id": 10,
+        "vacina_name": "Varicela (1ª dose)",
+        "data_vacina": "2023-11-10",
+        "plano_vacina": true
+    }
+]
