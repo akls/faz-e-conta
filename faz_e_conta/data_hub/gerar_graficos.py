@@ -8,33 +8,28 @@ from django.conf import settings
 import matplotlib.pyplot as plt
 from .models import *
 
-def get_random_palette_color(last_color=None):
-    # Defina sua paleta de cores RGB
-    palette = [
-        (1.0, 0.0, 0.0),  # Vermelho
-        (0.0, 1.0, 0.0),  # Verde
-        (0.0, 0.0, 1.0),  # Azul
-        (1.0, 1.0, 0.0),  # Amarelo
-        (1.0, 0.0, 1.0),  # Magenta
-        (0.0, 1.0, 1.0),  # Ciano
-        (0.5, 0.5, 0.5),  # Cinza
-        (1.0, 0.5, 0.0),  # Laranja
-        (0.5, 0.0, 1.0),  # Roxo
-        (0.5, 1.0, 0.5),  # Verde claro
-        (1.0, 0.5, 1.0),  # Rosa
-        (0.5, 0.5, 1.0)   # Azul claro
-    ]
-    
-    # Se a última cor for fornecida, filtre para garantir que a próxima cor será diferente
-    if last_color:
-        available_colors = [color for color in palette if color != last_color]
-    else:
-        available_colors = palette
-    
-    # Escolhe uma cor aleatória que seja diferente da última cor
-    return random.choice(available_colors)
-
-
+palette = [
+    (0.90, 0.10, 0.10),  # Vermelho intenso
+    (0.10, 0.60, 0.10),  # Verde médio
+    (0.10, 0.10, 0.90),  # Azul forte
+    (0.95, 0.75, 0.10),  # Amarelo dourado
+    (0.80, 0.10, 0.80),  # Magenta vibrante
+    (0.10, 0.80, 0.80),  # Ciano suave
+    (0.60, 0.60, 0.60),  # Cinza neutro
+    (1.00, 0.50, 0.00),  # Laranja quente
+    (0.50, 0.10, 0.90),  # Roxo profundo
+    (0.40, 0.80, 0.40),  # Verde claro
+    (1.00, 0.50, 0.70),  # Rosa vibrante
+    (0.40, 0.40, 1.00),  # Azul brilhante
+    (0.80, 0.40, 0.00),  # Marrom alaranjado
+    (0.60, 0.20, 0.00),  # Bordô escuro
+    (0.00, 0.60, 0.40),  # Verde esmeralda
+    (0.70, 0.00, 0.70),  # Púrpura
+    (0.50, 0.50, 0.00),  # Oliva
+    (0.10, 0.40, 0.80),  # Azul céu
+    (0.80, 0.80, 0.10),  # Mostarda
+    (0.20, 0.20, 0.20)   # Preto suave
+]
 
 def json_exist(model):
     json_dir = os.path.join(settings.BASE_DIR, 'resources', 'jsons')
@@ -52,16 +47,17 @@ def gerar_grafico_barras(x,y, title:str, rotation:int=0, multi_color:bool=False)
                tight_layout=True,
                frameon=True)
     
-    last_color = None  # Inicializa a última cor como None
 
     # Ao criar o gráfico
     colors = []
-    for i in range(len(y[1])):
-        color = get_random_palette_color(last_color)  # Chama a função passando a última cor
-        colors.append(color)
-        last_color = color  # Atualiza a última cor
-        
-    plt.bar(x[1], y[1], color=[get_random_palette_color(last_color) for last_color in [None] + colors] if multi_color else "blue")
+    if multi_color:
+        for i in range(len(y[1])):
+            color = palette[i % len(palette)]  # Chama a função passando a última cor
+            colors.append(color)
+    else:
+        colors = ["blue"] * len(y[1])
+    
+    plt.bar(x[1], y[1], color= colors)
     plt.xlabel(f"{x[0]}")
     plt.ylabel(f"{y[0]}")
     plt.title(f"{title}")
@@ -76,6 +72,25 @@ def gerar_grafico_barras(x,y, title:str, rotation:int=0, multi_color:bool=False)
     buf.close()
     
     return grafico
+
+
+# Todos Classe
+def graficos_modelo(model:str):
+    if model.lower() == "vacinacao".lower():
+        return Vacinacao_graficos()
+    else:
+        return []
+        
+
+def Vacinacao_graficos():
+    graficos = []
+    for grafico in [
+        Vacinacao_Quantidade(),
+        Vacinacao_PlanoVacina()
+    ]:
+        if grafico is not None:
+            graficos.append(grafico)
+    return graficos
 
 
 # Modelo_MomeGrafico
@@ -103,7 +118,7 @@ def ResponsavelEducativo_HorariosEntradaQuantidade():
     
     return grafico
 
-def Vacina_Quantidade():
+def Vacinacao_Quantidade():
     json_name = "vacinacao.json"
     try:
         vacinas = json.load(open(f"./resources/jsons/{json_name}", "r", encoding="utf-8"))
@@ -123,6 +138,27 @@ def Vacina_Quantidade():
                                   "Numero de Vacinas por Tipo",
                                   rotation=45,
                                   multi_color=True)
+    
+    return grafico
+
+def Vacinacao_PlanoVacina():
+    json_name = "vacinacao.json"
+    try:
+        vacinas = json.load(open(f"./resources/jsons/{json_name}", "r", encoding="utf-8"))
+    except FileNotFoundError:
+        return None
+    
+    dict_vacinas = {"Sim": 0,
+                    "Não": 0}
+    for vacina in vacinas:
+        if vacina["plano_vacina"]:
+            dict_vacinas["Sim"] += 1
+        else:
+            dict_vacinas["Não"] += 1
+    
+    grafico = gerar_grafico_barras(["Plano Vacina", dict_vacinas.keys()],
+                                  ["Numero", dict_vacinas.values()], 
+                                  "Numero de Vacinas por Tipo")
     
     return grafico
 

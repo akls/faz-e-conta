@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 import matplotlib.pyplot as plt
 from .gerar_graficos import *
 
@@ -18,19 +19,27 @@ from django.apps import apps
 from datetime import date, datetime, time
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.conf import settings
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 
 
 folder = "show_all/"
 
 
 
-def index(request, counter:int=5):
+def index(request, counter: int = 5):
     graficos = []
-    graficos.append(ResponsavelEducativo_HorariosEntradaQuantidade())
-    graficos.append(Vacina_Quantidade())
-    
-    return render(request, "index.html", {"counter":counter, "graficos": graficos})
 
+    # Adiciona somente se o gráfico não for None
+    for grafico in [
+        ResponsavelEducativo_HorariosEntradaQuantidade(),
+        Vacinacao_Quantidade(),
+        Vacinacao_PlanoVacina()
+    ]:
+        if grafico is not None:
+            graficos.append(grafico)
+
+    return render(request, "index.html", {"counter": counter, "graficos": graficos})
 
 
 
@@ -59,7 +68,7 @@ def show_responsaveis_educativos(request):
     return render(request, f"{folder}show_responsaveis_educativos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
 
 
-def show_vacinas(request):
+def show_vacinas(request):    
     data = Vacinacao.objects.all()
     head = [field.name for field in Vacinacao._meta.fields]
 
@@ -69,6 +78,12 @@ def show_vacinas(request):
     file_exists = json_exist(Vacinacao._meta.db_table.lower())
     
     return render(request, f"{folder}show_vacinas.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
+
+
+def reports(request, model):
+        folder = "report/"
+        return render(request, f"{folder}gerar_vacinacao.html")
+ 
 
 
 # Exports
@@ -177,4 +192,90 @@ def download_json(request, model):
         return FileResponse(open(json_file_path, 'rb'), as_attachment=True, filename=f"{table.lower()}.json")
     
     raise Http404("Ficheiro não encontrado")
+
+def delete_json(request, model):
+    # Define o caminho do arquivo JSON
+    for app in apps.get_app_configs():
+        try:
+            model_class = apps.get_model(app.label, model)
+            break
+        except LookupError:
+            continue
+    
+    table = model_class._meta.db_table.lower()
+    
+    json_dir = os.path.join(settings.BASE_DIR, 'resources', 'jsons')
+    os.makedirs(json_dir, exist_ok=True)
+    file_path = os.path.join(json_dir, f'{table.lower()}.json')
+    
+    
+    # Verifica se o arquivo existe antes de tentar excluir
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)  # Deleta o arquivo
+        except Exception as e:
+            pass
+    else:
+        pass
+    return redirect(request.META.get("HTTP_REFERER", "/"))  # Redireciona para a página anterior
+
+
+
+# reports
+def gerar_pdf(request, model):
+    model_class = None
+
+    # Verifica se o modelo existe em qualquer app
+    for app in apps.get_app_configs():
+        try:
+            model_class = apps.get_model(app.label, model)
+            break
+        except LookupError:
+            continue
+
+    # Se o modelo não foi encontrado, retorna erro
+    if not model_class:
+        return HttpResponse("Modelo não encontrado", status=404)
+
+    # Obtém os dados do modelo
+    objetos = model_class.objects.all()
+
+    # Cria um buffer de memória para o PDF
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer)
+
+    # Adiciona cabeçalho ao PDF
+    p.drawString(100, 800, f"Relatório: {model}")
+    p.drawString(100, 780, f"Total de registros: {objetos.count()}")
+
+    # Adiciona dados ao PDF
+    y = 750
+    for obj in objetos:
+        p.drawString(100, y, str(obj))
+        y -= 20  # Move para a próxima linha
+        if y < 50:  # Se chegar ao fim da página, cria uma nova
+            p.showPage()
+            y = 800
+
+    # Obtém gráficos gerados dinamicamente (base64)
+    graficos = graficos_modelo(model)  
+    
+    # Adiciona gráficos ao PDF
+    y -= 40  # Espaço antes do gráfico
+    for grafico_base64 in graficos:
+        if grafico_base64:  # Se o gráfico não for None
+            grafico_bytes = base64.b64decode(grafico_base64)  # Converte base64 para bytes
+            img = ImageReader(io.BytesIO(grafico_bytes))  # Cria um objeto ImageReader
+            p.drawImage(img, 100, y - 200, width=400, height=200)  # Ajusta tamanho do gráfico
+            y -= 220  # Move para a próxima posição
+            if y < 50:  # Se a página acabar, cria uma nova
+                p.showPage()
+                y = 800
+
+    # Finaliza e salva o PDF
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename=f"{model}_relatorio.pdf")
 

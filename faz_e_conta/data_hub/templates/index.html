@@ -8,26 +8,32 @@
       <h1>Dashboard</h1>
       <table>
         <tr>
-          {% for grafico in graficos %}
-            <td>
-              <div class="chart-container">
-                <a href="" onclick="openImagePopup(this)">
-                  <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 100%; height: auto;">
-                </a>
-                <script>
-                  function openImagePopup(element) {
-                      let imgSrc = element.querySelector("img").src;
-                      let popup = window.open("", "_blank", "width=800,height=600");
-                      popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
-                      popup.document.close();
-                  }
-                  </script> 
-              </div>
-            </td>
-            {% if forloop.counter|divisibleby:counter and not forloop.last %}
-              </tr><tr>
-            {% endif %}
-          {% endfor %}
+          {% if graficos%}
+            {% for grafico in graficos %}
+              {% if grafico%}
+                <td>
+                  <div class="chart-container">
+                    <a href="" onclick="openImagePopup(this)">
+                      <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border: 1px solid #ccc; padding: 10px;" alt="Gráfico" title="Clique para ampliar" onclick="openImagePopup(this)">
+                    </a>
+                    <script>
+                      function openImagePopup(element) {
+                          let imgSrc = element.querySelector("img").src;
+                          let popup = window.open("", "_blank", "width=800,height=600");
+                          popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
+                          popup.document.close();
+                      }
+                      </script> 
+                  </div>
+                </td>
+                {% if forloop.counter|divisibleby:counter and not forloop.last %}
+                  </tr><tr>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {%else%}
+              <td><br><hr><h1>Sem Graficos Gerados</h1><hr></td>
+          {%endif%}
         </tr>
       </table>
     </center>

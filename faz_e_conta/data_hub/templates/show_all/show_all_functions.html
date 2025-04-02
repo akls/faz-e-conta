@@ -7,6 +7,7 @@
             <td><a href="{% url 'export_json' model=model %}" class="search"><center>Generate Json</center></a></td>
             {% if file_exists %}
                 <td colspan="2"><a href="{% url 'download_json' model=model %}" class="search"><center>Download JSON</center></a></td>
+                <td colspan="2"><a href="{% url 'delete_json' model=model %}" class="search"><center>Delete JSON</center></a></td>    
             {% endif %}
         </tr>
     </table>
