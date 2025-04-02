@@ -25,13 +25,12 @@ folder = "show_all/"
 
 
 
-def index(request):
+def index(request, counter:int=1):
     graficos = []
     graficos.append(ResponsavelEducativo_HorariosEntradaQuantidade())
     graficos.append(Vacina_Quantidade())
     
-    
-    return render(request, "index.html", {"model": "Aluno", "graficos": graficos})
+    return render(request, "index.html", {"counter":counter, "graficos": graficos})
 
 
 def show_alunos(request):

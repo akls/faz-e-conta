@@ -1,34 +1,103 @@
 <head>
     <style>
-        .search{
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 15px;
-            width: 75%;
-            color: black;
-            text-decoration: none;
-            border-radius: 5px;"
-            height: 100;
+        /* Reset de estilos básicos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .search:hover {
-            background-color: rgb(89, 1, 148);
+        /* Configuração geral da página */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Usa 100% da altura da tela */
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Barra de navegação fixa */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0220ae;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Links da navegação */
+        .navbar a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
             color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            background-color: #0220ae;
+            transition: 0.3s;
+        }
+
+        /* Efeito hover */
+        .navbar a:hover {
+            background-color: #590194;
+        }
+
+        /* Conteúdo principal com scroll */
+        .content {
+            margin-top: 120px; /* Considera a altura da navbar + search */
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            height: calc(100vh - 70px); /* Ajusta dinamicamente */
+            
+        }
+
+        .search {
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            
+            display: inline-block;
+            margin: 0 10px;
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .search:hover {
+            background-color:rgb(212, 148, 244);
         }
     </style>
-<table style="width: 100%; height: 20%; overflow-x: auto; border-collapse: collapse;">
-    <tr>
-        <td><center><a href="{% url 'index' %}" class='search'>Inicio</a></center></td>
-        <td><center><a href="{% url 'show_alunos' %}" class='search'>Alunos</a></center></td>
-        <td><center><a href="{% url 'show_responsaveis_educativos' %}" class='search'>Responsavel educativo</a></center></td>
-        <td><center><a href="{% url 'show_vacinas' %}" class='search'>Vacinas</a></center></td>
-    </tr>
-    <tr>
-        <td><a href="{% url 'export_csv' model=model %}" class="search"><center>Backup</center></a></td>
-        <td><a href="{% url 'export_json' model=model %}" class="search"><center>Json</center></a></td>
-    </tr>
-</table>
-<div style="margin-top: 20px; height: 70%; overflow-y: auto;">
-    {% block links %}
-    {% endblock %}
-</div>
+</head>
+<body>
+
+    <!-- Barra de navegação -->
+    <div class="navbar">
+        <a href="{% url 'index' %}">Dashboard</a>
+        <a href="{% url 'show_alunos' %}">Alunos</a>
+        <a href="{% url 'show_responsaveis_educativos' %}">Responsável Educativo</a>
+        <a href="{% url 'show_vacinas' %}">Vacinas</a>
+    </div>
+    <br>
+    <!-- Área de conteúdo com scroll -->
+    <div class="content">
+        {% block links %}
+        {% endblock %}
+    </div>
+
+</body>

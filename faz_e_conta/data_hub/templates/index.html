@@ -6,11 +6,20 @@
   <div class="container">
     <center>
       <h1>Dashboard</h1>
-      {% for grafico in graficos%}
-        <div class="chart-container">
-          <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 50%; height: auto;">
-        </div>
-      {% endfor %}
+      <table>
+        <tr>
+          {% for grafico in graficos %}
+            <td>
+              <div class="chart-container">
+                <img src="data:image/png;base64,{{ grafico }}" class="img-fluid" style="width: 100%; height: auto;">
+              </div>
+            </td>
+            {% if forloop.counter|divisibleby:counter and not forloop.last %}
+              </tr><tr>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </table>
     </center>
   </div>
 {% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'navigation.html' %}
+{% load custom_filters %}
+{%block links%}
+    <table>
+        <tr>
+            <td><a href="{% url 'export_csv' model=model %}" class="search"><center>Backup</center></a></td>
+            <td><a href="{% url 'export_json' model=model %}" class="search"><center>Generate Json</center></a></td>
+        </tr>
+    </table>
+    {%block content%}
+    {%endblock%}
+{%endblock%}
