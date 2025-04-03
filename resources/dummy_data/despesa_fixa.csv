@@ -1,0 +1,21 @@
+﻿despfix_id,produto,valor,data,fatura,pagamento
+1,Aluguel,1200.00,2024-03-01 00:00:00,2001,Transferência Bancária
+2,Internet,150.00,2024-03-01 00:00:00,2002,Cartão de Crédito
+3,Água,80.50,2024-03-01 00:00:00,2003,Boleto Bancário
+4,Energia Elétrica,320.75,2024-03-01 00:00:00,2004,Transferência Bancária
+5,Telefone,90.00,2024-03-01 00:00:00,2005,Cartão de Débito
+6,Manutenção Predial,500.00,2024-03-01 00:00:00,2006,Dinheiro
+7,Segurança,750.00,2024-03-01 00:00:00,2007,Boleto Bancário
+8,Serviço de Limpeza,600.00,2024-03-01 00:00:00,2008,Transferência Bancária
+9,Material de Escritório,200.00,2024-03-01 00:00:00,2009,Cartão de Crédito
+10,Seguro do Prédio,1100.00,2024-03-01 00:00:00,2010,Cartão de Débito
+11,Assinatura de Software,250.00,2024-03-01 00:00:00,2011,Boleto Bancário
+12,Serviço de Jardinagem,300.00,2024-03-01 00:00:00,2012,Transferência Bancária
+13,Assinatura de Jornal,50.00,2024-03-01 00:00:00,2013,Cartão de Crédito
+14,Compra de Café e Água,100.00,2024-03-01 00:00:00,2014,Dinheiro
+15,Transporte Funcionários,850.00,2024-03-01 00:00:00,2015,Boleto Bancário
+16,Serviço de TI,400.00,2024-03-01 00:00:00,2016,Transferência Bancária
+17,Licenciamento Anual,900.00,2024-03-01 00:00:00,2017,Cartão de Débito
+18,Assistência Médica,1200.00,2024-03-01 00:00:00,2018,Cartão de Crédito
+19,Salário Funcionários,15000.00,2024-03-01 00:00:00,2019,Transferência Bancária
+20,Despesa Contábil,650.00,2024-03-01 00:00:00,2020,Boleto Bancário

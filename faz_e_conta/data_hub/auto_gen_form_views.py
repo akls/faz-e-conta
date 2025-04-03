@@ -43,15 +43,25 @@ def insert_vacinacao_view(request):
         form = VacinacaoForm()
     return render(request, 'insert_vacinacao.html', {'form': form})
 
-def insert_despesa_view(request):
+def insert_despesa_fixa_view(request):
     if request.method == 'POST':
-        form = DespesaForm(request.POST)
+        form = Despesa_fixaForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(reverse('index'))
     else:
-        form = DespesaForm()
-    return render(request, 'insert_despesa.html', {'form': form})
+        form = Despesa_fixaForm()
+    return render(request, 'insert_despesa_fixa.html', {'form': form})
+
+def insert_despesas_variavel_view(request):
+    if request.method == 'POST':
+        form = Despesas_variavelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = Despesas_variavelForm()
+    return render(request, 'insert_despesas_variavel.html', {'form': form})
 
 def insert_salario_view(request):
     if request.method == 'POST':
@@ -63,13 +73,63 @@ def insert_salario_view(request):
         form = SalarioForm()
     return render(request, 'insert_salario.html', {'form': form})
 
-def insert_filiacao_view(request):
+def insert_link_filiacao_view(request):
     if request.method == 'POST':
-        form = FiliacaoForm(request.POST)
+        form = Link_filiacaoForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(reverse('index'))
     else:
-        form = FiliacaoForm()
-    return render(request, 'insert_filiacao.html', {'form': form})
+        form = Link_filiacaoForm()
+    return render(request, 'insert_link_filiacao.html', {'form': form})
+
+def insert_sala_view(request):
+    if request.method == 'POST':
+        form = SalaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = SalaForm()
+    return render(request, 'insert_sala.html', {'form': form})
+
+def insert_mensalidade_aluno_view(request):
+    if request.method == 'POST':
+        form = Mensalidade_alunoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = Mensalidade_alunoForm()
+    return render(request, 'insert_mensalidade_aluno.html', {'form': form})
+
+def insert_aluno_financas_view(request):
+    if request.method == 'POST':
+        form = Aluno_financasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = Aluno_financasForm()
+    return render(request, 'insert_aluno_financas.html', {'form': form})
+
+def insert_aluno_finacas_calc_view(request):
+    if request.method == 'POST':
+        form = Aluno_finacas_calcForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = Aluno_finacas_calcForm()
+    return render(request, 'insert_aluno_finacas_calc.html', {'form': form})
+
+def insert_funcionario_view(request):
+    if request.method == 'POST':
+        form = FuncionarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = FuncionarioForm()
+    return render(request, 'insert_funcionario.html', {'form': form})
 

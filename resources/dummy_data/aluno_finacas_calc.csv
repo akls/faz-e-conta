@@ -1,0 +1,21 @@
+﻿sala_id,nome,local,valencia,func_id
+1,Sala Azul,Bloco A,Pre-escolar,3
+2,Sala Verde,Bloco B,Creche,5
+3,Sala Amarela,Bloco C,Jardim Infância,7
+4,Sala Vermelha,Bloco A,Berçário,2
+5,Sala Rosa,Bloco B,Pre-escolar,6
+6,Sala Laranja,Bloco C,Creche,8
+7,Sala Branca,Bloco A,Jardim Infância,1
+8,Sala Roxa,Bloco B,Berçário,4
+9,Sala Cinza,Bloco C,Pre-escolar,9
+10,Sala Dourada,Bloco A,Creche,10
+11,Sala Prata,Bloco B,Jardim Infância,11
+12,Sala Turquesa,Bloco C,Berçário,12
+13,Sala Lilás,Bloco A,Pre-escolar,13
+14,Sala Bege,Bloco B,Creche,14
+15,Sala Bordeaux,Bloco C,Jardim Infância,15
+16,Sala Preto e Branco,Bloco A,Berçário,16
+17,Sala Neon,Bloco B,Pre-escolar,17
+18,Sala Pastel,Bloco C,Creche,18
+19,Sala Violeta,Bloco A,Jardim Infância,19
+20,Sala Celeste,Bloco B,Berçário,20

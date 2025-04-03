@@ -1,0 +1,22 @@
+﻿despvar_id,produto,valor,data,fatura,pagamento
+1,Material Escolar,45.75,2025-03-01 10:15:00,12345,Cartão de Crédito
+2,Alimentação,120.00,2025-03-02 12:30:00,12346,Transferência Bancária
+3,Brinquedos,75.50,2025-03-03 14:45:00,12347,Dinheiro
+4,Livros Didáticos,90.20,2025-03-04 09:00:00,12348,Débito Direto
+5,Serviço de Manutenção,200.00,2025-03-05 16:20:00,12349,Cheque
+6,Transporte Escolar,55.30,2025-03-06 08:45:00,12350,Cartão de Crédito
+7,Fardamento,110.75,2025-03-07 13:10:00,12351,Transferência Bancária
+8,Excursão Escolar,85.40,2025-03-08 11:00:00,12352,Dinheiro
+9,Software Educativo,99.90,2025-03-09 15:30:00,12353,Débito Direto
+10,Equipamentos de Informática,250.00,2025-03-10 10:50:00,12354,Cheque
+11,Atividades Extracurriculares,60.00,2025-03-11 17:25:00,12355,Cartão de Crédito
+12,Consultoria Pedagógica,180.50,2025-03-12 09:40:00,12356,Transferência Bancária
+13,Serviços de Limpeza,130.25,2025-03-13 14:55:00,12357,Dinheiro
+14,Reparação de Móveis,175.80,2025-03-14 12:05:00,12358,Débito Direto
+15,Curso de Formação,210.00,2025-03-15 16:45:00,12359,Cheque
+16,Assinatura de Plataforma Online,49.99,2025-03-16 08:20:00,12360,Cartão de Crédito
+17,Material de Escritório,85.60,2025-03-17 11:15:00,12361,Transferência Bancária
+18,Taxas Administrativas,92.30,2025-03-18 13:35:00,12362,Dinheiro
+19,Eventos e Festas,145.50,2025-03-19 15:10:00,12363,Débito Direto
+20,Aluguel de Equipamentos,275.00,2025-03-20 10:00:00,12364,Cheque
+
