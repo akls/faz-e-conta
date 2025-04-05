@@ -48,8 +48,7 @@ def create_model(df, table_name):
         else:
             if row["django_field_type"] == "CharField":
                 params.append("default=''")
-            elif row["django_field_type"] == "BooleanField":
-                params.append("default=False")
+
         
         # Construct the final field declaration line
         field_declaration += ", ".join(params) + ")"
