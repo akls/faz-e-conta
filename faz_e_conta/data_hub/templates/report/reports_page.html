@@ -1,0 +1,25 @@
+{% extends 'navigation.html' %}
+{% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatorios</title>
+    {% block scripts %}
+    <script>
+        function gerarPDF(model) {
+            window.location.href = `/${model}/gerar-pdf`;
+        }
+        function reportAlunoSala() {
+            window.location.href = `/report/aluno_sala/`;
+        }
+    </script>
+    {% endblock %}
+</head>
+<body>
+    {%block links %}
+        <h1>Relatórios</h1>
+        <!-- <button onclick="gerarPDF('MensalidadeAluno')">Gerar PDF de Mensalidade Aluno</button> -->
+        <button onclick="reportAlunoSala()">Gerar PDF de Alunos por sala</button>
+    {% endblock %}
+</body>
+

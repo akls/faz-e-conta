@@ -14,7 +14,10 @@ urlpatterns = [
     
     
     path('<str:model>/gerar-pdf/', views.gerar_pdf, name='gerar_pdf'),
+    path('report/aluno_sala/', views.reportAlunoSala, name='report_aluno_sala'),
+    
     path('<str:model>/reports', views.reports, name='reports'),
+    path('reports/', views.reports_all, name='reports'),
 
     
     path('alunos/', views.show_alunos, name='show_alunos'),

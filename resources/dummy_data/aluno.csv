@@ -1,11 +1,21 @@
-aluno_id,nome_proprio,apelido,processo,data_admissao,data_ultima_renovacao,data_nascimento,documento,numero_documento,data_validade,niss,nif,morada,codigo_postal,concelho,fregesia,escolaridade_anterior,motivo_admissao,cuidados_especias
-1,João,Silva,202301,2023-09-01,2024-09-01,2017-01-01,RG,123456789,2025-01-01,123456789,123456789,"Rua das Flores, 123",12345-678,São Paulo,Centro,Escola Municipal,Ingresso no Ensino Médio,Nenhum
-2,Maria,Santos,202302,2023-09-01,2024-09-01,2018-05-15,Passaporte,AB1234567,2026-05-15,987654321,987654321,"Avenida Brasil, 456",45678-901,Rio de Janeiro,Copacabana,Transferência,Mudança de cidade,Alergia a amendoim
-3,Pedro,Almeida,202303,2023-09-01,2024-09-01,2018-11-20,BI,987654321,2025-11-20,876543210,876543210,"Rua da Liberdade, 789",78901-234,Belo Horizonte,Savassi,Novo aluno,Interesse em Ciências,Diabetes
-4,Ana,Oliveira,202304,2023-09-01,2024-09-01,2020-03-05,RG,456789123,2026-03-05,765432109,765432109,"Avenida Paulista, 1011",10112-345,São Paulo,Jardins,Transferência,Proximidade de casa,Nenhum
-5,Bruno,Pereira,202305,2023-09-01,2024-09-01,2021-08-12,Passaporte,CD1234567,2027-08-12,654321098,654321098,"Rua Augusta, 1234",12345-678,Porto,Vitória,Novo aluno,Interesse em Artes,Asma
-6,Carla,Souza,202306,2023-09-01,2024-09-01,2023-02-28,BI,321098765,2025-02-28,543210987,543210987,"Avenida dos Aliados, 4567",45678-901,Porto,Cedofeita,Transferência,Recomendado por outro aluno,Alergia a pólen
-7,Daniel,Costa,202307,2023-09-01,2024-09-01,2020-09-18,RG,210987654,2025-09-18,432109876,432109876,"Rua da Constituição, 7890",78901-234,Lisboa,Santa Maria Maior,Novo aluno,Bolsa de estudos,Nenhum
-8,Fernanda,Gomes,202308,2023-09-01,2024-09-01,2024-04-10,Passaporte,EF1234567,2027-04-10,321098765,321098765,"Avenida da Liberdade, 1011",10112-345,Lisboa,São Sebastião,Transferência,Mudança de país,Intolerância à lactose
-9,Gabriel,Rodrigues,202309,2023-09-01,2024-09-01,2018-09-25,BI,109876543,2026-09-25,210987654,210987654,"Rua Augusta, 1234",12345-678,Coimbra,Sé Nova,Novo aluno,Interesse em História,Dislexia
-10,Helena,Santos,202310,2023-09-01,2024-09-01,2018-03-15,RG,987654321,2025-03-15,987654321,987654321,"Avenida dos Aliados, 4567",45678-901,Coimbra,Santa Cruz,Transferência,Proximidade de casa,Nenhum
+﻿aluno_id,nome_proprio,apelido,archive_flag,processo,data_admissao,data_ultima_renovacao,data_nascimento,documento,numero_documento,data_validade,niss,nif,morada,codigo_postal,concelho,fregesia,escolaridade_anterior,motivo_admissao,cuidados_especias,sala_id
+1,Ana,Santos,False,2023001,2023-09-01,2024-09-01,2015-04-10,CC,12345678,2030-04-10,123456789,123456789,Rua das Flores,1000-001,Lisboa,Arroios,1º Ciclo,Transferência,None,1
+2,Bruno,Silva,False,2023002,2023-09-05,2024-09-05,2014-08-20,CC,87654321,2029-08-20,987654321,987654321,Rua dos Cedros,2000-002,Santarém,Marvila,2º Ciclo,Residência,None,2
+3,Catarina,Oliveira,False,2023003,2023-09-10,2024-09-10,2013-12-15,CC,56781234,2028-12-15,234567890,234567890,Avenida Central,3000-003,Coimbra,Santo António,3º Ciclo,Bolsa,Asma,3
+4,Daniel,Pereira,False,2023004,2023-09-12,2024-09-12,2016-02-05,CC,43218765,2031-02-05,345678901,345678901,Rua Nova,4000-004,Porto,Bonfim,Pré-Escolar,Transferência,None,4
+5,Elisa,Moreira,False,2023005,2023-09-15,2024-09-15,2015-06-30,Passaporte,78912345,2028-06-30,456789012,456789012,Rua dos Cravos,5000-005,Braga,Maximinos,1º Ciclo,Residência,Alergias,5
+6,Fernando,Martins,False,2023006,2023-09-18,2024-09-18,2012-11-25,CC,12349876,2027-11-25,567890123,567890123,Travessa do Sol,6000-006,Castelo Branco,Alcains,Secundário,Bolsa,None,6
+7,Gabriela,Alves,False,2023007,2023-09-20,2024-09-20,2014-05-18,Passaporte,23456789,2029-05-18,678901234,678901234,Rua das Oliveiras,7000-007,Évora,Mitra,2º Ciclo,Transferência,Deficiência Motora,7
+8,Henrique,Ramos,False,2023008,2023-09-22,2024-09-22,2013-03-10,CC,98765432,2028-03-10,789012345,789012345,Alameda Azul,8000-008,Faro,Montenegro,3º Ciclo,Residência,None,8
+9,Inês,Carvalho,False,2023009,2023-09-25,2024-09-25,2015-09-28,CC,34567890,2030-09-28,890123456,890123456,Largo do Carmo,9000-009,Funchal,Santa Maria,1º Ciclo,Bolsa,None,9
+10,João,Lopes,False,2023010,2023-09-28,2024-09-28,2016-07-22,CC,67890123,2031-07-22,901234567,901234567,Avenida do Mar,1000-010,Lisboa,Alvalade,Pré-Escolar,Residência,Alergias,10
+11,Kátia,Monteiro,False,2023011,2023-10-01,2024-10-01,2014-12-10,Passaporte,45678901,2029-12-10,123987654,123987654,Travessa da Ponte,1100-011,Porto,Ramalde,2º Ciclo,Transferência,None,1
+12,Leonardo,Freitas,False,2023012,2023-10-05,2024-10-05,2013-10-05,CC,78901234,2028-10-05,234876543,234876543,Rua da Amizade,1200-012,Santarém,Amiais,3º Ciclo,Bolsa,None,2
+13,Mariana,Barros,False,2023013,2023-10-08,2024-10-08,2012-08-15,CC,56789012,2027-08-15,345765432,345765432,Rua do Comércio,1300-013,Coimbra,Almedina,Secundário,Residência,Asma,3
+14,Nuno,Castro,False,2023014,2023-10-10,2024-10-10,2016-01-30,CC,90123456,2031-01-30,456654321,456654321,Praceta dos Estudantes,1400-014,Braga,Lamaçães,Pré-Escolar,Transferência,None,4
+15,Olívia,Cunha,False,2023015,2023-10-15,2024-10-15,2015-11-20,Passaporte,23456701,2030-11-20,567543210,567543210,Travessa das Árvores,1500-015,Castelo Branco,São Vicente,1º Ciclo,Bolsa,Alergias,5
+16,Pedro,Gomes,False,2023016,2023-10-18,2024-10-18,2014-06-05,CC,67890145,2029-06-05,678432109,678432109,Rua das Hortas,1600-016,Évora,Senhora da Saúde,2º Ciclo,Residência,None,6
+17,Raquel,Neves,False,2023017,2023-10-20,2024-10-20,2013-04-14,CC,34567812,2028-04-14,789321098,789321098,Avenida do Sol,1700-017,Faro,Patacão,3º Ciclo,Transferência,Deficiência Auditiva,7
+18,Samuel,Teixeira,False,2023018,2023-10-22,2024-10-22,2012-12-22,Passaporte,89012367,2027-12-22,890210987,890210987,Rua Nova,1800-018,Funchal,Câmara de Lobos,Secundário,Bolsa,None,8
+19,Tatiana,Ribeiro,False,2023019,2023-10-25,2024-10-25,2016-09-05,CC,12345698,2031-09-05,901098765,901098765,Largo das Fontes,1900-019,Lisboa,Benfica,Pré-Escolar,Residência,Alergias,9
+20,Ulisses,Machado,False,2023020,2023-10-28,2024-10-28,2015-07-07,CC,23456789,2030-07-07,912345678,912345678,Rua da Liberdade,2000-020,Porto,Boavista,1º Ciclo,Transferência,None,10

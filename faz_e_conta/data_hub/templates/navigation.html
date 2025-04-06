@@ -83,6 +83,8 @@
             background-color:rgb(212, 148, 244);
         }
     </style>
+    {% block scripts %}
+    {% endblock %}
 </head>
 <body>
 
@@ -92,6 +94,7 @@
         <a href="{% url 'show_alunos' %}">Alunos</a>
         <a href="{% url 'show_responsaveis_educativos' %}">Responsável Educativo</a>
         <a href="{% url 'show_vacinas' %}">Vacinas</a>
+        <a href="{% url 'reports' %}">Reports</a>
     </div>
     <br>
     <!-- Área de conteúdo com scroll -->

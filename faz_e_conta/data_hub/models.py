@@ -147,7 +147,7 @@ class Sala(models.Model):
 class MensalidadeAluno(models.Model):
     class Meta:
         db_table = 'mensalidade_aluno'
-    ma_id = models.AutoField(primary_key=True)
+    mensalidade_aluno_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
     ano_letivo = models.ForeignKey(to='Alunofinancas', on_delete=models.CASCADE, db_column='ano_letivo')
     periodo_inicio = models.DateField(default= du.timezone.now)
@@ -160,7 +160,7 @@ class MensalidadeAluno(models.Model):
     acordo = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.aluno_id} {self. ano_letivo}, Ma Id: {self.ma_id}"
+        return f"{self.aluno_id} {self. ano_letivo}, Mensalidade Aluno Id: {self.mensalidade_aluno_id}"
 
 class AlunoFinancas(models.Model):
     class Meta:
@@ -190,7 +190,7 @@ class AlunoFinacasCalc(models.Model):
     nome = models.CharField(max_length=255, default='')
     local = models.CharField(max_length=255, null=True, blank=True)
     valencia = models.CharField(max_length=255, default='')
-    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, db_column='func_id', null=True, blank=True)
+    funcionario_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, db_column='funcionario_id', null=True, blank=True)
 
     def __str__(self):
         return f"{self.nome} {self. local}, Sala Id: {self.sala_id}"

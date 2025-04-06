@@ -19,9 +19,13 @@ from django.apps import apps
 from datetime import date, datetime, time
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.conf import settings
+
+from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 
 folder = "show_all/"
 
@@ -83,7 +87,11 @@ def show_vacinas(request):
 def reports(request, model):
         folder = "report/"
         return render(request, f"{folder}gerar_vacinacao.html")
- 
+
+def reports_all(request):
+        folder = "report/"
+        return render(request, f"{folder}reports_page.html")
+
 
 
 # Exports
@@ -279,3 +287,72 @@ def gerar_pdf(request, model):
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename=f"{model}_relatorio.pdf")
 
+
+
+def reportAlunoSala(request):
+    # Obtém o modelo de Aluno e Sala
+    for app in apps.get_app_configs():
+        try:
+            Aluno = apps.get_model(app.label, 'Aluno')
+            Sala = apps.get_model(app.label, 'Sala')
+            break
+        except LookupError:
+            continue
+
+    # Verifica se os modelos existem
+    if not Aluno or not Sala:
+        return HttpResponse("Modelos não encontrados", status=404)
+
+    # Cria um buffer de memória para o PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Adiciona cabeçalho ao PDF
+    elements.append(Paragraph("Relatório de Alunos por Sala", styles['Title']))
+    elements.append(Spacer(1, 12))
+
+    # Obtém todas as salas
+    salas = Sala.objects.all()
+
+    for sala in salas:
+        # Adiciona título da sala
+        elements.append(Paragraph(f"Sala: {sala.sala_nome}", styles['Heading2']))
+        elements.append(Spacer(1, 12))
+
+        # Obtém alunos da sala
+        alunos = Aluno.objects.filter(sala_id=sala.sala_id)
+
+        # Cria tabela de alunos
+        data = [["Nome", "Apelido", "Processo", "Numero do Documento", "Valencia"]]
+        for aluno in alunos:
+            data.append([aluno.nome_proprio, aluno.apelido, aluno.processo, aluno.numero_documento, sala.sala_valencia])
+
+        table = Table(data)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        # Verifica a altura disponível e adiciona uma nova página se necessário
+        table_height = table.wrap(0, 0)[1]
+        available_height = doc.height - doc.topMargin - doc.bottomMargin - 24  # 24 é o espaço do Spacer
+        if table_height > available_height:
+            elements.append(PageBreak())
+            elements.append(Paragraph(f"Sala: {sala.sala_nome}", styles['Heading2']))
+            elements.append(Spacer(1, 12))
+
+        elements.append(table)
+        elements.append(PageBreak())
+
+    # Finaliza e salva o PDF
+    doc.build(elements)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename="relatorio_alunos_sala.pdf")
