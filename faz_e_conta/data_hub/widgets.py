@@ -1,5 +1,11 @@
 from django import forms
 
+def default_widget():
+    widgets = {
+    }
+    return widgets
+
+
 def Aluno_widget():
     widgets = {
         'data_admissao': forms.DateInput(attrs={'type': 'date'}),

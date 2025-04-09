@@ -1,0 +1,21 @@
+vacina_id, vacina_name, plano_vacina
+1,BCG,True
+2,Hepatite B,False
+3,Poliomielite,True
+4,Tétano,False
+5,Sarampo,True
+6,Caxumba,True
+7,Rubéola,False
+8,Difteria,True
+9,Coqueluche,True
+10,Hepatite A,False
+11,HPV,True
+12,Febre Amarela,True
+13,Varicela,False
+14,Gripe,True
+15,Meningocócica,False
+16,Pneumocócica,True
+17,Rotavírus,False
+18,Influenza,True
+19,Coronavírus,True
+20,Zoster,False

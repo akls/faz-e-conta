@@ -133,3 +133,53 @@ def insert_funcionario_view(request):
         form = FuncionarioForm()
     return render(request, 'insert_funcionario.html', {'form': form})
 
+def insert_comparticipacao_mensal_ss_view(request):
+    if request.method == 'POST':
+        form = Comparticipacao_mensal_ssForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = Comparticipacao_mensal_ssForm()
+    return render(request, 'insert_comparticipacao_mensal_ss.html', {'form': form})
+
+def insert_vacina_view(request):
+    if request.method == 'POST':
+        form = VacinaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = VacinaForm()
+    return render(request, 'insert_vacina.html', {'form': form})
+
+def insert_dose_view(request):
+    if request.method == 'POST':
+        form = DoseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = DoseForm()
+    return render(request, 'insert_dose.html', {'form': form})
+
+def insert_divida_view(request):
+    if request.method == 'POST':
+        form = DividaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = DividaForm()
+    return render(request, 'insert_divida.html', {'form': form})
+
+def insert_acordo_view(request):
+    if request.method == 'POST':
+        form = AcordoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+    else:
+        form = AcordoForm()
+    return render(request, 'insert_acordo.html', {'form': form})
+

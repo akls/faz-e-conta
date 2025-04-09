@@ -15,5 +15,10 @@ def add_form_urlpatterns(urlpatterns):
     urlpatterns.append(path('insert_aluno_financas/', views.insert_aluno_financas_view, name='insert_aluno_financas_view'))
     urlpatterns.append(path('insert_aluno_finacas_calc/', views.insert_aluno_finacas_calc_view, name='insert_aluno_finacas_calc_view'))
     urlpatterns.append(path('insert_funcionario/', views.insert_funcionario_view, name='insert_funcionario_view'))
+    urlpatterns.append(path('insert_comparticipacao_mensal_ss/', views.insert_comparticipacao_mensal_ss_view, name='insert_comparticipacao_mensal_ss_view'))
+    urlpatterns.append(path('insert_vacina/', views.insert_vacina_view, name='insert_vacina_view'))
+    urlpatterns.append(path('insert_dose/', views.insert_dose_view, name='insert_dose_view'))
+    urlpatterns.append(path('insert_divida/', views.insert_divida_view, name='insert_divida_view'))
+    urlpatterns.append(path('insert_acordo/', views.insert_acordo_view, name='insert_acordo_view'))
 
     return urlpatterns

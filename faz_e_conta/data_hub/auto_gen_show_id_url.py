@@ -15,5 +15,10 @@ def add_show_id_urlpatterns(urlpatterns):
     urlpatterns.append(path('aluno_financas/<int:aluno_financas_id>/', views.show_aluno_financas_view, name='aluno_financas_view'))
     urlpatterns.append(path('aluno_finacas_calc/<int:aluno_finacas_calc_id>/', views.show_aluno_finacas_calc_view, name='aluno_finacas_calc_view'))
     urlpatterns.append(path('funcionario/<int:funcionario_id>/', views.show_funcionario_view, name='funcionario_view'))
+    urlpatterns.append(path('comparticipacao_mensal_ss/<int:comparticipacao_mensal_ss_id>/', views.show_comparticipacao_mensal_ss_view, name='comparticipacao_mensal_ss_view'))
+    urlpatterns.append(path('vacina/<int:vacina_id>/', views.show_vacina_view, name='vacina_view'))
+    urlpatterns.append(path('dose/<int:dose_id>/', views.show_dose_view, name='dose_view'))
+    urlpatterns.append(path('divida/<int:divida_id>/', views.show_divida_view, name='divida_view'))
+    urlpatterns.append(path('acordo/<int:acordo_id>/', views.show_acordo_view, name='acordo_view'))
 
     return urlpatterns

@@ -12,14 +12,28 @@
         function reportAlunoSala() {
             window.location.href = `/report/aluno_sala/`;
         }
+        function gerarPDFAluno() {
+            // Solicita ao usuário que insira o ID do aluno
+            var aluno_id = prompt("Por favor, insira o ID do aluno:");
+        
+            // Verifica se o usuário inseriu um valor
+            if (aluno_id) {
+                // Redireciona para a URL com o ID do aluno
+                window.location.href = `/gerar-pdf-aluno/${aluno_id}/`;
+            } else {
+                alert("ID do aluno não inserido. Por favor, tente novamente.");
+            }
+        }
+        
     </script>
     {% endblock %}
 </head>
 <body>
-    {%block links %}
+    {% block links %}
         <h1>Relatórios</h1>
         <!-- <button onclick="gerarPDF('MensalidadeAluno')">Gerar PDF de Mensalidade Aluno</button> -->
         <button onclick="reportAlunoSala()">Gerar PDF de Alunos por sala</button>
+        <button onclick="gerarPDF('MensalidadeAluno')">Gerar PDF de Mensalidade Aluno</button>
+        <button onclick="gerarPDFAluno()">Gerar PDF de um Aluno</button>
     {% endblock %}
 </body>
-

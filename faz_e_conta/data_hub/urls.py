@@ -14,6 +14,7 @@ urlpatterns = [
     
     
     path('<str:model>/gerar-pdf/', views.gerar_pdf, name='gerar_pdf'),
+    path('gerar-pdf-aluno/<int:aluno_id>/', views.gerar_pdf_aluno, name='gerar_pdf_aluno'),
     path('report/aluno_sala/', views.reportAlunoSala, name='report_aluno_sala'),
     
     path('<str:model>/reports', views.reports, name='reports'),

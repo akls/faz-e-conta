@@ -121,7 +121,7 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"        model = {table_name.title().replace("_","")}\n")
                 arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
                 arquivo.write("        # Adiciona atributos aos campos do formulário\n")
-                arquivo.write(f"        widgets = {table_name}_widget()\n\n")
+                arquivo.write(f"        widgets = default_widget()\n\n")
         
 # Add views to form_views.py
         print("Adding views to form_views.py...")        
@@ -286,15 +286,11 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"        data = {table_name.title().replace("_","")}.objects.get({table_name.lower()}_id={table_name.lower()}_id)  # Verifique se 'id' é o nome correto do campo\n")
                 arquivo.write(f"    except {table_name.title().replace("_","")}.DoesNotExist:\n")
                 arquivo.write(f"        return HttpResponse(f'<h1>{table_name.replace("_", " ").title()} with id= " + '{' + f"{table_name.lower()}_id" + "}" + " not found</h1><a href=\"/\">Voltar para o índice</a>')\n")
-                arquivo.write(f"    head = [field.name.replace('_id','_id_id') for field in {table_name.title().replace("_","")}._meta.fields]\n")
-                arquivo.write(f'''
-    for i in range(1, len(head)):
-        if head[i].endswith('_id_id'):
-            related_model_name = head[i].replace('_id_id', '')
-            related_model = globals()[related_model_name.capitalize()]
-            related_instance = related_model.objects.get(pk=data.__dict__.get(head[i]))
-            data.__dict__[head[i]] = related_instance\n''')
-                arquivo.write(f"    data_dict = {{head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}}\n\n")
+                arquivo.write(f"    head = [field.name for field in {table_name.title().replace('_','')}.objects.model._meta.fields]\n")
+                arquivo.write('''
+    data_dict = {}
+    for field in head:
+        data_dict[field] = getattr(data, field, None)\n''')
                 arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
 
 # Add HTML files for views by id

@@ -74,12 +74,11 @@ class Vacinacao(models.Model):
         db_table = 'vacinacao'
     vacinacao_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    vacina_name = models.CharField(max_length=250, default='')
-    data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
-    plano_vacina = models.BooleanField(default=False, null=True, blank=True)
+    dose_id = models.ForeignKey(to='Dose', on_delete=models.CASCADE, db_column='dose_id')
+    data_vacina = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.aluno_id} {self. vacina_name}, Vacinacao Id: {self.vacinacao_id}"
+        return f"{self.aluno_id} {self. dose_id}, Vacinacao Id: {self.vacinacao_id}"
 
 class DespesaFixa(models.Model):
     class Meta:
@@ -149,7 +148,7 @@ class MensalidadeAluno(models.Model):
         db_table = 'mensalidade_aluno'
     mensalidade_aluno_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    ano_letivo = models.ForeignKey(to='Alunofinancas', on_delete=models.CASCADE, db_column='ano_letivo')
+    aluno_financas_id = models.ForeignKey(to='Alunofinancas', on_delete=models.CASCADE, db_column='aluno_financas_id')
     periodo_inicio = models.DateField(default= du.timezone.now)
     periodo_fim = models.DateField(default= du.timezone.now, null=True, blank=True)
     mensalidade_calc = models.IntegerField(null=True, blank=True)
@@ -160,7 +159,7 @@ class MensalidadeAluno(models.Model):
     acordo = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.aluno_id} {self. ano_letivo}, Mensalidade Aluno Id: {self.mensalidade_aluno_id}"
+        return f"{self.aluno_id} {self. aluno_financas_id}, Mensalidade Aluno Id: {self.mensalidade_aluno_id}"
 
 class AlunoFinancas(models.Model):
     class Meta:
@@ -220,4 +219,66 @@ class Funcionario(models.Model):
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Funcionario Id: {self.funcionario_id}"
+
+class ComparticipacaoMensalSs(models.Model):
+    class Meta:
+        db_table = 'comparticipacao_mensal_ss'
+    comparticipacao_mensal_ss_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    aluno_financas_id = models.ForeignKey(to='Alunofinancas', on_delete=models.CASCADE, db_column='aluno_financas_id')
+    periodo_inicio = models.DateField(default= du.timezone.now)
+    periodo_fim = models.DateField(default= du.timezone.now, null=True, blank=True)
+    mensalidade_valor = models.IntegerField()
+    mensalidade_paga = models.IntegerField(null=True, blank=True)
+    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
+    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
+    programa_ss = models.CharField(max_length=255, null=True, blank=True)
+    acordo = models.ForeignKey(to='Acordo', on_delete=models.CASCADE, db_column='acordo', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.aluno_id} {self. aluno_financas_id}, Comparticipacao Mensal Ss Id: {self.comparticipacao_mensal_ss_id}"
+
+class Vacina(models.Model):
+    class Meta:
+        db_table = 'vacina'
+    vacina_id = models.AutoField(primary_key=True)
+    vacina_name = models.CharField(max_length=250, default='')
+    plano_vacina = models.BooleanField(default=False, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.vacina_name} {self. plano_vacina}, Vacina Id: {self.vacina_id}"
+
+class Dose(models.Model):
+    class Meta:
+        db_table = 'dose'
+    idade = models.IntegerField()
+    obrigatoria = models.BooleanField(default=False)
+    periodo_recomendado = models.IntegerField()
+    dose = models.IntegerField()
+    vacina_id = models.ForeignKey(to='Vacina', on_delete=models.CASCADE, db_column='vacina_id')
+    dose_id = models.AutoField(primary_key=True)
+
+    def __str__(self):
+        return f"{self.obrigatoria} {self. periodo_recomendado}, Idade: {self.idade}"
+
+class Divida(models.Model):
+    class Meta:
+        db_table = 'divida'
+    divida_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    valor_pagar = models.IntegerField()
+    valor_pago = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.aluno_id} {self. valor_pagar}, Divida Id: {self.divida_id}"
+
+class Acordo(models.Model):
+    class Meta:
+        db_table = 'acordo'
+    acordo_id = models.AutoField(primary_key=True)
+    responsavel_educativo_id = models.ForeignKey(to='Responsaveleducativo', on_delete=models.CASCADE, db_column='responsavel_educativo_id')
+    divida_id = models.ForeignKey(to='Divida', on_delete=models.CASCADE, db_column='divida_id')
+
+    def __str__(self):
+        return f"{self.responsavel_educativo_id} {self. divida_id}, Acordo Id: {self.acordo_id}"
 
