@@ -318,13 +318,16 @@ def reportMensal(request):
     total_students = Aluno.objects.count() or 1
 
     cost_per_student = (
-        total_fees_paid_by_students + total_fees_paid_by_ss + fixed_expenses + variable_expenses
+        # total_fees_paid_by_students + total_fees_paid_by_ss + fixed_expenses + variable_expenses
+        fixed_expenses + variable_expenses - (total_fees_paid_by_students + total_fees_paid_by_ss)
     ) / total_students
 
     final_monthly_balance = (
         total_fees_paid_by_students + total_fees_paid_by_ss
         - fixed_expenses - variable_expenses - payments_in_default
     )
+    
+    
     elements3.append(Paragraph(f"Despesas do mes:", styles['Title']))
     elements3.append(Paragraph(f"Despesas fixas do mês: {fixed_expenses:.2f}€", styles['Normal']))
     elements3.append(Spacer(1, 12))
