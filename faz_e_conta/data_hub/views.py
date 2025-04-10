@@ -26,18 +26,19 @@ folder = "show_all/"
 
 
 def index(request, counter: int = 5):
+    folder_path = "resources/graficos"
+    absolute_path = os.path.join(settings.BASE_DIR, folder_path)
+
     graficos = []
+    if os.path.exists(absolute_path):
+        for f in os.listdir(absolute_path):
+            if f.lower().endswith(('.png', '.jpg', '.jpeg')):
+                graficos.append(f"graficos/{f}")  # caminho relativo a /media/
 
-    # Adiciona somente se o gráfico não for None
-    for grafico in [
-        ResponsavelEducativo_HorariosEntradaQuantidade(),
-        Vacinacao_Quantidade(),
-        Vacinacao_PlanoVacina()
-    ]:
-        if grafico is not None:
-            graficos.append(grafico)
-
-    return render(request, "index.html", {"counter": counter, "graficos": graficos})
+    return render(request, "index.html", {
+        "counter": counter,
+        "graficos": graficos
+    })
 
 def show_alunos(request):
     data = Aluno.objects.all()
@@ -52,7 +53,6 @@ def show_alunos(request):
     
     return render(request, f"{folder}show_alunos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
 
-
 def show_responsaveis_educativos(request):
     data = ResponsavelEducativo.objects.all()    
     head = ["responsavel_educativo_id", "nome_proprio", "apelido", "numero_documento", "data_nascimento", "aluno_id"]
@@ -63,7 +63,6 @@ def show_responsaveis_educativos(request):
     file_exists = json_exist(ResponsavelEducativo._meta.db_table.lower())
     
     return render(request, f"{folder}show_responsaveis_educativos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
-
 
 def show_vacinas(request):
     data = Vacinacao.objects.all()
@@ -83,7 +82,6 @@ def reports(request, model):
 def reports_all(request):
         folder = "report/"
         return render(request, f"{folder}reports_page.html")
-
 
 
 # Exports

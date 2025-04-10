@@ -316,17 +316,21 @@ def reportMensal(request):
     fixed_expenses = float(DespesaFixa.objects.aggregate(sum=Sum('valor'))['sum'] or 0)
     variable_expenses = float(DespesasVariavel.objects.aggregate(sum=Sum('valor'))['sum'] or 0)
     total_students = Aluno.objects.count() or 1
-
+    
     cost_per_student = (
-        # total_fees_paid_by_students + total_fees_paid_by_ss + fixed_expenses + variable_expenses
         fixed_expenses + variable_expenses - (total_fees_paid_by_students + total_fees_paid_by_ss)
     ) / total_students
-
+    
+    print(f"fixed_expenses: {fixed_expenses}")
+    print(f"variable_expenses: {variable_expenses}")
+    print(f"total_students: {total_students}")
+    print(f"total_fees_paid_by_students: {total_fees_paid_by_students}")
+    print(f"total_fees_paid_by_ss: {total_fees_paid_by_ss}")
+    
     final_monthly_balance = (
         total_fees_paid_by_students + total_fees_paid_by_ss
         - fixed_expenses - variable_expenses - payments_in_default
     )
-    
     
     elements3.append(Paragraph(f"Despesas do mes:", styles['Title']))
     elements3.append(Paragraph(f"Despesas fixas do mês: {fixed_expenses:.2f}€", styles['Normal']))
