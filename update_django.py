@@ -68,8 +68,8 @@ def read_cdm(sheet_name="Table Summary"):
     models_path = "faz_e_conta/data_hub/models.py"
     admin_path = "faz_e_conta/data_hub/admin.py"
     forms_path = "faz_e_conta/data_hub/forms.py"
-    form_views_path = models_path.replace("models.py", "auto_gen_form_views.py")
-    id_views_path = models_path.replace("models.py", "auto_gen_id_views.py")
+    form_views_path = models_path.replace("models.py", "auto_gen/auto_gen_form_views.py")
+    id_views_path = models_path.replace("models.py", "auto_gen/auto_gen_id_views.py")
     
     try:
 
@@ -129,8 +129,8 @@ def read_cdm(sheet_name="Table Summary"):
         with open(form_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
             arquivo.write("from django.urls import reverse\n")
-            arquivo.write(f"from .models import *\n")
-            arquivo.write(f"from .forms import *\n\n")
+            arquivo.write(f"from ..models import *\n")
+            arquivo.write(f"from ..forms import *\n\n")
             
             for table_name in class_list:
                 arquivo.write(f"def insert_{table_name.lower()}_view(request):\n")
@@ -141,15 +141,16 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write(f"            return redirect(reverse('index'))\n")
                 arquivo.write(f"    else:\n")
                 arquivo.write(f"        form = {table_name}Form()\n")
-                arquivo.write(f"    return render(request, 'insert_{table_name.lower()}.html', {{'form': form}})\n\n")
+                arquivo.write(f"    return render(request, 'insert/insert_{table_name.lower()}.html', {{'form': form}})\n\n")
 
 # Create HTML files for forms
         print("Creating HTML files for forms...")
 
         for table_name in class_list:
-            form_html_path = f"faz_e_conta/data_hub/templates/insert_{table_name.lower()}.html"
+            form_html_path = f"faz_e_conta/data_hub/templates/insert/insert_{table_name.lower()}.html"
             with open(form_html_path, "w", encoding="utf-8") as arquivo:
                 arquivo.write("<html lang='pt'>\n")
+                #arquivo.write('''{% extends 'navigation.html' %}\n{% load custom_filters %}\n{%block links%}''')
                 arquivo.write("<head>\n")
                 arquivo.write("    <meta charset='UTF-8'>\n")
                 arquivo.write("    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n")
@@ -234,15 +235,16 @@ def read_cdm(sheet_name="Table Summary"):
                 arquivo.write("        <a href='javascript:history.back()'>Voltar</a>\n")
                 arquivo.write("    </form>\n")
                 arquivo.write("</body>\n")
+                #arquivo.write("{%endblock%}")
                 arquivo.write("</html>\n")
     
 # Add classes to form_url.py
 
         print("Adding classes to form_url.py...")
         
-        with open("faz_e_conta/data_hub/auto_gen_form_url.py", "w", encoding="utf-8") as arquivo:
+        with open("faz_e_conta/data_hub/auto_gen/auto_gen_form_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
-            arquivo.write("from . import views\n\n")
+            arquivo.write("from .. import views\n\n")
             arquivo.write("def add_form_urlpatterns(urlpatterns):\n")
             for table_name in class_list:
                 arquivo.write(f"    urlpatterns.append(path('insert_{table_name.lower()}/', views.insert_{table_name.lower()}_view, name='insert_{table_name.lower()}_view'))\n")
@@ -275,8 +277,8 @@ def read_cdm(sheet_name="Table Summary"):
         with open(id_views_path, "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.shortcuts import render, redirect\n")
             arquivo.write("from django.urls import reverse\n")
-            arquivo.write(f"from .models import *\n")
-            arquivo.write(f"from .forms import *\n\n")
+            arquivo.write(f"from ..models import *\n")
+            arquivo.write(f"from ..forms import *\n\n")
             arquivo.write(f"from django.http import Http404\n")
             arquivo.write("from django.http import HttpResponse\n\n")
 
@@ -291,13 +293,13 @@ def read_cdm(sheet_name="Table Summary"):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)\n''')
-                arquivo.write(f"    return render(request, 'show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
+                arquivo.write(f"    return render(request, 'show/show_{table_name.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n")
 
 # Add HTML files for views by id
         print("Adding HTML files for views by id...")
         
         for table_name in class_list:
-            view_html_path = f"faz_e_conta/data_hub/templates/show_{table_name.lower()}.html"
+            view_html_path = f"faz_e_conta/data_hub/templates/show/show_{table_name.lower()}.html"
             with open(view_html_path, "w", encoding="utf-8") as arquivo:
                 arquivo.write("{% load custom_filters %}\n")
                 arquivo.write("<!DOCTYPE html>\n")
@@ -332,9 +334,9 @@ def read_cdm(sheet_name="Table Summary"):
 # Add urls to id_views.py
         print("Adding urls to id_views.py...")
         
-        with open("faz_e_conta/data_hub/auto_gen_show_id_url.py", "w", encoding="utf-8") as arquivo:
+        with open("faz_e_conta/data_hub/auto_gen/auto_gen_show_id_url.py", "w", encoding="utf-8") as arquivo:
             arquivo.write("from django.urls import path\n")
-            arquivo.write("from . import views\n\n")
+            arquivo.write("from .. import views\n\n")
             arquivo.write("def add_show_id_urlpatterns(urlpatterns):\n")
             for table_name in class_list:
                 arquivo.write(f"    urlpatterns.append(path('{table_name.lower()}/<int:{table_name.lower()}_id>/', views.show_{table_name.lower()}_view, name='{table_name.lower()}_view'))\n")

@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from .. import views
 
 def add_show_id_urlpatterns(urlpatterns):
     urlpatterns.append(path('aluno/<int:aluno_id>/', views.show_aluno_view, name='aluno_view'))

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import *
-from .forms import *
+from ..models import *
+from ..forms import *
 
 from django.http import Http404
 from django.http import HttpResponse
@@ -16,7 +16,7 @@ def show_aluno_view(request, aluno_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_aluno.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_aluno.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_responsavel_educativo_view(request, responsavel_educativo_id):
     try:
@@ -28,7 +28,7 @@ def show_responsavel_educativo_view(request, responsavel_educativo_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_responsavel_educativo.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_responsavel_educativo.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_aluno_saida_view(request, aluno_saida_id):
     try:
@@ -40,7 +40,7 @@ def show_aluno_saida_view(request, aluno_saida_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_aluno_saida.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_aluno_saida.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_vacinacao_view(request, vacinacao_id):
     try:
@@ -52,7 +52,7 @@ def show_vacinacao_view(request, vacinacao_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_vacinacao.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_vacinacao.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_despesa_fixa_view(request, despesa_fixa_id):
     try:
@@ -64,7 +64,7 @@ def show_despesa_fixa_view(request, despesa_fixa_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_despesa_fixa.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_despesa_fixa.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_despesas_variavel_view(request, despesas_variavel_id):
     try:
@@ -76,7 +76,7 @@ def show_despesas_variavel_view(request, despesas_variavel_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_despesas_variavel.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_despesas_variavel.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_salario_view(request, salario_id):
     try:
@@ -88,7 +88,7 @@ def show_salario_view(request, salario_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_salario.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_salario.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_link_filiacao_view(request, link_filiacao_id):
     try:
@@ -100,7 +100,7 @@ def show_link_filiacao_view(request, link_filiacao_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_link_filiacao.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_link_filiacao.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_sala_view(request, sala_id):
     try:
@@ -112,7 +112,7 @@ def show_sala_view(request, sala_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_sala.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_sala.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_mensalidade_aluno_view(request, mensalidade_aluno_id):
     try:
@@ -124,7 +124,7 @@ def show_mensalidade_aluno_view(request, mensalidade_aluno_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_mensalidade_aluno.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_mensalidade_aluno.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_aluno_financas_view(request, aluno_financas_id):
     try:
@@ -136,7 +136,7 @@ def show_aluno_financas_view(request, aluno_financas_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_aluno_financas.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_aluno_financas.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_aluno_finacas_calc_view(request, aluno_finacas_calc_id):
     try:
@@ -148,7 +148,7 @@ def show_aluno_finacas_calc_view(request, aluno_finacas_calc_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_aluno_finacas_calc.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_aluno_finacas_calc.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_funcionario_view(request, funcionario_id):
     try:
@@ -160,7 +160,7 @@ def show_funcionario_view(request, funcionario_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_funcionario.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_funcionario.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_comparticipacao_mensal_ss_view(request, comparticipacao_mensal_ss_id):
     try:
@@ -172,7 +172,7 @@ def show_comparticipacao_mensal_ss_view(request, comparticipacao_mensal_ss_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_comparticipacao_mensal_ss.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_comparticipacao_mensal_ss.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_vacina_view(request, vacina_id):
     try:
@@ -184,7 +184,7 @@ def show_vacina_view(request, vacina_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_vacina.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_vacina.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_dose_view(request, dose_id):
     try:
@@ -196,7 +196,7 @@ def show_dose_view(request, dose_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_dose.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_dose.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_divida_view(request, divida_id):
     try:
@@ -208,7 +208,7 @@ def show_divida_view(request, divida_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_divida.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_divida.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
 def show_acordo_view(request, acordo_id):
     try:
@@ -220,5 +220,5 @@ def show_acordo_view(request, acordo_id):
     data_dict = {}
     for field in head:
         data_dict[field] = getattr(data, field, None)
-    return render(request, 'show_acordo.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+    return render(request, 'show/show_acordo.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 

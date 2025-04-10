@@ -31,6 +31,8 @@ palette = [
     (0.20, 0.20, 0.20)   # Preto suave
 ]
 
+path = "resources/graficos/"
+
 def json_exist(model):
     json_dir = os.path.join(settings.BASE_DIR, 'resources', 'jsons')
     os.makedirs(json_dir, exist_ok=True)
@@ -47,7 +49,6 @@ def gerar_grafico_barras(x,y, title:str, rotation:int=0, multi_color:bool=False)
                tight_layout=True,
                frameon=True)
     
-
     # Ao criar o gráfico
     colors = []
     if multi_color:
@@ -73,6 +74,88 @@ def gerar_grafico_barras(x,y, title:str, rotation:int=0, multi_color:bool=False)
     
     return grafico
 
+def gerar_grafico_pizza(x,y, title:str, rotation:int=0):
+    # Criar gráfico de pizza
+    plt.figure(figsize=(12, 6),
+               dpi=100, facecolor='white',
+               edgecolor='black',
+               linewidth=1.5,
+               tight_layout=True,
+               frameon=True)
+    
+    # Ao criar o gráfico
+    plt.pie(y[1], labels=x[1], autopct='%1.1f%%', startangle=140)
+    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    
+    plt.title(f"{title}")
+    
+    # Salvar gráfico na memória
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    grafico = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+    
+    return grafico
+
+
+
+# Graficos Relatorios
+
+def gerar_grafico_barras_relatorios(x,y, title:str, rotation:int=0, multi_color:bool=False):
+        # Criar gráfico de barras
+    plt.figure(figsize=(12, 6),
+               dpi=100, facecolor='white',
+               edgecolor='black',
+               linewidth=1.5,
+               tight_layout=True,
+               frameon=True)
+    
+    # Ao criar o gráfico
+    colors = []
+    if multi_color:
+        for i in range(len(y[1])):
+            color = palette[i % len(palette)]  # Chama a função passando a última cor
+            colors.append(color)
+    else:
+        colors = ["blue"] * len(y[1])
+    
+    plt.bar(x[1], y[1], color= colors)
+    plt.xlabel(f"{x[0]}")
+    plt.ylabel(f"{y[0]}")
+    plt.title(f"{title}")
+    
+    plt.xticks(rotation=rotation, ha='right')
+    
+    # Salvar gráfico na memória
+    graph_path = f"{path}{title}.png"
+    plt.savefig(graph_path)
+    
+    return graph_path
+
+def gerar_grafico_pizza_relatorios(x,y, title:str, rotation:int=0, multi_color:bool=False):
+    # Criar gráfico de pizza
+    plt.figure(figsize=(12, 6),
+               dpi=100, facecolor='white',
+               edgecolor='black',
+               linewidth=1.5,
+               tight_layout=True,
+               frameon=True
+               )
+    
+    # Ao criar o gráfico
+    plt.pie(y[1], labels=x[1], autopct='%1.1f%%', startangle=140)
+    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    
+    plt.title(f"{title}")
+    
+    # Salvar gráfico na memória
+    graph_path = f"{path}{title}.png"
+    
+    plt.savefig(graph_path)
+    
+    return graph_path
+
 
 # Todos Classe
 def graficos_modelo(model:str):
@@ -80,7 +163,6 @@ def graficos_modelo(model:str):
         return Vacinacao_graficos()
     else:
         return []
-        
 
 def Vacinacao_graficos():
     graficos = []
@@ -162,3 +244,63 @@ def Vacinacao_PlanoVacina():
     
     return grafico
 
+
+
+# Other
+def gerar_grafico_numero_alunos_por_valencia():
+    valencias = Sala.objects.values_list('sala_valencia', flat=True).distinct()
+    alunos = Aluno.objects.all()
+    
+    num_alunos = {valencia: 0 for valencia in valencias}
+    
+    for aluno in alunos:
+        valencia = aluno.sala_id.sala_valencia
+        num_alunos[valencia] += 1
+    
+    grafico = gerar_grafico_barras_relatorios(["Valência", num_alunos.keys()],
+                                  ["Número de Alunos", num_alunos.values()], 
+                                  "Número de Alunos por Valência",
+                                  rotation=0,
+                                  multi_color=True)
+    
+    return grafico
+
+
+def gerar_grafico_mensalidades_por_valencia():
+    valencias = Sala.objects.values_list('sala_valencia', flat=True).distinct()
+    mensalidades = MensalidadeAluno.objects.all()
+    
+    num_mensalidades = {valencia: 0 for valencia in valencias}
+    
+    for mensalidade in mensalidades:
+        aluno = Aluno.objects.get(aluno_id = mensalidade.aluno_id.aluno_id)
+        valencia = aluno.sala_id.sala_valencia
+        num_mensalidades[valencia] += 1
+    
+    grafico = gerar_grafico_pizza_relatorios(["Valência", num_mensalidades.keys()],
+                                  ["Número de Mensalidades", num_mensalidades.values()], 
+                                  "Número de Mensalidades por Valência",
+                                  rotation=0,
+                                  multi_color=True)
+    
+    return grafico
+
+
+def gerar_grafico_mensalidades_SS_por_valencia():
+    valencias = Sala.objects.values_list('sala_valencia', flat=True).distinct()
+    mensalidades = ComparticipacaoMensalSs.objects.all()
+    
+    num_mensalidades = {valencia: 0 for valencia in valencias}
+    
+    for mensalidade in mensalidades:
+        aluno = Aluno.objects.get(aluno_id = mensalidade.aluno_id.aluno_id)
+        valencia = aluno.sala_id.sala_valencia
+        num_mensalidades[valencia] += 1
+    
+    grafico = gerar_grafico_pizza_relatorios(["Valência", num_mensalidades.keys()],
+                                  ["Número de Mensalidades SS", num_mensalidades.values()], 
+                                  "Número de Mensalidades SS por Valência",
+                                  rotation=0,
+                                  multi_color=True)
+    
+    return grafico

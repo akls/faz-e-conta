@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import *
-from .forms import *
+from ..models import *
+from ..forms import *
 
 def insert_aluno_view(request):
     if request.method == 'POST':
@@ -11,7 +11,7 @@ def insert_aluno_view(request):
             return redirect(reverse('index'))
     else:
         form = AlunoForm()
-    return render(request, 'insert_aluno.html', {'form': form})
+    return render(request, 'insert/insert_aluno.html', {'form': form})
 
 def insert_responsavel_educativo_view(request):
     if request.method == 'POST':
@@ -21,7 +21,7 @@ def insert_responsavel_educativo_view(request):
             return redirect(reverse('index'))
     else:
         form = Responsavel_educativoForm()
-    return render(request, 'insert_responsavel_educativo.html', {'form': form})
+    return render(request, 'insert/insert_responsavel_educativo.html', {'form': form})
 
 def insert_aluno_saida_view(request):
     if request.method == 'POST':
@@ -31,7 +31,7 @@ def insert_aluno_saida_view(request):
             return redirect(reverse('index'))
     else:
         form = Aluno_saidaForm()
-    return render(request, 'insert_aluno_saida.html', {'form': form})
+    return render(request, 'insert/insert_aluno_saida.html', {'form': form})
 
 def insert_vacinacao_view(request):
     if request.method == 'POST':
@@ -41,7 +41,7 @@ def insert_vacinacao_view(request):
             return redirect(reverse('index'))
     else:
         form = VacinacaoForm()
-    return render(request, 'insert_vacinacao.html', {'form': form})
+    return render(request, 'insert/insert_vacinacao.html', {'form': form})
 
 def insert_despesa_fixa_view(request):
     if request.method == 'POST':
@@ -51,7 +51,7 @@ def insert_despesa_fixa_view(request):
             return redirect(reverse('index'))
     else:
         form = Despesa_fixaForm()
-    return render(request, 'insert_despesa_fixa.html', {'form': form})
+    return render(request, 'insert/insert_despesa_fixa.html', {'form': form})
 
 def insert_despesas_variavel_view(request):
     if request.method == 'POST':
@@ -61,7 +61,7 @@ def insert_despesas_variavel_view(request):
             return redirect(reverse('index'))
     else:
         form = Despesas_variavelForm()
-    return render(request, 'insert_despesas_variavel.html', {'form': form})
+    return render(request, 'insert/insert_despesas_variavel.html', {'form': form})
 
 def insert_salario_view(request):
     if request.method == 'POST':
@@ -71,7 +71,7 @@ def insert_salario_view(request):
             return redirect(reverse('index'))
     else:
         form = SalarioForm()
-    return render(request, 'insert_salario.html', {'form': form})
+    return render(request, 'insert/insert_salario.html', {'form': form})
 
 def insert_link_filiacao_view(request):
     if request.method == 'POST':
@@ -81,7 +81,7 @@ def insert_link_filiacao_view(request):
             return redirect(reverse('index'))
     else:
         form = Link_filiacaoForm()
-    return render(request, 'insert_link_filiacao.html', {'form': form})
+    return render(request, 'insert/insert_link_filiacao.html', {'form': form})
 
 def insert_sala_view(request):
     if request.method == 'POST':
@@ -91,7 +91,7 @@ def insert_sala_view(request):
             return redirect(reverse('index'))
     else:
         form = SalaForm()
-    return render(request, 'insert_sala.html', {'form': form})
+    return render(request, 'insert/insert_sala.html', {'form': form})
 
 def insert_mensalidade_aluno_view(request):
     if request.method == 'POST':
@@ -101,7 +101,7 @@ def insert_mensalidade_aluno_view(request):
             return redirect(reverse('index'))
     else:
         form = Mensalidade_alunoForm()
-    return render(request, 'insert_mensalidade_aluno.html', {'form': form})
+    return render(request, 'insert/insert_mensalidade_aluno.html', {'form': form})
 
 def insert_aluno_financas_view(request):
     if request.method == 'POST':
@@ -111,7 +111,7 @@ def insert_aluno_financas_view(request):
             return redirect(reverse('index'))
     else:
         form = Aluno_financasForm()
-    return render(request, 'insert_aluno_financas.html', {'form': form})
+    return render(request, 'insert/insert_aluno_financas.html', {'form': form})
 
 def insert_aluno_finacas_calc_view(request):
     if request.method == 'POST':
@@ -121,7 +121,7 @@ def insert_aluno_finacas_calc_view(request):
             return redirect(reverse('index'))
     else:
         form = Aluno_finacas_calcForm()
-    return render(request, 'insert_aluno_finacas_calc.html', {'form': form})
+    return render(request, 'insert/insert_aluno_finacas_calc.html', {'form': form})
 
 def insert_funcionario_view(request):
     if request.method == 'POST':
@@ -131,7 +131,7 @@ def insert_funcionario_view(request):
             return redirect(reverse('index'))
     else:
         form = FuncionarioForm()
-    return render(request, 'insert_funcionario.html', {'form': form})
+    return render(request, 'insert/insert_funcionario.html', {'form': form})
 
 def insert_comparticipacao_mensal_ss_view(request):
     if request.method == 'POST':
@@ -141,7 +141,7 @@ def insert_comparticipacao_mensal_ss_view(request):
             return redirect(reverse('index'))
     else:
         form = Comparticipacao_mensal_ssForm()
-    return render(request, 'insert_comparticipacao_mensal_ss.html', {'form': form})
+    return render(request, 'insert/insert_comparticipacao_mensal_ss.html', {'form': form})
 
 def insert_vacina_view(request):
     if request.method == 'POST':
@@ -151,7 +151,7 @@ def insert_vacina_view(request):
             return redirect(reverse('index'))
     else:
         form = VacinaForm()
-    return render(request, 'insert_vacina.html', {'form': form})
+    return render(request, 'insert/insert_vacina.html', {'form': form})
 
 def insert_dose_view(request):
     if request.method == 'POST':
@@ -161,7 +161,7 @@ def insert_dose_view(request):
             return redirect(reverse('index'))
     else:
         form = DoseForm()
-    return render(request, 'insert_dose.html', {'form': form})
+    return render(request, 'insert/insert_dose.html', {'form': form})
 
 def insert_divida_view(request):
     if request.method == 'POST':
@@ -171,7 +171,7 @@ def insert_divida_view(request):
             return redirect(reverse('index'))
     else:
         form = DividaForm()
-    return render(request, 'insert_divida.html', {'form': form})
+    return render(request, 'insert/insert_divida.html', {'form': form})
 
 def insert_acordo_view(request):
     if request.method == 'POST':
@@ -181,5 +181,5 @@ def insert_acordo_view(request):
             return redirect(reverse('index'))
     else:
         form = AcordoForm()
-    return render(request, 'insert_acordo.html', {'form': form})
+    return render(request, 'insert/insert_acordo.html', {'form': form})
 

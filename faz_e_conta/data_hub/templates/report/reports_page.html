@@ -24,6 +24,9 @@
                 alert("ID do aluno não inserido. Por favor, tente novamente.");
             }
         }
+        function gerarPDFMensal() {
+            window.location.href = `/gerar-pdf-mensal/`;
+        }
         
     </script>
     {% endblock %}
@@ -35,5 +38,6 @@
         <button onclick="reportAlunoSala()">Gerar PDF de Alunos por sala</button>
         <button onclick="gerarPDF('MensalidadeAluno')">Gerar PDF de Mensalidade Aluno</button>
         <button onclick="gerarPDFAluno()">Gerar PDF de um Aluno</button>
+        <button onclick="gerarPDFMensal()">Gerar PDF Mensal</button>
     {% endblock %}
 </body>
