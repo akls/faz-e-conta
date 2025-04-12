@@ -4,271 +4,198 @@
 import pandas as pd
 import datetime
 import socket
+import os
+
+from django.db import models
+import django.utils as du
+
+# Utilitário para IP
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 
-def create_model(df, table_name):
-    # Function to create models
+def get_hostname_ip():
+    return socket.gethostbyname(socket.gethostname())
 
-    # Start the class definition
-    info = f"""class {table_name.title().replace("_","")}(models.Model):
+def create_model(df, table_name):
+    info = f"""class {table_name.title().replace("_", "")}(models.Model):
     class Meta:
         db_table = '{table_name}'\n"""
     atributes = []
-    
-    # Iterate over each row in the dataframe to define fields
+
     for _, row in df.iterrows():
         atributes.append(row["column_name"])
         field_declaration = f"    {row['column_name']} = models.{row['django_field_type']}("
         params = []
-        
-        # Auto ID field
+
         if row["auto_id"] == "Yes":
             params.append("primary_key=True")
-        
-        # If CharField, check for max_length
+
         if row["django_field_type"] == "CharField":
             max_length = int(row["datatype_parameters"]) if pd.notna(row["datatype_parameters"]) else 255
             params.append(f"max_length={max_length}")
 
-        # If ForeignKey, set correctly
         if row["django_field_type"] == "ForeignKey":
-            params.append(f"to='{row['datatype_parameters'].title().replace("_","")}', on_delete=models.CASCADE")
+            params.append(f"to='{row['datatype_parameters'].title().replace('_','')}', on_delete=models.CASCADE, db_column='{row['column_name']}'")
 
-        # If BooleanField, set default correctly
         if row["django_field_type"] == "BooleanField":
             default_value = False if pd.isna(row["datatype_parameters"]) else row["datatype_parameters"]
             params.append(f"default={default_value}")
 
-        # If DateField, correct invalid default
         if row["django_field_type"] == "DateField":
-            params.append("default= du.timezone.now")
+            params.append("default=du.timezone.now")
 
-        # NULL constraints
         if row["null_constraint"] != "NOT NULL":
             params.append("null=True, blank=True")
         else:
             if row["django_field_type"] == "CharField":
                 params.append("default=''")
-            elif row["django_field_type"] == "BooleanField":
-                params.append("default=False")
-        
-        # Construct the final field declaration line
+
         field_declaration += ", ".join(params) + ")"
         info += field_declaration + "\n"
-    
-    # Add the __str__ method for the model
+
     info += """
     def __str__(self):
-        return f"{""" + f"self.{atributes[1]}" + "} {self. " + f"{atributes[2]}" + "}, " + f"{atributes[0].replace("_", " ").title()}: " + "{" + f"self.{atributes[0]}" + '}"\n'
-    
+        return f""" + f"self.{atributes[1]} {{self.{atributes[2]}}}, {atributes[0].replace('_', ' ').title()}: {{self.{atributes[0]}}}"""
+
     return info
 
+def write_file(path, content):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
 
-def read_cdm(sheet_name="Table Summary"):
+def read_excel_sheet(file_path, sheet_name):
+    return pd.read_excel(file_path, sheet_name)
+
+def generate_code():
     file_path = "resources/cdm/cdm_fazeconta.xlsx"
     models_path = "faz_e_conta/data_hub/models.py"
     admin_path = "faz_e_conta/data_hub/admin.py"
     forms_path = "faz_e_conta/data_hub/forms.py"
-    form_views_path = models_path.replace("models.py", "auto_gen_form_views.py")
-    id_views_path = models_path.replace("models.py", "auto_gen_id_views.py")
+    form_views_path = models_path.replace("models.py", "auto_gen/auto_gen_form_views.py")
+    id_views_path = models_path.replace("models.py", "auto_gen/auto_gen_id_views.py")
 
     try:
-        table_summary_df = pd.read_excel(file_path, sheet_name)
-        if "table_name" not in table_summary_df.columns:
-            print("Erro: A coluna 'table_name' não está presente na planilha 'Table Summary'.")
-            return
+        table_summary_df = read_excel_sheet(file_path, "Table Summary")
+        class_list = []
 
-        class_list = generate_models(table_summary_df, file_path, models_path)
-        generate_admin(class_list, admin_path)
-        generate_forms(class_list, file_path, forms_path)
-        generate_form_views(class_list, form_views_path)
+        with open(models_path, "w", encoding="utf-8") as f:
+            f.write("from django.db import models\nimport datetime\nimport django.utils as du\n\n")
+            for table_name in table_summary_df["table_name"].dropna():
+                df = read_excel_sheet(file_path, sheet_name=table_name)
+                if not df.empty:
+                    model_code = create_model(df, table_name)
+                    f.write(f"{model_code}\n")
+                    class_list.append(table_name.capitalize())
+
+        generate_admin(admin_path, class_list)
+        generate_forms(forms_path, file_path, class_list)
+        generate_form_views(form_views_path, class_list)
         generate_html_forms(class_list)
         generate_form_urls(class_list)
         generate_links_html(class_list)
-        generate_id_views(class_list, id_views_path)
-        generate_show_id_urls(class_list)
-        print("Process finished successfully!")
+        generate_id_views(id_views_path, class_list)
+        generate_id_html(class_list)
+        generate_id_urls(class_list)
+
     except Exception as e:
-        print(f"Erro ao ler a planilha 'Table Summary': {e}")
-    
-    
-def generate_models(table_summary_df, file_path, models_path):
-    print("Creating models on models.py...")
-    class_list = []
-    
-    with open(models_path, "w", encoding="utf-8") as arquivo:
-        arquivo.write("from django.db import models\nimport datetime\nimport django.utils as du\n\n")
-        
-        for table_name in table_summary_df["table_name"].dropna().tolist():
-            try:
-                sheet_df = pd.read_excel(file_path, sheet_name=table_name)
-                if not sheet_df.empty:
-                    model_code = create_model(sheet_df, table_name)
-                    arquivo.write(f"{model_code}\n")
-                    class_list.append(table_name.capitalize())
-            except Exception as e:
-                print(f"Erro ao ler a planilha '{table_name}': {e}")
-    
-    return class_list
+        print(f"Erro: {e}")
 
+def generate_admin(path, class_list):
+    content = "from django.contrib import admin\nfrom .models import *\n\n"
+    for cls in class_list:
+        content += f"admin.site.register({cls.title().replace('_','')})\n"
+    write_file(path, content)
 
-def generate_admin(class_list, admin_path):
-    print("Adding classes to admin.py...")
-    with open(admin_path, "w", encoding="utf-8") as arquivo:
-        arquivo.write("from django.contrib import admin\n")
-        arquivo.write("from .models import *\n\n# Register your models here.\n\n")
-        for table_name in class_list:
-            arquivo.write(f"admin.site.register({table_name.title().replace('_','')})\n")
+def generate_forms(path, file_path, class_list):
+    content = "from django import forms\nfrom .models import *\nfrom .widgets import *\n\n"
+    for cls in class_list:
+        df = read_excel_sheet(file_path, sheet_name=cls.lower())
+        content += f"class {cls}Form(forms.ModelForm):\n"
+        content += "    class Meta:\n"
+        content += f"        model = {cls.title().replace('_','')}\n"
+        content += "        fields = ['" + "', '".join(df["column_name"].tolist()) + "']\n"
+        content += "        widgets = default_widget()\n\n"
+    write_file(path, content)
 
-
-def generate_forms(class_list, file_path, forms_path):
-    print("Adding classes to forms.py...")
-    with open(forms_path, "w", encoding="utf-8") as arquivo:
-        arquivo.write("from django import forms\nfrom .models import *\nfrom .widgets import *\n\n")
-        for table_name in class_list:
-            sheet_df = pd.read_excel(file_path, sheet_name=table_name.lower())
-            arquivo.write(f"class {table_name}Form(forms.ModelForm):\n")
-            arquivo.write("    class Meta:\n")
-            arquivo.write(f"        model = {table_name.title().replace('_','')}\n")
-            arquivo.write("        fields = ['" + "', '".join(sheet_df["column_name"].tolist()) + "']\n\n")
-            arquivo.write(f"        widgets = {table_name}_widget()\n\n")
-
-
-def generate_form_views(class_list, form_views_path):
-    print("Adding views to form_views.py...")
-    with open(form_views_path, "w", encoding="utf-8") as arquivo:
-        arquivo.write("from django.shortcuts import render, redirect\nfrom django.urls import reverse\nfrom .models import *\nfrom .forms import *\n\n")
-        for table_name in class_list:
-            arquivo.write(f"def insert_{table_name.lower()}_view(request):\n")
-            arquivo.write("    if request.method == 'POST':\n")
-            arquivo.write(f"        form = {table_name}Form(request.POST)\n")
-            arquivo.write("        if form.is_valid():\n")
-            arquivo.write("            form.save()\n")
-            arquivo.write("            return redirect(reverse('index'))\n")
-            arquivo.write("    else:\n")
-            arquivo.write(f"        form = {table_name}Form()\n")
-            arquivo.write(f"    return render(request, 'insert_{table_name.lower()}.html', {{'form': form}})\n\n")
-
+def generate_form_views(path, class_list):
+    content = "from django.shortcuts import render, redirect\nfrom django.urls import reverse\nfrom ..models import *\nfrom ..forms import *\n\n"
+    for cls in class_list:
+        lc = cls.lower()
+        content += f"def insert_{lc}_view(request):\n"
+        content += f"    if request.method == 'POST':\n        form = {cls}Form(request.POST)\n        if form.is_valid():\n            form.save()\n            return redirect(reverse('index'))\n    else:\n        form = {cls}Form()\n    return render(request, 'insert/insert_{lc}.html', {{'form': form}})\n\n"
+    write_file(path, content)
 
 def generate_html_forms(class_list):
-    print("Creating HTML files for forms...")
-    for table_name in class_list:
-        form_html_path = f"faz_e_conta/data_hub/templates/insert_{table_name.lower()}.html"
-        with open(form_html_path, "w", encoding="utf-8") as arquivo:
-            arquivo.write(f"<html lang='pt'>\n<head>\n    <meta charset='UTF-8'>\n    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n    <title>Inserir {table_name}</title>\n")
-            arquivo.write("    <style>\n")
-            arquivo.write("        body {\n")
-            arquivo.write("            font-family: Arial, sans-serif;\n")
-            arquivo.write("            background-color: #f4f4f4;\n")
-            arquivo.write("            display: flex;\n")
-            arquivo.write("            flex-direction: column;\n")
-            arquivo.write("            justify-content: flex-start;\n")
-            arquivo.write("            align-items: center;\n")
-            arquivo.write("            height: 100vh;\n")
-            arquivo.write("            margin: 20px 0;\n")
-            arquivo.write("            overflow-y: auto;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        form {\n")
-            arquivo.write("            background: white;\n")
-            arquivo.write("            padding: 20px;\n")
-            arquivo.write("            border-radius: 8px;\n")
-            arquivo.write("            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n")
-            arquivo.write("            width: 300px;\n")
-            arquivo.write("            text-align: center;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        h1 {\n")
-            arquivo.write("            text-align: center;\n")
-            arquivo.write("            color: #333;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        button {\n")
-            arquivo.write("            width: 100%;\n")
-            arquivo.write("            padding: 10px;\n")
-            arquivo.write("            background: #007bff;\n")
-            arquivo.write("            color: white;\n")
-            arquivo.write("            border: none;\n")
-            arquivo.write("            border-radius: 5px;\n")
-            arquivo.write("            cursor: pointer;\n")
-            arquivo.write("            font-size: 16px;\n")
-            arquivo.write("            transition: background 0.3s ease;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        button:hover {\n")
-            arquivo.write("            background: #0056b3;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        a {\n")
-            arquivo.write("            display: block;\n")
-            arquivo.write("            text-align: center;\n")
-            arquivo.write("            margin-top: 10px;\n")
-            arquivo.write("            text-decoration: none;\n")
-            arquivo.write("            color: #007bff;\n")
-            arquivo.write("            font-size: 16px;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        a:hover {\n")
-            arquivo.write("            text-decoration: underline;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        input, select, textarea {\n")
-            arquivo.write("            width: 90%;\n")
-            arquivo.write("            padding: 8px;\n")
-            arquivo.write("            margin: 8px 0;\n")
-            arquivo.write("            border: 1px solid #ccc;\n")
-            arquivo.write("            border-radius: 4px;\n")
-            arquivo.write("        }\n")
-            arquivo.write("\n")
-            arquivo.write("        label {\n")
-            arquivo.write("            font-weight: bold;\n")
-            arquivo.write("            color: #555;\n")
-            arquivo.write("        }\n")
-            arquivo.write("    </style>\n")
-                
-            arquivo.write("</head>\n<body>\n")
-            arquivo.write(f"    <h1>Inserir {table_name}</h1>\n")
-            arquivo.write("    <form method='post'>\n        {% csrf_token %}\n        {{ form.as_p }}\n        <button type='submit'>Inserir</button>\n")
-            arquivo.write("        <a href=\"{% url 'index' %}\">Voltar</a>\n    </form>\n</body>\n</html>\n")
-
+    style = 'style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;"'
+    for cls in class_list:
+        form_html_path = f"faz_e_conta/data_hub/templates/insert/insert_{cls.lower()}.html"
+        with open(form_html_path, "w", encoding="utf-8") as f:
+            f.write("<html lang='pt'>\n<head><meta charset='UTF-8'><title>Inserir {}</title></head>\n<body>\n".format(cls.replace("_", " ").title()))
+            f.write("<h1>Inserir {}</h1>\n<form method='post'>\n    {{% csrf_token %}}\n    {{ form.as_p }}\n    <button type='submit'>Inserir</button>\n    <br><a href='javascript:history.back()'>Voltar</a>\n</form>\n</body>\n</html>\n")
 
 def generate_form_urls(class_list):
-    print("Adding classes to form_url.py...")
-    with open("faz_e_conta/data_hub/auto_gen_form_url.py", "w", encoding="utf-8") as arquivo:
-        arquivo.write("from django.urls import path\nfrom . import views\n\n")
-        arquivo.write("def add_form_urlpatterns(urlpatterns):\n")
-        for table_name in class_list:
-            arquivo.write(f"    urlpatterns.append(path('insert_{table_name.lower()}/', views.insert_{table_name.lower()}_view, name='insert_{table_name.lower()}_view'))\n")
-        arquivo.write("\n    return urlpatterns\n")
-
+    path = "faz_e_conta/data_hub/auto_gen/auto_gen_form_url.py"
+    content = "from django.urls import path\nfrom .. import views\n\ndef add_form_urlpatterns(urlpatterns):\n"
+    for cls in class_list:
+        content += f"    urlpatterns.append(path('insert_{cls.lower()}/', views.insert_{cls.lower()}_view, name='insert_{cls.lower()}_view'))\n"
+    content += "    return urlpatterns\n"
+    write_file(path, content)
 
 def generate_links_html(class_list):
-    print("Adding links to links.html...")
-    with open("faz_e_conta/data_hub/templates/links.html", "w", encoding="utf-8") as arquivo:
-        for table_name in class_list:
-            arquivo.write(f"<a href=\"{{% url 'insert_{table_name.lower()}_view' %}}\">Inserir {table_name}</a><br>\n")
+    path = "faz_e_conta/data_hub/templates/links.html"
+    table = "<table>\n<tr><th>Inserir</th><th>Ver id1</th></tr>\n"
+    style = 'style="display: inline-block; margin-top: 10px; padding: 10px 15px;width: 75%; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;"'
+    for cls in class_list:
+        table += f"<tr><td><center><a href='{{% url 'insert_{cls.lower()}_view' %}}' {style}>Inserir {cls}</a></center></td><td><center><a href='{{% url '{cls.lower()}_view' {cls.lower()}_id=1 %}}' {style}>Ver {cls} com id 1</a></center></td></tr>\n"
+    table += "</table>\n"
+    content = table + "{%block links%}\n{%endblock%}\n" + table
+    write_file(path, content)
 
+def generate_id_views(path, class_list):
+    content = "from django.shortcuts import render\nfrom django.http import HttpResponse\nfrom ..models import *\n\n"
+    for cls in class_list:
+        model_name = cls.title().replace("_", "")
+        content += f"def show_{cls.lower()}_view(request, {cls.lower()}_id):\n"
+        content += f"    try:\n        data = {model_name}.objects.get({cls.lower()}_id={cls.lower()}_id)\n    except {model_name}.DoesNotExist:\n        return HttpResponse(f'<h1>{cls} with id={{ {cls.lower()}_id }} not found</h1>')\n    head = [field.name for field in {model_name}.objects.model._meta.fields]\n    data_dict = {{field: getattr(data, field, None) for field in head}}\n    return render(request, 'show/show_{cls.lower()}.html', {{'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]}})\n\n"
+    write_file(path, content)
 
-def generate_id_views(class_list, id_views_path):
-    print("Adding views to id_views.py...")
-    with open(id_views_path, "w", encoding="utf-8") as arquivo:
-        for table_name in class_list:
-            arquivo.write(f"def show_{table_name.lower()}_view(request, {table_name.lower()}_id):\n")
-            arquivo.write("    return render(request, 'show_{table_name.lower()}.html', {})\n\n")
+def generate_id_html(class_list):
+    for cls in class_list:
+        path = f"faz_e_conta/data_hub/templates/show/show_{cls.lower()}.html"
+        content = """{% load custom_filters %}
+<!DOCTYPE html>
+<html lang='en'>
+<head><meta charset='UTF-8'><title>{title} Information</title></head>
+<body>
+    <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
+    <table>
+        {% for field in head %}
+            {% if field != id %}
+                <tr align='left'>
+                    <th>{{ field|replace:'_id_id, '|replace:'_, '}}</th>
+                    {% if data_dict|get_item:field == None %}
+                        <td><hr style='border: none; border-top: 3px dashed black;'></td>
+                    {% else %}
+                        <td>{{ data_dict|get_item:field }}</td>
+                    {% endif %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    <a href="{% url 'index' %}">Voltar</a>
+</body>
+</html>
+""".replace('{title}', cls.replace('_', ' ').title())
+        write_file(path, content)
 
+def generate_id_urls(class_list):
+    path = "faz_e_conta/data_hub/auto_gen/auto_gen_show_id_url.py"
+    content = "from django.urls import path\nfrom .. import views\n\ndef add_show_id_urlpatterns(urlpatterns):\n"
+    for cls in class_list:
+        content += f"    urlpatterns.append(path('{cls.lower()}/<int:{cls.lower()}_id>/', views.show_{cls.lower()}_view, name='{cls.lower()}_view'))\n"
+    content += "    return urlpatterns\n"
+    write_file(path, content)
 
-def generate_show_id_urls(class_list):
-    print("Adding urls to id_views.py...")
-    with open("faz_e_conta/data_hub/auto_gen_show_id_url.py", "w", encoding="utf-8") as arquivo:
-        for table_name in class_list:
-            arquivo.write(f"urlpatterns.append(path('{table_name.lower()}/<int:id>/', views.show_{table_name.lower()}_view))\n")
-
-
-# Executar o gerador
-read_cdm()
-
-#
-# python manage.py runserver 0.0.0.0:8000 
-# print("URL to external axcess:")
-# print("https://"+IPAddr+":8000/")
+if __name__ == "__main__":
+    generate_code()
+    print("Process finished successfully!")
