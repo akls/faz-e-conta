@@ -21,6 +21,7 @@ urlpatterns = [
     path('gerar-pdf-aluno/<int:aluno_id>/', views.gerar_pdf_aluno, name='gerar_pdf_aluno'),
     path('report/aluno_sala/', views.reportAlunoSala, name='report_aluno_sala'),
     path('gerar-pdf-mensal/', views.reportMensal, name='report_mensal'),
+    path('gerar-pdf-mensal/<int:month>/<int:year>/', views.reportMensal, name='report_mensal'),
     
     # Views
     path('<str:model>/reports', views.reports, name='reports'),

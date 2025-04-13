@@ -14,6 +14,7 @@ from ..models import *
 
 from django.apps import apps
 from django.http import FileResponse, HttpResponse
+from datetime import datetime
 
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.lib.utils import ImageReader
@@ -209,9 +210,9 @@ def reportAlunoSala(request):
 
 
 # Other reports
-def reportMensal(request):
+def reportMensal(request, month=None, year=None):
     bullet_icons = ['➼', '➾', '➔']
-    now = datetime.datetime.now()
+    now = datetime.now()
     date_time = now.strftime('%d-%m-%Y %H:%M:%S')
     styles = getSampleStyleSheet()
     wrap_style = ParagraphStyle('WrapStyle', parent=styles['Normal'], wordWrap='CJK')
@@ -220,8 +221,14 @@ def reportMensal(request):
     buffer1 = io.BytesIO()
     doc1 = SimpleDocTemplate(buffer1, pagesize=A4)
     elements1 = []
-
-    elements1.append(Paragraph(f"Relatório Mensal gerado a {date_time}", styles['Title']))
+    if month == None or year == None:
+        elements1.append(Paragraph(f"Relatório gerado a {date_time}", styles['Title']))
+        elements1.append(Spacer(1, 12))
+    else:
+        elements1.append(Paragraph(f"Relatório do mes {month}/{year}", styles['Title']))
+        elements1.append(Paragraph(f"gerado a {date_time}", styles['Title']))
+        
+    elements1.append(Spacer(1, 12))
     elements1.append(Spacer(1, 12))
 
     graph_path = gerar_grafico_numero_alunos_por_valencia()
@@ -312,34 +319,54 @@ def reportMensal(request):
     buffer3 = io.BytesIO()
     doc3 = SimpleDocTemplate(buffer3, pagesize=A4)
     elements3 = []
-
-    fixed_expenses = float(DespesaFixa.objects.aggregate(sum=Sum('valor'))['sum'] or 0)
-    variable_expenses = float(DespesasVariavel.objects.aggregate(sum=Sum('valor'))['sum'] or 0)
+    
+    if month == None or year == None:
+        DespesasFixas = DespesaFixa.objects.all().values('valor')
+        DespesasVariaveis = DespesasVariavel.objects.all().values('valor')
+    else: 
+        DespesasFixas = DespesaFixa.objects.filter(data__month=month, data__year=year).values('valor')
+        DespesasVariaveis = DespesasVariavel.objects.filter(data__month=month, data__year=year).values('valor')
+    
+    fixed_expenses = float(DespesasFixas.aggregate(sum=Sum('valor'))['sum'] or 0)
+    variable_expenses = float(DespesasVariaveis.aggregate(sum=Sum('valor'))['sum'] or 0)
+    
     total_students = Aluno.objects.count() or 1
     
     cost_per_student = (
         fixed_expenses + variable_expenses - (total_fees_paid_by_students + total_fees_paid_by_ss)
-    ) / total_students
+    ) / total_students *-1
     
-    print(f"fixed_expenses: {fixed_expenses}")
-    print(f"variable_expenses: {variable_expenses}")
-    print(f"total_students: {total_students}")
-    print(f"total_fees_paid_by_students: {total_fees_paid_by_students}")
-    print(f"total_fees_paid_by_ss: {total_fees_paid_by_ss}")
-    
-    final_monthly_balance = (
+    final_balance = (
         total_fees_paid_by_students + total_fees_paid_by_ss
         - fixed_expenses - variable_expenses - payments_in_default
     )
     
-    elements3.append(Paragraph(f"Despesas do mes:", styles['Title']))
-    elements3.append(Paragraph(f"Despesas fixas do mês: {fixed_expenses:.2f}€", styles['Normal']))
+    
+    if month == None or year == None:
+        elements3.append(Paragraph(f"Despesas Gerais:", styles['Title']))
+        elements3.append(Paragraph(f"Despesas fixas Gerais: {fixed_expenses:.2f}€", styles['Normal']))
+        elements3.append(Spacer(1, 12))
+        elements3.append(Paragraph(f"Despesas variáveis Gerais: {variable_expenses:.2f}€", styles['Normal']))
+        elements3.append(Spacer(1, 12))
+    else:
+        elements3.append(Paragraph(f"Despesas do mes:", styles['Title']))
+        elements3.append(Paragraph(f"Despesas fixas do mês: {fixed_expenses:.2f}€", styles['Normal']))
+        elements3.append(Spacer(1, 12))
+        elements3.append(Paragraph(f"Despesas variáveis do mês: {variable_expenses:.2f}€", styles['Normal']))
+        elements3.append(Spacer(1, 12))
+    
+    
+    if cost_per_student > 0:
+        elements3.append(Paragraph(f"Valor médio por aluno: {cost_per_student:.2f}€", styles['Normal']))
+    else:
+        elements3.append(Paragraph(f"Valor médio por aluno: <font color='red'>{cost_per_student:.2f}€</font>", styles['Normal']))
     elements3.append(Spacer(1, 12))
-    elements3.append(Paragraph(f"Despesas variáveis do mês: {variable_expenses:.2f}€", styles['Normal']))
-    elements3.append(Spacer(1, 12))
-    elements3.append(Paragraph(f"Custo por aluno (Média): {cost_per_student:.2f}€", styles['Normal']))
-    elements3.append(Spacer(1, 12))
-    elements3.append(Paragraph(f"Balanço final mensal: {final_monthly_balance:.2f}€", styles['Normal']))
+    
+    
+    if final_balance > 0:
+        elements3.append(Paragraph(f"Balanço final: {final_balance:.2f}€", styles['Normal']))
+    else:
+        elements3.append(Paragraph(f"Balanço final: <font color='red'>{final_balance:.2f}€</font>", styles['Normal']))
     elements3.append(Spacer(1, 12))
 
     doc3.build(elements3)

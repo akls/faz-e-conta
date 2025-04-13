@@ -24,20 +24,75 @@
                 alert("ID do aluno não inserido. Por favor, tente novamente.");
             }
         }
+        function gerarPDFMensalEspecifico() {
+            // Solicita ao usuário que insira o ID do aluno
+            var mes = prompt("Por favor, insira o mes(numerico):");
+            var ano = prompt("Por favor, insira o ano(numerico):");
+        
+            // Verifica se o usuário inseriu um valor
+            if (mes && ano) {
+                window.location.href = `/gerar-pdf-mensal/${mes}/${ano}/`;
+            } 
+            else {
+                alert("Mes ou ano não inserido. Por favor, tente novamente.");
+            }
+        }
         function gerarPDFMensal() {
+            mes = new Date().getMonth() + 1; // Mes atual (0-11, por isso +1)
+            ano = new Date().getFullYear(); // Ano atual
+            window.location.href = `/gerar-pdf-mensal/${mes}/${ano}/`;
+        }
+        
+        function gerarPDFGlobal() {
             window.location.href = `/gerar-pdf-mensal/`;
         }
         
     </script>
+    <style>
+        .button_reports {
+            width: 200px; 
+            height: 50px; 
+            background-color: #607d8b; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px;
+        }
+        .button_reports:hover {
+            background-color: #546e7a;
+        }
+    </style>
     {% endblock %}
 </head>
 <body>
     {% block links %}
         <h1>Relatórios</h1>
         <!-- <button onclick="gerarPDF('MensalidadeAluno')">Gerar PDF de Mensalidade Aluno</button> -->
-        <button onclick="reportAlunoSala()">Gerar PDF de Alunos por sala</button>
-        <button onclick="gerarPDF('MensalidadeAluno')">Gerar PDF de Mensalidade Aluno</button>
-        <button onclick="gerarPDFAluno()">Gerar PDF de um Aluno</button>
-        <button onclick="gerarPDFMensal()">Gerar PDF Mensal</button>
+        <table style="width: 100%; text-align: center; margin-top: 20px;">
+            <tr>
+                <td>
+                    <button class="button_reports" onclick="reportAlunoSala()">Gerar Relatório de Alunos por Sala</button>
+                </td>
+                <td>
+                    <button class="button_reports" onclick="gerarPDF('MensalidadeAluno')">Gerar Relatório de Mensalidade Aluno</button>
+                </td>
+                <td>
+                    <button class="button_reports" onclick="gerarPDFAluno()">Gerar Relatório de um Aluno</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="button_reports" onclick="gerarPDFMensalEspecifico()">Gerar Relatório Mensal</button>
+                </td>
+                <td>
+                    <button class="button_reports" onclick="gerarPDFMensal()">Gerar Relatório Mês Atual</button>
+                </td>
+                <td>
+                    <button class="button_reports" onclick="gerarPDFGlobal()">Gerar Relatório Geral</button>
+                </td>
+            </tr>
+        </table>
+
     {% endblock %}
 </body>
