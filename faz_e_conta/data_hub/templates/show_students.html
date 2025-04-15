@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 
-
 {% block content %}
 <h1>Alunos</h1>
+
+<!-- Add Student Button -->
+<div style="text-align: right; margin-bottom: 10px;">
+    <a href="{% url 'insert_aluno_view' %}"
+        style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Adicionar
+        Aluno</a>
+</div>
 
 <!-- Filter Form -->
 <form method="GET" action="{% url 'show_students' %}">

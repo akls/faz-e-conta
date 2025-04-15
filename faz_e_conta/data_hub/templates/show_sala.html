@@ -1,29 +1,58 @@
+{% extends 'base.html' %}
 {% load custom_filters %}
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Sala Information</title>
-</head>
-<body>
-    <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
-    <table>
-        {% for field in head %}
-            {% if field != id %}
-                <tr align='left'>
-                    <th>{{ field|replace:'_id_id, '|replace:'_, '}}</th>
-                    {% if data_dict|get_item:field == None %}
-                        <td>
-                            <hr style='border: none; border-top: 3px dashed black;'>
-                        </td>
-                    {% else %}
-                        <td>{{ data_dict|get_item:field }}</td>
-                    {% endif %}
-                </tr>
-            {% endif %}
+
+{% block content %}
+<h1>Salas</h1>
+
+<!-- Filter Form -->
+<form method="GET">
+    <input type="text" name="valencia" placeholder="Pesquisar por Valência..." value="{{ query_valencia }}">
+    <input type="text" name="room" placeholder="Pesquisar por Sala..." value="{{ query_room }}">
+    <button type="submit">Filtrar</button>
+</form>
+
+<!-- List of Rooms -->
+<h2>Lista de Salas</h2>
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #ddd; padding: 10px;">Valência</th>
+            <th style="border: 1px solid #ddd; padding: 10px;">Sala</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sala in salas %}
+        <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+            <td>{{ sala.sala_valencia }}</td>
+            <td>{{ sala.sala_nome }}</td>
+        </tr>
         {% endfor %}
-    </table>
-    <a href="{% url 'show_students' %}">Voltar</a>
-</body>
-</html>
+    </tbody>
+</table>
+
+<!-- Assign Students to a Room -->
+<h2>Atribuir Alunos a uma Sala</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label for="room_id">Selecionar Sala:</label>
+    <select name="room_id" id="room_id">
+        {% for sala in salas %}
+        <option value="{{ sala.id }}">{{ sala.sala_valencia }} - {{ sala.sala_nome }}</option>
+        {% endfor %}
+    </select>
+
+    <h3>Selecionar Alunos:</h3>
+    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+        {% for student in students %}
+        <div>
+            <input type="checkbox" name="students" value="{{ student.id }}" id="student_{{ student.id }}">
+            <label for="student_{{ student.id }}">{{ student.nome_proprio }} {{ student.apelido }}</label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" style="margin-top: 10px;">Atribuir</button>
+</form>
+
+<a href="{% url 'starter_page' %}">Voltar</a>
+{% endblock %}

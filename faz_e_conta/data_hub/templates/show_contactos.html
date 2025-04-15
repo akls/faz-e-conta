@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Contactos</title>
+</head>
+
+<body>
+    <h1>Contactos</h1>
+
+    <!-- Add Responsavel Educativo Button -->
+    <div style="text-align: right; margin-bottom: 10px;">
+        <a href="{% url 'insert_responsavel_educativo_view' %}"
+            style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Adicionar
+            Responsável Educativo</a>
+    </div>
+
+    <form method="get">
+        <input type="text" name="q" placeholder="Pesquisar..." value="{{ query }}">
+        <!-- Dropdown para sala_valencia -->
+        <select name="sala">
+            <option value="">Todas as Salas</option>
+            {% for sala in salas %}
+            <option value="{{ sala }}" {% if sala == sala_filter %}selected{% endif %}>{{ sala }}</option>
+            {% endfor %}
+        </select>
+        <!-- Dropdown para sala_nome -->
+        <select name="sala_nome">
+            <option value="">Todos os Nomes de Sala</option>
+            {% for sala_nome in sala_nomes %}
+            <option value="{{ sala_nome }}" {% if sala_nome == sala_filter %}selected{% endif %}>{{ sala_nome }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                {% for item in head %}
+                <th style="border: 1px solid #ddd; padding: 10px;">
+                    {{ item|replace:"responsavel_nome_completo, Nome Completo do Responsável"|replace:"_, " }}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data_dict %}
+            <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+                {% for field in head %}
+                <td>
+                    {% if item|get_item:field == None %}
+                    <hr style="border: none; border-top: 2px dashed black;">
+                    {% else %}
+                    {{ item|get_item:field }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'show_students' %}">Voltar</a>
+</body>
+
+</html>
+{% endblock %}
