@@ -25,7 +25,7 @@ folder = "show_all/"
 
 
 
-def index(request, counter: int = 5):
+def index(request, counter: int = 1):
     folder_path = "resources/graficos"
     absolute_path = os.path.join(settings.BASE_DIR, folder_path)
 

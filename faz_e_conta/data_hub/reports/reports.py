@@ -208,7 +208,6 @@ def reportAlunoSala(request):
     return FileResponse(buffer, as_attachment=True, filename="relatorio_alunos_sala.pdf")
 
 
-
 # Other reports
 def reportMensal(request, month=None, year=None):
     bullet_icons = ['➼', '➾', '➔']
@@ -226,8 +225,8 @@ def reportMensal(request, month=None, year=None):
         elements1.append(Spacer(1, 12))
     else:
         elements1.append(Paragraph(f"Relatório do mes {month}/{year}", styles['Title']))
-        elements1.append(Paragraph(f"gerado a {date_time}", styles['Title']))
-        
+        elements1.append(Paragraph(f"Gerado a {date_time}", styles['Title']))
+
     elements1.append(Spacer(1, 12))
     elements1.append(Spacer(1, 12))
 

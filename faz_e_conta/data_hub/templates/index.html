@@ -2,12 +2,99 @@
 
 {% load custom_filters %}
 
-{% block links %}
+</style>
+{% block scripts %}
+<script>
+  function openImagePopup(element) {
+      let imgSrc = element.querySelector("img").src;
+      let popup = window.open("", "_blank", "width=800,height=600");
+      popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
+      popup.document.close();
+  }
 
+  function increaseColumnsCount() {
+    let counterElement = document.querySelector("td:nth-child(2)");
+    let table = document.getElementById("grafico-table");
+    let counter = parseInt(counterElement.textContent);
+
+    counter++;
+    counterElement.textContent = counter;
+
+    let rows = Array.from(table.querySelectorAll("tr"));
+    let images = [];
+    rows.forEach(row => {
+      images.push(...Array.from(row.querySelectorAll("td img")));
+      row.remove();
+    });
+
+    let newRow = document.createElement("tr");
+    images.forEach((img, index) => {
+      let cell = document.createElement("td");
+      cell.appendChild(img.parentElement.parentElement);
+      newRow.appendChild(cell);
+
+      if ((index + 1) % counter === 0) {
+        table.appendChild(newRow);
+        newRow = document.createElement("tr");
+      }
+    });
+
+    if (newRow.children.length > 0) {
+      table.appendChild(newRow);
+    }
+  }
+
+  function decreaseColumnsCount() {
+    let counterElement = document.querySelector("td:nth-child(2)");
+    let table = document.getElementById("grafico-table");
+    let counter = parseInt(counterElement.textContent);
+
+    if (counter > 1) {
+      counter--;
+      counterElement.textContent = counter;
+
+      let rows = Array.from(table.querySelectorAll("tr"));
+      let images = [];
+      rows.forEach(row => {
+        images.push(...Array.from(row.querySelectorAll("td img")));
+        row.remove();
+      });
+
+      let newRow = document.createElement("tr");
+      images.forEach((img, index) => {
+        let cell = document.createElement("td");
+        cell.appendChild(img.parentElement.parentElement);
+        newRow.appendChild(cell);
+
+        if ((index + 1) % counter === 0) {
+          table.appendChild(newRow);
+          newRow = document.createElement("tr");
+        }
+      });
+
+      if (newRow.children.length > 0) {
+        table.appendChild(newRow);
+      }
+    }
+  }
+  
+  </script> 
+{% endblock %}
+
+
+{% block links %}
+  
   <div class="container">
     <center>
       <h1>Dashboard</h1>
       <table>
+        <tr>
+          <td><button onclick="decreaseColumnsCount()">-</button></td>
+          <td><strong>{{ counter }}</strong></td>
+          <td><button onclick="increaseColumnsCount()">+</button></td>
+        </tr>
+      </table>
+      <table id="grafico-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
         <tr>
           {% if graficos%}
             {% for grafico in graficos %}
@@ -17,14 +104,7 @@
                     <a href="" onclick="openImagePopup(this)">
                       <img src="/media/{{ grafico }}" class="img-fluid" style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border: 1px solid #ccc; padding: 10px;" alt="Gráfico" title="Clique para ampliar" onclick="openImagePopup(this)">
                     </a>
-                    <script>
-                      function openImagePopup(element) {
-                          let imgSrc = element.querySelector("img").src;
-                          let popup = window.open("", "_blank", "width=800,height=600");
-                          popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
-                          popup.document.close();
-                      }
-                      </script> 
+                    
                   </div>
                 </td>
                 {% if forloop.counter|divisibleby:counter and not forloop.last %}

@@ -8,7 +8,7 @@ from .auto_gen.auto_gen_show_id_url import *
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('<int:counter>', views.index, name='index'),
+    #path('<int:counter>', views.index, name='index'),
     
     # Exports
     path('export_csv/<str:model>/', views.export_csv, name='export_csv'),
