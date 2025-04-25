@@ -20,6 +20,8 @@
     <!-- Add more fields as needed -->
 </table>
 
+<a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
+
 {% if responsavel %}
 <h2>Responsável Educativo</h2>
 <table>
@@ -37,6 +39,8 @@
     </tr>
     <!-- Add more fields as needed -->
 </table>
+<a href="{% url 'edit_responsavel_educativo' responsavel_id=responsavel.responsavel_educativo_id %}">Editar
+    Responsável</a>
 {% else %}
 <p>Sem responsável educativo associado.</p>
 {% endif %}

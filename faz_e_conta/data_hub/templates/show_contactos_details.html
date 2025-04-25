@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Detalhes do Responsável Educativo</h1>
+
+<h2>Informações do Responsável</h2>
+<table>
+    <tr>
+        <th>Nome:</th>
+        <td>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</td>
+    </tr>
+    <tr>
+        <th>Telefone:</th>
+        <td>{{ responsavel.telefone }}</td>
+    </tr>
+    <tr>
+        <th>Email:</th>
+        <td>{{ responsavel.email }}</td>
+    </tr>
+    <tr>
+        <th>Morada:</th>
+        <td>{{ responsavel.morada }}</td>
+    </tr>
+    <!-- Add more fields as needed -->
+</table>
+
+<h2>Aluno Associado</h2>
+<table>
+    <tr>
+        <th>Nome:</th>
+        <td>{{ aluno.nome_proprio }} {{ aluno.apelido }}</td>
+    </tr>
+    <tr>
+        <th>Processo:</th>
+        <td>{{ aluno.processo }}</td>
+    </tr>
+    <!-- Add more fields as needed -->
+</table>
+
+<a href="{% url 'show_contactos' %}">Voltar</a>
+{% endblock %}

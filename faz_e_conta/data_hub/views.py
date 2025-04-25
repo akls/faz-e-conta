@@ -125,6 +125,16 @@ def show_contactos(request):
     }
     return render(request, "show_contactos.html", context)
 
+def show_contactos_details(request, responsavel_id):
+    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
+    aluno = responsavel.aluno_id
+
+    context = {
+        "responsavel": responsavel,
+        "aluno": aluno,
+    }
+    return render(request, "show_contactos_details.html", context)
+
 def show_aluno(request):
     query = request.GET.get("q", "")  # Get search query from the URL
     sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
@@ -235,3 +245,63 @@ def show_student_details(request, aluno_id):
         "sala": sala,
     }
     return render(request, "show_student_details.html", context)
+
+def edit_student(request, aluno_id):
+    aluno = get_object_or_404(Aluno, pk=aluno_id)
+    if request.method == "POST":
+        form = AlunoForm(request.POST, instance=aluno)
+        if form.is_valid():
+            form.save()
+            return redirect('show_student_details', aluno_id=aluno_id)
+    else:
+        form = AlunoForm(instance=aluno)
+    return render(request, 'edit_student.html', {'form': form})
+
+def edit_responsavel_educativo(request, responsavel_id):
+    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
+    if request.method == "POST":
+        form = Responsavel_educativoForm(request.POST, instance=responsavel)  # Use the correct form name
+        if form.is_valid():
+            form.save()
+            return redirect('show_contactos')
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = Responsavel_educativoForm(instance=responsavel)  # Use the correct form name
+    return render(request, 'edit_responsavel_educativo.html', {'form': form})
+
+def insert_aluno_view(request):
+    if request.method == "POST":
+        form = AlunoForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the form data to the database
+            return redirect('show_students')  # Redirect to the students list page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = AlunoForm()
+    return render(request, 'insert_aluno.html', {'form': form})
+
+def insert_responsavel_educativo_view(request):
+    if request.method == "POST":
+        form = Responsavel_educativoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_contactos')  # Redirect to the contactos list page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = Responsavel_educativoForm()
+    return render(request, 'insert_responsavel_educativo.html', {'form': form})
+
+def insert_funcionario_view(request):
+    if request.method == "POST":
+        form = FuncionarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('starter_page')  # Redirect to the starter page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = FuncionarioForm()
+    return render(request, 'insert_funcionario.html', {'form': form})

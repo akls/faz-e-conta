@@ -11,6 +11,9 @@ urlpatterns = [
     path('salas/', views.show_salas, name='show_salas'),
     path('despesas/', views.show_despesas, name='show_despesas'),
     path('aluno/<int:aluno_id>/', views.show_student_details, name='show_student_details'),
+    path('aluno/<int:aluno_id>/editar/', views.edit_student, name='edit_student'),
+    path('responsavel/<int:responsavel_id>/editar/', views.edit_responsavel_educativo, name='edit_responsavel_educativo'),
+    path('responsavel/<int:responsavel_id>/', views.show_contactos_details, name='show_contactos_details'),
 ]
 
 urlpatterns = add_form_urlpatterns(urlpatterns)
