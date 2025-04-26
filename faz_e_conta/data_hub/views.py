@@ -98,7 +98,7 @@ def show_contactos(request):
             Q(responsavel_nome_completo__icontains=query)
         )
 
-# Apply sala_valencia or sala_nome filter
+    # Apply sala_valencia or sala_nome filter
     if sala_filter:
         data = data.filter(
             Q(sala_id__sala_valencia__icontains=sala_filter) |
@@ -106,7 +106,7 @@ def show_contactos(request):
         )
 
     # Define the fields to display
-    head = ["nome_proprio", "apelido", "responsavel_nome_completo", "responsaveleducativo__telefone", "responsaveleducativo__email", "sala_id__sala_valencia", "sala_id__sala_nome"]
+    head = ["aluno_id", "nome_proprio", "apelido", "responsaveleducativo__responsavel_educativo_id", "responsavel_nome_completo", "responsaveleducativo__telefone", "responsaveleducativo__email", "sala_id__sala_valencia", "sala_id__sala_nome"]
     data_dict = list(data.values(*head))
 
     # Get unique sala_valencia and sala_nome values for the dropdown
@@ -175,8 +175,8 @@ def show_salas(request):
     query_valencia = request.GET.get("valencia", "")  # Filter by valencia
     query_room = request.GET.get("room", "")  # Filter by room
 
-    # Base queryset for rooms
-    salas = Sala.objects.all()
+    # Base queryset for rooms, ordered alphabetically
+    salas = Sala.objects.all().order_by('sala_valencia', 'sala_nome')
 
     # Apply filters
     if query_valencia:

@@ -1,41 +1,78 @@
-{% extends 'base.html' %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang='en'>
 
-{% block content %}
-<h1>Detalhes do Responsável Educativo</h1>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Detalhes do Responsável Educativo</title>
+</head>
 
-<h2>Informações do Responsável</h2>
-<table>
-    <tr>
-        <th>Nome:</th>
-        <td>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</td>
-    </tr>
-    <tr>
-        <th>Telefone:</th>
-        <td>{{ responsavel.telefone }}</td>
-    </tr>
-    <tr>
-        <th>Email:</th>
-        <td>{{ responsavel.email }}</td>
-    </tr>
-    <tr>
-        <th>Morada:</th>
-        <td>{{ responsavel.morada }}</td>
-    </tr>
-    <!-- Add more fields as needed -->
-</table>
+<body>
+    <h1>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</h1>
+    <table>
+        <tr>
+            <th>Data de Nascimento:</th>
+            <td>{{ responsavel.data_nascimento }}</td>
+        </tr>
+        <tr>
+            <th>Documento:</th>
+            <td>{{ responsavel.documento }}</td>
+        </tr>
+        <tr>
+            <th>Número do Documento:</th>
+            <td>{{ responsavel.numero_documento }}</td>
+        </tr>
+        <tr>
+            <th>Data de Validade:</th>
+            <td>{{ responsavel.data_validade }}</td>
+        </tr>
+        <tr>
+            <th>Telefone:</th>
+            <td>{{ responsavel.telefone }}</td>
+        </tr>
+        <tr>
+            <th>Email:</th>
+            <td>{{ responsavel.email }}</td>
+        </tr>
+        <tr>
+            <th>Morada:</th>
+            <td>{{ responsavel.morada }}</td>
+        </tr>
+        <tr>
+            <th>Código Postal:</th>
+            <td>{{ responsavel.codigo_postal }}</td>
+        </tr>
+        <tr>
+            <th>Concelho:</th>
+            <td>{{ responsavel.concelho }}</td>
+        </tr>
+        <tr>
+            <th>Freguesia:</th>
+            <td>{{ responsavel.fregesia }}</td>
+        </tr>
+        <tr>
+            <th>Profissão:</th>
+            <td>{{ responsavel.profissao }}</td>
+        </tr>
+        <tr>
+            <th>Morada do Emprego:</th>
+            <td>{{ responsavel.morada_emprego }}</td>
+        </tr>
+        <tr>
+            <th>Horário de Trabalho:</th>
+            <td>{{ responsavel.horario_trabalho }}</td>
+        </tr>
+    </table>
 
-<h2>Aluno Associado</h2>
-<table>
-    <tr>
-        <th>Nome:</th>
-        <td>{{ aluno.nome_proprio }} {{ aluno.apelido }}</td>
-    </tr>
-    <tr>
-        <th>Processo:</th>
-        <td>{{ aluno.processo }}</td>
-    </tr>
-    <!-- Add more fields as needed -->
-</table>
+    <!-- Button to edit the information -->
+    <div style="margin-top: 20px;">
+        <a href="{% url 'edit_responsavel_educativo' responsavel_id=responsavel.responsavel_educativo_id %}"
+            style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Editar
+            Informações</a>
+    </div>
 
-<a href="{% url 'show_contactos' %}">Voltar</a>
-{% endblock %}
+    <a href="{% url 'show_contactos' %}" style="margin-top: 10px; display: inline-block;">Voltar</a>
+</body>
+
+</html>

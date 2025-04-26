@@ -48,7 +48,7 @@
                     {{ item|replace:"responsavel_nome_completo, Nome Completo do Responsável"|replace:"_, " }}
                 </th>
                 {% endfor %}
-                <th style="border: 1px solid #ddd; padding: 10px;">Editar</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Detalhes</th>
             </tr>
         </thead>
         <tbody>
@@ -65,10 +65,10 @@
                 {% endfor %}
                 <td>
                     {% if item.responsaveleducativo__responsavel_educativo_id %}
-                    <a href="{% url 'edit_responsavel_educativo' responsavel_id=item.responsaveleducativo__responsavel_educativo_id %}"
-                        style="padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Editar</a>
+                    <a href="{% url 'show_contactos_details' responsavel_id=item.responsaveleducativo__responsavel_educativo_id %}"
+                        style="padding: 5px 10px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">Detalhes</a>
                     {% else %}
-                    <span>Sem Responsável</span>
+                    <span>Sem Detalhes</span>
                     {% endif %}
                 </td>
             </tr>
@@ -76,7 +76,7 @@
         </tbody>
     </table>
 
-    <a href="{% url 'show_students' %}">Voltar</a>
+    <a href="{% url 'starter_page' %}">Voltar</a>
 </body>
 
 </html>

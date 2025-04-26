@@ -36,7 +36,7 @@
     {% csrf_token %}
     <label for="room_id">Selecionar Sala:</label>
     <select name="room_id" id="room_id">
-        {% for sala in salas %}
+        {% for sala in salas|dictsort:"sala_nome" %}
         <option value="{{ sala.id }}">{{ sala.sala_valencia }} - {{ sala.sala_nome }}</option>
         {% endfor %}
     </select>
@@ -46,7 +46,14 @@
         {% for student in students %}
         <div>
             <input type="checkbox" name="students" value="{{ student.id }}" id="student_{{ student.id }}">
-            <label for="student_{{ student.id }}">{{ student.nome_proprio }} {{ student.apelido }}</label>
+            <label for="student_{{ student.id }}">
+                {{ student.nome_proprio }} {{ student.apelido }}
+                {% if student.sala_id %}
+                ({{ student.sala_id.sala_valencia }} - {{ student.sala_id.sala_nome }})
+                {% else %}
+                (Sem sala associada)
+                {% endif %}
+            </label>
         </div>
         {% endfor %}
     </div>
