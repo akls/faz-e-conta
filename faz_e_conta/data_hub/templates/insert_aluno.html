@@ -56,6 +56,15 @@
             width: 100%;
         }
 
+        .form-container input:invalid {
+            border-color: red;
+        }
+
+        .form-container .required::after {
+            content: " *";
+            color: red;
+        }
+
         .form-container .actions {
             display: flex;
             justify-content: flex-end;
@@ -98,15 +107,28 @@
 <body>
     <div class="form-container">
         <h1>Inserir Aluno</h1>
-        <form method='post'>
+        <form method='post' id="form">
             {% csrf_token %}
             {{ form.as_p }}
         </form>
         <div class="actions">
-            <button type='submit' form="form">Inserir</button>
+            <button type='submit' form="form" onclick="validateForm()">Inserir</button>
             <a href="{% url 'starter_page' %}">Voltar</a>
         </div>
     </div>
+
+    <script>
+        function validateForm() {
+            const inputs = document.querySelectorAll("input:required");
+            inputs.forEach(input => {
+                if (!input.value) {
+                    input.style.borderColor = "red";
+                } else {
+                    input.style.borderColor = "#ccc";
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -6,8 +6,26 @@
 
 <!-- Filter Form -->
 <form method="GET">
-    <input type="text" name="valencia" placeholder="Pesquisar por Valência..." value="{{ query_valencia }}">
-    <input type="text" name="room" placeholder="Pesquisar por Sala..." value="{{ query_room }}">
+    <label for="valencia">Valência:</label>
+    <select name="valencia" id="valencia">
+        <option value="">Todas as Valências</option>
+        {% for valencia in valencias %}
+        <option value="{{ valencia }}" {% if valencia == query_valencia %}selected{% endif %}>
+            {{ valencia }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="room">Sala:</label>
+    <select name="room" id="room">
+        <option value="">Todas as Salas</option>
+        {% for room in room_names %}
+        <option value="{{ room }}" {% if room == query_room %}selected{% endif %}>
+            {{ room }}
+        </option>
+        {% endfor %}
+    </select>
+
     <button type="submit">Filtrar</button>
 </form>
 
@@ -61,5 +79,4 @@
     <button type="submit" style="margin-top: 10px;">Atribuir</button>
 </form>
 
-<a href="{% url 'starter_page' %}">Voltar</a>
 {% endblock %}

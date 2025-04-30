@@ -9,7 +9,7 @@ from django.db.models.functions import Concat
 
 
 def starter_page(request):
-    return render(request, "starter_page.html")
+    return render(request, "show_students.html")
 
 def show_students(request):
     query = request.GET.get("q", "")  # Get search query from the URL
@@ -106,7 +106,16 @@ def show_contactos(request):
         )
 
     # Define the fields to display
-    head = ["aluno_id", "nome_proprio", "apelido", "responsaveleducativo__responsavel_educativo_id", "responsavel_nome_completo", "responsaveleducativo__telefone", "responsaveleducativo__email", "sala_id__sala_valencia", "sala_id__sala_nome"]
+    head = [
+        "responsaveleducativo__responsavel_educativo_id",  # Ensure this field is included
+        "responsavel_nome_completo", 
+        "responsaveleducativo__telefone", 
+        "responsaveleducativo__email", 
+        "nome_proprio", 
+        "apelido", 
+        "sala_id__sala_valencia", 
+        "sala_id__sala_nome"
+    ]
     data_dict = list(data.values(*head))
 
     # Get unique sala_valencia and sala_nome values for the dropdown

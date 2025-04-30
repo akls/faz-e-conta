@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Django App{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,17 +31,13 @@
         .navbar a:hover {
             background-color: #0647b7;
         }
-
-        .container {
-            padding: 20px;
-        }
     </style>
 </head>
 
 <body>
 
     <div class="navbar">
-        <a href="{% url 'starter_page' %}">Home</a>
+        <!-- <a href="{% url 'starter_page' %}">Home</a> -->
         <a href="{% url 'show_students' %}">Alunos</a>
         <a href="{% url 'show_contactos' %}">Contactos</a>
         <a href="{% url 'show_salas' %}">Salas</a>
@@ -48,7 +46,7 @@
         <a href="#">Mais Opções</a>
     </div>
 
-    <div class="container">
+    <div class="container" style="padding: 20px 40px;">
         {% block content %}
         {% endblock %}
     </div>
