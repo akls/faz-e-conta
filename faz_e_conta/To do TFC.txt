@@ -1,0 +1,53 @@
+#---------------------------#-------------------------------#
+|º vacinacao:_______________________________________________|
+|	- vacinacao_id			| Int							|
+|	- aluno_id				| Int -> Chave Aluno			|
+|	- data_vacina			| Date							|
+|	- dose_id				| Int -> Chave dose				|
+#---------------------------#-------------------------------#
+|º vacina:__________________________________________________|
+|	- vacina_id				| Int							|
+|	- vacina_name			| Str							|
+|	- plano_vacina			| Bool							|
+#---------------------------#-------------------------------#
+|º dose:____________________________________________________|
+|	- dose_id				| Int							|
+|	- vacina_id				| Int -> Chave de vacina		|
+|	- idade (Em meses)		| Int							|
+|	- obrigatoria			| Bool							|
+|	- periodo_recomendado	| Int							|
+#---------------------------#-------------------------------#
+|º divida:__________________________________________________|
+|	- divida_id				| Int							|
+|	- valor_a_pagar			| Int 							|
+|	- valor_pago			| Int 							|
+|	- aluno_id				| Int -> Chave Aluno			|
+#---------------------------#-------------------------------#
+|º acordo:__________________________________________________|
+|	- acordo_id				| Int							|
+|	- responsavel_educ_id	| Int -> Chave Resp_Educ		|
+|	- divida_id				| Int -> Chave Divida			|
+#---------------------------#-------------------------------#
+
+
+Nesse documento tem também um exemplo dos items que queremos num relatório mensal. Eventualmente vamos querer que estes items sejam configuráveis, mas de momento podemos usar este exemplo como um primeiro objetivo. O items são:Relatório mensal:
+
+Data e hora de execução do relatório
+
+Numero de alunos por valência	(Grafico)
+
+Valor totalde mensalidades pagas pelos alunos
+Valor total de mensalidades pagas pelos alunos por valência
+
+Valor total de mensalidades pagas pela SS
+Valor total de mensalidades pagas pela SS por valência
+
+Valor de pagamentos de alunos em falta
+Quadro com lista de pagamentos em falta: Nome de aluno| Valência | Quantia mensal devida | Quantia em falta | Data do último pagamento | Quantia do último pagamento | Valor pago pela SS | Data último pagamento SS | Acordo
+
+Despesas fixas do mês
+Despesas variáveis do mês
+
+Custo por aluno (Media)
+
+Balanço final mensal

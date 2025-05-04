@@ -103,9 +103,9 @@
     <!-- Barra de navegação -->
     <div class="navbar">
         <a href="{% url 'index' %}">Dashboard</a>
-        <a href="{% url 'show_alunos' %}">Alunos</a>
+        {% comment %} <a href="{% url 'show_alunos' %}">Alunos</a>
         <a href="{% url 'show_responsaveis_educativos' %}">Responsável Educativo</a>
-        <a href="{% url 'show_vacinas' %}">Vacinas</a>
+        <a href="{% url 'show_vacinas' %}">Vacinas</a> {% endcomment %}
         <a href="{% url 'reports' %}">Reports</a>
     </div>
     <br>
