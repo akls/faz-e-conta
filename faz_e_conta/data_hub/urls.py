@@ -24,13 +24,14 @@ urlpatterns = [
     path('gerar-pdf-mensal/<int:month>/<int:year>/', views.reportMensal, name='report_mensal'),
     
     # Views
-    path('<str:model>/reports', views.reports, name='reports'),
-    path('reports/', views.reports_all, name='reports'),
-
-    
+    path('reports/', views.reports, name='reports'),
     path('alunos/', views.show_alunos, name='show_alunos'),
     path('responsaveis_educativos/', views.show_responsaveis_educativos, name='show_responsaveis_educativos'),
     path('vacinas/', views.show_vacinas, name='show_vacinas'),
+    path('alunos/<int:aluno_id>/', views.show_aluno_new, name='aluno_view_new'),
+    
+    
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = add_form_urlpatterns(urlpatterns)

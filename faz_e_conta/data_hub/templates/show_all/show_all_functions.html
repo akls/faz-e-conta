@@ -1,7 +1,7 @@
 {% extends 'navigation.html' %}
 {% load custom_filters %}
 {%block links%}
-    <table>
+    {% comment %} <table>
         <tr>
             <td><a href="{% url 'export_csv' model=model %}" class="search"><center>Backup</center></a></td>
             <td><a href="{% url 'export_json' model=model %}" class="search"><center>Generate Json</center></a></td>
@@ -10,7 +10,7 @@
                 <td colspan="2"><a href="{% url 'delete_json' model=model %}" class="search"><center>Delete JSON</center></a></td>    
             {% endif %}
         </tr>
-    </table>
+    </table> {% endcomment %}
     <br>
     {%block content%}
     {%endblock%}

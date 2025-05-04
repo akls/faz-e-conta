@@ -21,6 +21,9 @@ from django.conf import settings
 
 from .reports.reports import *
 
+from django.db.models import Q  # Import Q for dynamic filtering
+
+
 folder = "show_all/"
 
 
@@ -41,17 +44,52 @@ def index(request, counter: int = 1):
     })
 
 def show_alunos(request):
-    data = Aluno.objects.all()
-    #head = [field.name for field in Aluno._meta.fields]
-    
-    head = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao"]
-    
-    # Melhorando a criação da lista de dicionários
+    query = request.GET.get("q", "")  # Get search query from the URL
+    sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
+
+    # Base queryset
+    data = Aluno.objects.select_related('sala_id').all()
+
+    # Apply search filter
+    if query:
+        data = data.filter(
+            Q(nome_proprio__icontains=query) | 
+            Q(apelido__icontains=query) | 
+            Q(processo__icontains=query)
+        )
+
+    # Apply sala_valencia or sala_nome filter
+    if sala_filter:
+        data = data.filter(
+            Q(sala_id__sala_valencia__icontains=sala_filter) |
+            Q(sala_id__sala_nome__icontains=sala_filter)
+        )
+
+    # Define the fields to display
+    head = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao", "sala_id__sala_valencia", "sala_id__sala_nome"]
     data_dict = list(data.values(*head))
-    model = "Aluno"
-    file_exists = json_exist(Aluno._meta.db_table.lower())
+
+    # Get unique sala_valencia and sala_nome values for the dropdown
+    salas = Sala.objects.values_list("sala_valencia", flat=True).distinct()
+    sala_nomes = Sala.objects.values_list("sala_nome", flat=True).distinct()
+
+    # Render the template with context
+    context = {
+        "head": head,
+        "data_dict": data_dict,
+        "id": head[0],
+        "query": query,
+        "sala_filter": sala_filter,
+        "salas": salas,
+        "sala_nomes": sala_nomes,
+    }
     
-    return render(request, f"{folder}show_alunos.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
+    return render(request,  f"{folder}show_alunos.html", context)
+
+
+
+
+
 
 def show_responsaveis_educativos(request):
     data = ResponsavelEducativo.objects.all()    
@@ -75,13 +113,46 @@ def show_vacinas(request):
     
     return render(request, f"{folder}show_vacinas.html", {"head": head, "data_dict": data_dict, "id": head[0], "model": model, 'file_exists': file_exists})
 
-def reports(request, model):
-        folder = "report/"
-        return render(request, f"{folder}gerar_vacinacao.html")
+def reports(request):
+    folder = "report/"
+    return render(request, f"{folder}reports_page.html")
 
-def reports_all(request):
-        folder = "report/"
-        return render(request, f"{folder}reports_page.html")
+# added
+def show_aluno_new(request):
+    query = request.GET.get("q", "")  # Get search query from the URL
+    sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
+
+    # Base queryset
+    data = Aluno.objects.all()
+
+    # Apply search filter
+    if query:
+        data = data.filter(
+            Q(nome_proprio__icontains=query) |
+            Q(apelido__icontains=query)
+        )
+
+    # Apply sala_valencia filter
+    if sala_filter:
+        data = data.filter(sala_id__sala_valencia__icontains=sala_filter)
+
+    # Define the fields to display
+    head = ["nome_proprio", "apelido", "processo", "sala_id__sala_valencia"]
+    data_dict = list(data.values(*head))
+
+    # Get unique sala_valencia values for the dropdown
+    salas = Sala.objects.values_list("sala_valencia", flat=True).distinct()
+
+    # Render the template with context
+    context = {
+        "head": head,
+        "data_dict": data_dict,
+        "id": "nome_proprio",  # Use student name as identifier
+        "query": query,
+        "sala_filter": sala_filter,
+        "salas": salas,
+    }
+    return render(request, "show/show_aluno.html", context)
 
 
 # Exports

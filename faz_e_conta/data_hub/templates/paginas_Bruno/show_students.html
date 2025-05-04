@@ -1,6 +1,7 @@
-{% extends 'show_all/show_all_functions.html' %}
+{% extends 'base.html' %}
 {% load custom_filters %}
-{%block content%}
+
+{% block content %}
 <h1>Alunos</h1>
 
 <!-- Add Student Button -->
@@ -11,7 +12,7 @@
 </div>
 
 <!-- Filter Form -->
-<form method="GET" action="{% url 'show_alunos' %}">
+<form method="GET" action="{% url 'show_students' %}">
     <input type="text" name="q" placeholder="Pesquisar alunos..." value="{{ query }}">
     <select name="sala">
         <option value="">Todas as Valências</option>
@@ -59,4 +60,5 @@
         {% endfor %}
     </tbody>
 </table>
-{%endblock%}
+
+{% endblock %}

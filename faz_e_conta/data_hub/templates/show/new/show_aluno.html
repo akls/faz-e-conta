@@ -1,0 +1,68 @@
+{% extends 'navigation.html' %}
+{% load custom_filters %}
+
+
+{% block content %}
+<h1>Detalhes do Aluno</h1>
+
+<h2>Informações do Aluno</h2>
+<table>
+    <tr>
+        <th>Nome:</th>
+        <td>{{ aluno.nome_proprio }} {{ aluno.apelido }}</td>
+    </tr>
+    <tr>
+        <th>Processo:</th>
+        <td>{{ aluno.processo }}</td>
+    </tr>
+    <tr>
+        <th>Data de Admissão:</th>
+        <td>{{ aluno.data_admissao }}</td>
+    </tr>
+    <!-- Add more fields as needed -->
+</table>
+
+<a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
+
+{% if responsavel %}
+<h2>Responsável Educativo</h2>
+<table>
+    <tr>
+        <th>Nome:</th>
+        <td>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</td>
+    </tr>
+    <tr>
+        <th>Telefone:</th>
+        <td>{{ responsavel.telefone }}</td>
+    </tr>
+    <tr>
+        <th>Email:</th>
+        <td>{{ responsavel.email }}</td>
+    </tr>
+    <!-- Add more fields as needed -->
+</table>
+<a href="{% url 'edit_responsavel_educativo' responsavel_id=responsavel.responsavel_educativo_id %}">Editar
+    Responsável</a>
+{% else %}
+<p>Sem responsável educativo associado.</p>
+{% endif %}
+
+{% if sala %}
+<h2>Sala</h2>
+<table>
+    <tr>
+        <th>Nome:</th>
+        <td>{{ sala.sala_nome }}</td>
+    </tr>
+    <tr>
+        <th>Valência:</th>
+        <td>{{ sala.sala_valencia }}</td>
+    </tr>
+    <!-- Add more fields as needed -->
+</table>
+{% else %}
+<p>Sem sala associada.</p>
+{% endif %}
+
+<a href="{% url 'show_alunos' %}">Voltar</a>
+{% endblock %}

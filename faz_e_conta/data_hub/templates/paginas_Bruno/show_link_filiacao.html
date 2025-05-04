@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Aluno Information</title>
+    <title>Link Filiacao Information</title>
 </head>
 <body>
     <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
@@ -24,6 +24,6 @@
             {% endif %}
         {% endfor %}
     </table>
-    <a href="{% url 'show_alunos' %}">Voltar</a>
+    <a href="{% url 'show_students' %}">Voltar</a>
 </body>
 </html>
