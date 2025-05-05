@@ -30,7 +30,11 @@ urlpatterns = [
     path('vacinas/', views.show_vacinas, name='show_vacinas'),
     path('alunos/<int:aluno_id>/', views.show_aluno_new, name='aluno_view_new'),
     
-    
+    # User
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register, name='register'),
+    path('profile/', views.profile, name='profile'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -19,14 +19,24 @@ from datetime import date, datetime, time
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.conf import settings
 
+from django.contrib.auth.forms import UserCreationForm # Certifique-se que este import está presente
+
+
 from .reports.reports import *
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from django.db.models import Q  # Import Q for dynamic filtering
 
 
 folder = "show_all/"
 
-
+@login_required
+def profile(request):
+    return render(request, "auth/profile.html", {"user": request.user})
 
 def index(request, counter: int = 1):
     folder_path = "resources/graficos"
@@ -85,10 +95,6 @@ def show_alunos(request):
     }
     
     return render(request,  f"{folder}show_alunos.html", context)
-
-
-
-
 
 
 def show_responsaveis_educativos(request):
@@ -277,7 +283,7 @@ def delete_json(request, model):
     os.makedirs(json_dir, exist_ok=True)
     file_path = os.path.join(json_dir, f'{table.lower()}.json')
     
-    
+
     # Verifica se o arquivo existe antes de tentar excluir
     if os.path.exists(file_path):
         try:
@@ -287,4 +293,39 @@ def delete_json(request, model):
     else:
         pass
     return redirect(request.META.get("HTTP_REFERER", "/"))  # Redireciona para a página anterior
+
+
+
+# User
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("index")
+        else:
+            messages.error(request, "Invalid username or password.")
+    return render(request, "user/login.html")
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+
+def register(request):
+    if request.method == "POST":
+        # Usa UserCreationForm para processar o POST
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save() # Salva o novo usuário
+            username = form.cleaned_data.get('username') # Opcional: pegar o username para a mensagem
+            messages.success(request, f"Conta para '{username}' criada com sucesso! Faça o login.")
+            return redirect("login") # Redireciona para a página de login após o sucesso
+        else:
+             messages.error(request, "Por favor, corrija os erros abaixo.")
+    else:
+        form = UserCreationForm()
+    return render(request, "user/register.html", {"form": form})
+
 

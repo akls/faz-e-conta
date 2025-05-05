@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f4f8; /* Um azul muito claro/cinza para o fundo */
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .auth-container {
+            max-width: 500px;
+            margin: 40px auto; /* Centraliza e adiciona margem no topo/fundo */
+            padding: 30px;
+            background-color: #ffffff; /* Fundo branco para o container do formulário */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            border-top: 5px solid #0056b3; /* Barra azul escura no topo */
+        }
+        
+        .auth-container h2 {
+            color: #003d80; /* Azul mais escuro para o título */
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        /* Estilos para o formulário */
+        .auth-container form p {
+            margin-bottom: 15px;
+        }
+        
+        .auth-container form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #0056b3; /* Azul para os labels */
+            font-weight: bold;
+        }
+        
+        .auth-container form input[type="text"],
+        .auth-container form input[type="password"],
+        .auth-container form input[type="email"] { /* Adicione outros tipos se necessário */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #b3d7ff; /* Borda azul clara */
+            border-radius: 4px;
+            box-sizing: border-box; /* Para incluir padding na largura total */
+            transition: border-color 0.3s ease;
+        }
+        
+        .auth-container form input[type="text"]:focus,
+        .auth-container form input[type="password"]:focus,
+        .auth-container form input[type="email"]:focus {
+            border-color: #0056b3; /* Borda azul mais escura ao focar */
+            outline: none; /* Remove o outline padrão */
+        }
+        
+        /* Estilos para o botão */
+        .auth-container button[type="submit"] {
+            background-color: #0056b3; /* Fundo azul escuro */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Ocupa a largura toda */
+            margin-top: 10px;
+        }
+        
+        .auth-container button[type="submit"]:hover {
+            background-color: #003d80; /* Azul ainda mais escuro no hover */
+        }
+        
+        /* Estilos para as mensagens e erros */
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .messages li.success {
+            background-color: #d4edda; /* Verde para sucesso */
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .messages li.error {
+            background-color: #f8d7da; /* Vermelho para erro */
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Estilos para a lista de erros do formulário (se houver) */
+        .errorlist {
+            color: #721c24; /* Vermelho */
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px 10px 10px 30px; /* Adiciona padding à esquerda para espaço */
+            list-style-position: outside; /* Garante que os marcadores fiquem fora */
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .errorlist li {
+            margin-bottom: 5px;
+        }
+        
+        /* Link para login */
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .login-link a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Registar Novo Utilizador</h2>
+
+        {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      
+        <form method="post">
+          {% csrf_token %} <!-- Essencial para segurança -->
+          {{ form.as_p }} <!-- Renderiza o formulário como parágrafos -->
+          <button type="submit">Registar</button>
+        </form>
+      
+        <div class="login-link">
+            <p><a href="{% url 'login' %}">Já tem conta? Faça login</a></p>
+        </div>
+    </div>
+</body>
+</html>

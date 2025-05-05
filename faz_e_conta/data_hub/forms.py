@@ -145,4 +145,3 @@ class AcordoForm(forms.ModelForm):
 
         # Adiciona atributos aos campos do formulário
         widgets = default_widget()
-
