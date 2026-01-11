@@ -1,11 +1,21 @@
-vac_id,aluno_id,vacina_name,data_vacina,plano_vacina
-1,1,BCG,2023-01-05,1
-2,2,Hepatite B (1ª dose),2023-02-10,1
-3,3,Pentavalente (1ª dose),2023-03-15,1
-4,4,Rotavírus (1ª dose),2023-04-20,1
-5,5,Pentavalente (2ª dose),2023-05-25,1
-6,6,Pneumocócica 10-valente,2023-06-30,1
-7,7,Meningocócica C,2023-07-15,0
-8,8,Febre Amarela,2023-08-20,0
-9,9,Tríplice Viral,2023-09-25,1
-10,10,Varicela (1ª dose),2023-11-10,1
+﻿vac_id,aluno_id,vacina_name,data_vacina,plano_vacina
+1,1,BCG,2023-01-10,TRUE
+2,2,Hepatite B,2022-05-15,FALSE
+3,3,Poliomielite,2021-11-20,TRUE
+4,4,Tétano,2020-07-08,FALSE
+5,5,Sarampo,2023-03-25,TRUE
+6,6,Caxumba,2022-09-14,TRUE
+7,7,Rubéola,2021-12-30,FALSE
+8,8,Difteria,2020-06-05,TRUE
+9,9,Coqueluche,2023-02-18,TRUE
+10,10,Hepatite A,2022-04-22,FALSE
+11,11,HPV,2021-10-10,TRUE
+12,12,Febre Amarela,2020-08-19,TRUE
+13,13,Varicela,2023-06-07,FALSE
+14,14,Gripe,2022-11-25,TRUE
+15,15,Meningocócica,2021-07-14,FALSE
+16,16,Pneumocócica,2020-12-01,TRUE
+17,17,Rotavírus,2023-05-30,FALSE
+18,18,Influenza,2022-09-18,TRUE
+19,19,Coronavírus,2021-03-12,TRUE
+20,20,Zoster,2020-10-05,FALSE

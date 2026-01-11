@@ -58,3 +58,18 @@ To create a PR for a feature branch, go to the section _Pull Requests_ on the Gi
 ## 4. Code review
 
 ## 5. Merge the PR to `dev`
+
+# First-time Django Installation
+
+1. `pip install django`
+2. `python -m django startproject faz_e_conta`
+3. `python manage.py startapp data_hub`
+
+After doing changes to the (data) model:
+
+4. `python manage.py makemigrations`
+5. `python manage.py migrate`
+
+To run the server:
+
+6. `python manage.py runserver`

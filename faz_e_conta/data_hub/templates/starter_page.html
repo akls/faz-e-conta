@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Faz e Conta{% endblock %}
+
+{% block content %}
+<style>
+    .starter-page {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        font-size: 3em;
+        color: #ff6f61;
+        margin: 0;
+    }
+
+    .header p {
+        font-size: 1.2em;
+        color: #333;
+    }
+
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: white;
+        background-color: #ff6f61;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .menu a:hover {
+        background-color: #e55b50;
+    }
+
+    .footer {
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #666;
+    }
+</style>
+
+<div class="starter-page">
+    <div class="header">
+        <h1>Faz e Conta</h1>
+        <p>Bem-vindo ao sistema de gestão do jardim de infância</p>
+    </div>
+
+    <div class="menu">
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 Faz e Conta. Todos os direitos reservados.</p>
+    </div>
+</div>
+{% endblock %}

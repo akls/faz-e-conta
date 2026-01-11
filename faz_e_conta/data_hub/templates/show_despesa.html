@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Despesas</title>
+</head>
+
+<body>
+    <h1>Despesas</h1>
+
+    <!-- Formulário para filtrar por data -->
+    <form method="get">
+        <label for="start_date">Data Inicial:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+        <label for="end_date">Data Final:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <!-- Tabela de despesas -->
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                {% for item in head %}
+                <th style="border: 1px solid #ddd; padding: 10px;">
+                    {{ item|replace:"_, " }}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data_dict %}
+            <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+                {% for field in head %}
+                <td style="border: 1px solid #ddd; padding: 10px;">
+                    {% if item|get_item:field == None %}
+                    <hr style="border: none; border-top: 2px dashed black;">
+                    {% else %}
+                    {{ item|get_item:field }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>
+{% endblock %}

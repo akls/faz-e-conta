@@ -1,11 +1,21 @@
-respon_id,nome_proprio,apelido,data_admissao,plano_vacina,data_nascimento,documento,numero_documentc,data_validade,niss,nif,morada,codigo_postal,concelho,freguesia,contato,email,profissao,morada_emprego,horario_trabalho,id_aluno
-1,Ana,Silva,2023-09-01,2024-09-01,1975-03-12,RG,987654321,2025-03-12,987654321,987654321,"Rua da Paz, 100",12345-678,São Paulo,Centro,1198765432,ana.silva@email.com,Enfermeira,Hospital Municipal,12:00-20:00,1
-2,Carlos,Santos,2023-09-01,2024-09-01,1980-05-25,Passaporte,AB1234567,2026-05-25,987654321,987654321,"Avenida dos Pinheiros, 456",45678-901,Rio de Janeiro,Copacabana,2198765432,carlos.santos@email.com,Engenheiro,Empresa de Construção,08:00-17:00,2
-3,Maria,Oliveira,2023-09-01,2024-09-01,1978-11-20,BI,987654321,2025-11-20,876543210,876543210,"Rua da Liberdade, 789",78901-234,Belo Horizonte,Savassi,3198765432,maria.oliveira@email.com,Professora,Escola Estadual,08:00-12:00,3
-4,Pedro,Almeida,2023-09-01,2024-09-01,1982-03-05,RG,456789123,2026-03-05,765432109,765432109,"Avenida Paulista, 1011",10112-345,São Paulo,Jardins,1198765432,pedro.almeida@email.com,Advogado,Escritório de Advocacia,09:00-18:00,4
-5,Ana,Pereira,2023-09-01,2024-09-01,1979-08-12,Passaporte,CD1234567,2027-08-12,654321098,654321098,"Rua Augusta, 1234",12345-678,Porto,Vitória,2298765432,ana.pereira@email.com,Médica,Hospital de Clínicas,14:00-22:00,5
-6,João,Souza,2023-09-01,2024-09-01,1981-02-28,BI,321098765,2025-02-28,543210987,543210987,"Avenida dos Aliados, 4567",45678-901,Porto,Cedofeita,2298765432,joao.souza@email.com,Engenheiro Civil,Construtora XYZ,08:00-18:00,6
-7,Maria,Costa,2023-09-01,2024-09-01,1977-09-18,RG,210987654,2025-09-18,432109876,432109876,"Rua da Constituição, 7890",78901-234,Lisboa,Santa Maria Maior,2198765432,maria.costa@email.com,Professora,Universidade de Lisboa,10:00-18:00,7
-8,Pedro,Gomes,2023-09-01,2024-09-01,1983-04-10,Passaporte,EF1234567,2027-04-10,321098765,321098765,"Avenida da Liberdade, 1011",10112-345,Lisboa,São Sebastião,2198765432,pedro.gomes@email.com,Arquiteto,Empresa de Arquitetura,09:00-18:00,8
-9,Ana,Rodrigues,2023-09-01,2024-09-01,1982-09-25,BI,109876543,2026-09-25,210987654,210987654,"Rua Augusta, 1234",12345-678,Coimbra,Sé Nova,2398765432,ana.rodrigues@email.com,Contadora,Empresa Contábil,08:00-17:00,9
-10,Carlos,Santos,2023-09-01,2024-09-01,1979-03-15,RG,987654321,2025-03-15,987654321,987654321,"Avenida dos Aliados, 4567",45678-901,Coimbra,Santa Cruz,2398765432,carlos.santos@email.com,Professor Universitário,Universidade de Coimbra,14:00-22:00,10
+﻿responsavel_educativo_id,nome_proprio,apelido,data_nascimento,documento,numero_documento,data_validade,niss,nif,morada,codigo_postal,concelho,fregesia,telefone,email,profissao,morada_emprego,horario_trabalho,aluno_id
+1,Ana,Santos,1985-06-15,CC,12345678,2030-06-15,123456789,123456789,Rua das Flores,1000-001,Lisboa,Arroios,912345678,ana.santos@email.com,Professora,Rua da Escola,08:00:00,1
+2,Bruno,Silva,1979-09-22,CC,87654321,2029-09-22,987654321,987654321,Rua dos Cedros,2000-002,Santarém,Marvila,923456789,bruno.silva@email.com,Engenheiro,Rua da Empresa,09:00:00,2
+3,Catarina,Oliveira,1990-04-10,Passaporte,56781234,2031-04-10,234567890,234567890,Avenida Central,3000-003,Coimbra,Santo António,934567890,catarina.oliveira@email.com,Médica,Hospital Coimbra,07:30:00,3
+4,Daniel,Pereira,1982-07-18,CC,43218765,2032-07-18,345678901,345678901,Rua Nova,4000-004,Porto,Bonfim,945678901,daniel.pereira@email.com,Advogado,Escritório Legal,10:00:00,4
+5,Elisa,Moreira,1987-12-25,CC,78912345,2028-12-25,456789012,456789012,Rua dos Cravos,5000-005,Braga,Maximinos,956789012,elisa.moreira@email.com,Arquiteta,Estúdio de Arquitetura,09:30:00,5
+6,Fernando,Martins,1975-03-05,CC,12349876,2027-03-05,567890123,567890123,Travessa do Sol,6000-006,Castelo Branco,Alcains,967890123,fernando.martins@email.com,Policial,Delegacia Central,06:00:00,6
+7,Gabriela,Alves,1991-10-30,Passaporte,23456789,2029-10-30,678901234,678901234,Rua das Oliveiras,7000-007,Évora,Mitra,978901234,gabriela.alves@email.com,Designer,Rua Criativa,10:30:00,7
+8,Henrique,Ramos,1984-11-22,CC,98765432,2028-11-22,789012345,789012345,Alameda Azul,8000-008,Faro,Montenegro,989012345,henrique.ramos@email.com,Empresário,Centro Empresarial,11:00:00,8
+9,Inês,Carvalho,1978-06-01,CC,34567890,2030-06-01,890123456,890123456,Largo do Carmo,9000-009,Funchal,Santa Maria,999123456,ines.carvalho@email.com,Psicóloga,Consultório Psicologia,08:30:00,9
+10,João,Lopes,1995-09-12,CC,67890123,2031-09-12,901234567,901234567,Avenida do Mar,1000-010,Lisboa,Alvalade,911234567,joao.lopes@email.com,Programador,Empresa Tech,09:00:00,10
+11,Kátia,Monteiro,1989-02-18,CC,45678901,2029-02-18,123987654,123987654,Travessa da Ponte,1100-011,Porto,Ramalde,922345678,katia.monteiro@email.com,Enfermeira,Hospital São João,07:00:00,11
+12,Leonardo,Freitas,1976-12-05,Passaporte,78901234,2028-12-05,234876543,234876543,Rua da Amizade,1200-012,Santarém,Amiais,933456789,leonardo.freitas@email.com,Contabilista,Escritório Financeiro,09:00:00,12
+13,Mariana,Barros,1980-08-22,CC,56789012,2027-08-22,345765432,345765432,Rua do Comércio,1300-013,Coimbra,Almedina,944567890,mariana.barros@email.com,Farmacêutica,Farmácia Coimbra,08:00:00,13
+14,Nuno,Castro,1993-04-30,CC,90123456,2031-04-30,456654321,456654321,Praceta dos Estudantes,1400-014,Braga,Lamaçães,955678901,nuno.castro@email.com,Engenheiro Civil,Construtora Braga,07:30:00,14
+15,Olívia,Cunha,1977-05-18,Passaporte,23456701,2029-05-18,567543210,567543210,Travessa das Árvores,1500-015,Castelo Branco,São Vicente,966789012,olivia.cunha@email.com,Professora,Escola Secundária,08:30:00,15
+16,Pedro,Gomes,1985-07-09,CC,67890145,2028-07-09,678432109,678432109,Rua das Hortas,1600-016,Évora,Senhora da Saúde,977890123,pedro.gomes@email.com,Gestor,Empresa Gestão,09:00:00,16
+17,Raquel,Neves,1992-03-21,CC,34567812,2027-03-21,789321098,789321098,Avenida do Sol,1700-017,Faro,Patacão,988901234,raquel.neves@email.com,Tradutora,Agência de Tradução,10:00:00,17
+18,Samuel,Teixeira,1981-06-14,Passaporte,89012367,2029-06-14,890210987,890210987,Rua Nova,1800-018,Funchal,Câmara de Lobos,999012345,samuel.teixeira@email.com,Motorista,Transporte Público,06:00:00,18
+19,Tatiana,Ribeiro,1974-09-08,CC,12345698,2030-09-08,901098765,901098765,Largo das Fontes,1900-019,Lisboa,Benfica,911223344,tatiana.ribeiro@email.com,Assistente Social,Câmara Municipal,09:30:00,19
+20,Ulisses,Machado,1986-11-30,CC,23456789,2032-11-30,912345678,912345678,Rua da Liberdade,2000-020,Porto,Boavista,922334455,ulisses.machado@email.com,Engenheiro Informático,Empresa Software,10:30:00,20
