@@ -1,0 +1,27 @@
+{% extends 'navigation.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Galeria</h1>
+    {% for tipo, imagens in imagens_por_tipo.items %}
+        <h2>{{ tipo }}</h2>
+        <table class="table">
+            <tbody>
+                {% for imagem in imagens %}
+                    {% if forloop.counter0|divisibleby:counter %}
+                        <tr>
+                    {% endif %}
+                    <td class="text-center">
+                        <div class="card">
+                            <img src="{{ imagem.imagem.url }}" class="card-img-top" alt="{{ imagem.alt }}" style="max-width: 100%; height: auto;">
+                        </div>
+                    </td>
+                    {% if forloop.counter|divisibleby:3 or forloop.last %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+{% endblock %}

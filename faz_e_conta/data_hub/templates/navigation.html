@@ -1,0 +1,245 @@
+{% extends "layout.html" %}
+
+{% block header %}
+{% endblock %}
+
+{% block nav %}
+<style>
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        transition: 0.3s;
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #575757;
+    }
+
+    .sidebar .closebtn {
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-container {
+        display: none;
+        background-color: #262626;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 160px;
+        z-index: 2000;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown:hover .dropdown-container {
+        display: block;
+    }
+    .dropdown .dropdown-container a {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dropdown-submenu {
+        position: relative;
+        background-color: #262626;
+        top: 100%;
+        left: 0;
+        min-width: 160px;
+        z-index: 2000;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .dropdown-submenu .dropdown-container {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background-color: #262626;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 2100;
+        min-width: 160px;
+
+    }
+    .dropdown-submenu:hover > .dropdown-container {
+        display: block;
+        
+    }
+    
+    .dropdown-container .dropdown-btn {
+        padding: 10px 15px;
+        width: 100%;
+        text-align: center;
+    }
+
+    @media screen and (min-width: 768px) {
+        .sidebar {
+            display: flex;
+            position: relative;
+            width: 100%;
+            height: auto;
+            flex-direction: row;
+            background-color: #111;
+            padding-top: 0;
+        }
+
+        .sidebar a, .dropdown-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            width: auto;
+            text-align: center;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .openbtn, .closebtn {
+            display: none;
+        }
+    }
+</style>
+
+<div style="display: inline-block;">
+    <button class="openbtn" onclick="openNav()">☰</button>
+</div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()" style="display: none;">×</a>
+
+    <a href="{% url 'index' %}">Dashboard</a>
+
+    {% if user.is_staff %}
+{% comment %} 
+    Alunos
+{% endcomment %}
+        {% if user.is_superuser or perms.auth.grupo_alunos %}
+            <div class="dropdown">
+                <span class="dropdown-btn">Alunos ▼</span>
+                <div class="dropdown-container">
+                    <div class="dropdown-submenu">
+                        <span class="dropdown-btn" onmouseover="openSubmenu(this)" onmouseout="closeSubmenu(this)">Alunos =></span>
+                        <div class="dropdown-container" style="left: 100%; top: 0; min-width: 180px; display: none;">
+                            <a href="/admin/data_hub/aluno/">Alunos</a>
+                            <a href="/admin/data_hub/aluno/add/">Adicionar Aluno</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+{% comment %} 
+    Financas
+{% endcomment %}
+        {% if user.is_superuser or perms.auth.grupo_financas %}
+            <div class="dropdown">
+                <span class="dropdown-btn">Finanças ▼</span>
+                <div class="dropdown-container">
+                    <div class="dropdown-submenu">
+                        <span class="dropdown-btn" onmouseover="openSubmenu(this)" onmouseout="closeSubmenu(this)">Dívidas =></span>
+                        <div class="dropdown-container" style="left: 100%; top: 0; min-width: 180px; display: none;">
+                            <a href="/admin/data_hub/divida/">Dívidas</a>
+                            <a href="/admin/data_hub/divida/add/">Adicionar Dívida</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'reports' %}">Reports</a>
+                </div>
+            </div>
+        {% endif %}
+
+{% comment %} 
+    Admin 
+{% endcomment %}
+        {% if user.is_superuser or perms.auth.grupo_admin %}
+            <div class="dropdown">
+                <span class="dropdown-btn">Admin ▼</span>
+                <div class="dropdown-container"> 
+{% comment %}-------------------{% endcomment %}
+                    <div class="dropdown-submenu">
+                        <span class="dropdown-btn" onmouseover="openSubmenu(this)" onmouseout="closeSubmenu(this)">Utilizadores =></span>
+                        <div class="dropdown-container" style="left: 100%; top: 0; min-width: 180px; display: none;">
+                            <a href="{% url 'admin:auth_user_changelist' %}">Utilizadores</a>
+                            <a href="{% url 'admin:auth_user_add' %}">Adicionar Utilizadores</a>
+                        </div>
+                    </div>
+{% comment %}-------------------{% endcomment %}
+                    <div class="dropdown-submenu">
+                        <span class="dropdown-btn" onmouseover="openSubmenu(this)" onmouseout="closeSubmenu(this)">Grupos =></span>
+                        <div class="dropdown-container" style="left: 100%; top: 0; min-width: 180px; display: none;">
+                            <a href="{% url 'admin:auth_group_changelist' %}">Groups</a>
+                            <a href="{% url 'admin:auth_group_add' %}">Adicionar Grupo</a>
+                        </div>
+                    </div>
+{% comment %}-------------------{% endcomment %}
+                    <div class="dropdown-submenu">
+                        <span class="dropdown-btn" onmouseover="openSubmenu(this)" onmouseout="closeSubmenu(this)">Permições =></span>
+                        <div class="dropdown-container" style="left: 100%; top: 0; min-width: 180px; display: none;">
+                            <a href="{% url 'admin:auth_permission_changelist' %}">Permições</a>
+                            <a href="{% url 'admin:auth_permission_add' %}">Adicionar Permissão</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+    
+    <span style="color: white; margin-left: auto; display: inline-block; vertical-align: middle; font-size: 18px; padding: 10px 15px;">
+        {{ user.username }}
+    </span>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<script>
+    function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+    }
+    function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+    }
+
+    if (window.innerWidth < 768) {
+        document.querySelector('.closebtn').style.display = 'block';
+    }
+
+    function openSubmenu(el) {
+        el.nextElementSibling.style.display = 'block';
+    }
+    function closeSubmenu(el) {
+        el.nextElementSibling.style.display = 'none';
+    }
+    // Optional: keep submenu open while hovering submenu
+    document.querySelectorAll('.dropdown-submenu').forEach(function(submenu) {
+        submenu.addEventListener('mouseover', function() {
+            submenu.querySelector('.dropdown-container').style.display = 'block';
+        });
+        submenu.addEventListener('mouseout', function() {
+            submenu.querySelector('.dropdown-container').style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}

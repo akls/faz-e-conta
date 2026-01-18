@@ -1,20 +1,48 @@
 from django.urls import path
 from . import views
-from .auto_gen_form_url import *
-from .auto_gen_show_id_url import *
+
 
 urlpatterns = [
-    path('', views.starter_page, name="starter_page"),
-    path('alunos/', views.show_students, name='show_students'),
-    path('alunos_financas/', views.show_financas, name='show_aluno_financas'),
-    path('contactos/', views.show_contactos, name='show_contactos'),
-    path('salas/', views.show_salas, name='show_salas'),
-    path('despesas/', views.show_despesas, name='show_despesas'),
-    path('aluno/<int:aluno_id>/', views.show_student_details, name='show_student_details'),
-    path('aluno/<int:aluno_id>/editar/', views.edit_student, name='edit_student'),
-    path('responsavel/<int:responsavel_id>/editar/', views.edit_responsavel_educativo, name='edit_responsavel_educativo'),
-    path('responsavel/<int:responsavel_id>/', views.show_contactos_details, name='show_contactos_details'),
+    path('', views.index, name='index'),
 ]
 
-urlpatterns = add_form_urlpatterns(urlpatterns)
-urlpatterns = add_show_id_urlpatterns(urlpatterns)
+testes = [
+    path('galeria/', views.galeria, name='galeria'),
+]
+
+
+
+financas = [
+    
+]
+
+user = [
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('user_management/', views.user_management, name='user_management'),
+]
+
+alunos = [
+    path('alunos/', views.dashboard_alunos, name='alunos'),
+]
+
+reports = [
+    path('reports/', views.reports, name='reports'),
+    path('<str:model>/gerar-pdf/', views.gerar_pdf, name='gerar_pdf'),
+    path('gerar-pdf-aluno/<int:aluno_id>/', views.gerar_pdf_aluno, name='gerar_pdf_aluno'),
+    path('report/aluno_sala/', views.reportAlunoSala, name='report_aluno_sala'),
+    path('gerar-pdf-mensal/', views.reportMensal, name='report_mensal'),
+    path('gerar-pdf-mensal/<int:month>/<int:year>/', views.reportMensal, name='report_mensal'),
+]
+
+
+'''
+URLs added
+'''
+urlpatterns += testes
+
+urlpatterns += user
+urlpatterns += reports
+urlpatterns += financas
+urlpatterns += alunos
+

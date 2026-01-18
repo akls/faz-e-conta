@@ -1,0 +1,106 @@
+{% extends 'navigation.html' %}
+{% load static %}
+{% block scripts %}
+  <script>
+    function openImagePopup(element) {
+        let imgSrc = element.querySelector("img").src;
+        let popup = window.open("", "_blank", "width=800,height=600");
+        popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
+        popup.document.close();
+    }
+
+    function increaseColumnsCount() {
+      let counterElement = document.querySelector("td:nth-child(2)");
+      let table = document.getElementById("grafico-table");
+      let counter = parseInt(counterElement.textContent);
+
+      counter++;
+      counterElement.textContent = counter;
+
+      let rows = Array.from(table.querySelectorAll("tr"));
+      let images = [];
+      rows.forEach(row => {
+        images.push(...Array.from(row.querySelectorAll("td img")));
+        row.remove();
+      });
+
+      let newRow = document.createElement("tr");
+      images.forEach((img, index) => {
+        let cell = document.createElement("td");
+        cell.appendChild(img.parentElement.parentElement);
+        newRow.appendChild(cell);
+
+        if ((index + 1) % counter === 0) {
+          table.appendChild(newRow);
+          newRow = document.createElement("tr");
+        }
+      });
+
+      if (newRow.children.length > 0) {
+        table.appendChild(newRow);
+      }
+    }
+
+    function decreaseColumnsCount() {
+      let counterElement = document.querySelector("td:nth-child(2)");
+      let table = document.getElementById("grafico-table");
+      let counter = parseInt(counterElement.textContent);
+
+      if (counter > 1) {
+        counter--;
+        counterElement.textContent = counter;
+
+        let rows = Array.from(table.querySelectorAll("tr"));
+        let images = [];
+        rows.forEach(row => {
+          images.push(...Array.from(row.querySelectorAll("td img")));
+          row.remove();
+        });
+
+        let newRow = document.createElement("tr");
+        images.forEach((img, index) => {
+          let cell = document.createElement("td");
+          cell.appendChild(img.parentElement.parentElement);
+          newRow.appendChild(cell);
+
+          if ((index + 1) % counter === 0) {
+            table.appendChild(newRow);
+            newRow = document.createElement("tr");
+          }
+        });
+
+        if (newRow.children.length > 0) {
+          table.appendChild(newRow);
+        }
+      }
+    }
+    
+  </script> 
+{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <center>
+      <h1>Dashboard</h1>
+      <table id="grafico-table" class="table table-bordered">
+        <tbody>
+          {% for grafico in graficos %}
+            {% if forloop.first or forloop.counter0|divisibleby:counter %}
+              <tr>
+            {% endif %}
+            <td>
+              <a href="#" onclick="openImagePopup(this); return false;">
+                <img src="{{ grafico }}" alt="Image" style="width: 100%; height: auto;">
+              </a>
+            </td>
+            {% if forloop.counter|divisibleby:counter or forloop.last %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </center>
+{% endblock %}
+
+

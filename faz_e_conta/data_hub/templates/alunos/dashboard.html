@@ -1,0 +1,101 @@
+{% extends 'navigation.html' %}
+{% load static %}
+{% block scripts %}
+  <script>
+    function openImagePopup(element) {
+        let imgSrc = element.querySelector("img").src;
+        let popup = window.open("", "_blank", "width=800,height=600");
+        popup.document.write(`<img src="${imgSrc}" style="width: 100%; height: auto;">`);
+        popup.document.close();
+    }
+
+    function increaseColumnsCount() {
+      let counterElement = document.querySelector("td:nth-child(2)");
+      let table = document.getElementById("grafico-table");
+      let counter = parseInt(counterElement.textContent);
+
+      counter++;
+      counterElement.textContent = counter;
+
+      let rows = Array.from(table.querySelectorAll("tr"));
+      let images = [];
+      rows.forEach(row => {
+        images.push(...Array.from(row.querySelectorAll("td img")));
+        row.remove();
+      });
+
+      let newRow = document.createElement("tr");
+      images.forEach((img, index) => {
+        let cell = document.createElement("td");
+        cell.appendChild(img.parentElement.parentElement);
+        newRow.appendChild(cell);
+
+        if ((index + 1) % counter === 0) {
+          table.appendChild(newRow);
+          newRow = document.createElement("tr");
+        }
+      });
+
+      if (newRow.children.length > 0) {
+        table.appendChild(newRow);
+      }
+    }
+
+    function decreaseColumnsCount() {
+      let counterElement = document.querySelector("td:nth-child(2)");
+      let table = document.getElementById("grafico-table");
+      let counter = parseInt(counterElement.textContent);
+
+      if (counter > 1) {
+        counter--;
+        counterElement.textContent = counter;
+
+        let rows = Array.from(table.querySelectorAll("tr"));
+        let images = [];
+        rows.forEach(row => {
+          images.push(...Array.from(row.querySelectorAll("td img")));
+          row.remove();
+        });
+
+        let newRow = document.createElement("tr");
+        images.forEach((img, index) => {
+          let cell = document.createElement("td");
+          cell.appendChild(img.parentElement.parentElement);
+          newRow.appendChild(cell);
+
+          if ((index + 1) % counter === 0) {
+            table.appendChild(newRow);
+            newRow = document.createElement("tr");
+          }
+        });
+
+        if (newRow.children.length > 0) {
+          table.appendChild(newRow);
+        }
+      }
+    }
+    
+  </script> 
+{% endblock %}
+
+{% block title %}Dashboard Alunos{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Dashboard Alunos</h1>
+  <center>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+      <a href="#" onclick="openImagePopup(this); return false;">                    
+        <img src="{% static valencia %}" alt="Valencia" style="width: 100%; height: auto;">
+      </a>
+      <a href="#" onclick="openImagePopup(this); return false;">                    
+        <img src="{% static sala %}" alt="Sala" style="width: 100%; height: auto;">
+      </a>
+    </div>
+  </center>
+  <h2>Alunos</h2>
+
+</div>
+{% endblock %}
+
+

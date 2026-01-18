@@ -1,0 +1,62 @@
+{% extends 'navigation.html' %}
+
+{% block title %}Reports{% endblock %}
+{% block scripts %}
+    <script>
+        function gerarPDF(model) {
+            window.location.href = `/${model}/gerar-pdf`;
+        }
+        function reportAlunoSala() {
+            window.location.href = `/report/aluno_sala/`;
+        }
+        function gerarPDFAluno() {
+            // Solicita ao usuário que insira o ID do aluno
+            var aluno_id = prompt("Por favor, insira o ID do aluno:");
+        
+            // Verifica se o usuário inseriu um valor
+            if (aluno_id) {
+                // Redireciona para a URL com o ID do aluno
+                window.location.href = `/gerar-pdf-aluno/${aluno_id}/`;
+            } else {
+                alert("ID do aluno não inserido. Por favor, tente novamente.");
+            }
+        }
+        function gerarPDFMensalEspecifico() {
+            // Solicita ao usuário que insira o ID do aluno
+            var mes = prompt("Por favor, insira o mes(numerico):");
+            var ano = prompt("Por favor, insira o ano(numerico):");
+        
+            // Verifica se o usuário inseriu um valor
+            if (mes && ano) {
+                window.location.href = `/gerar-pdf-mensal/${mes}/${ano}/`;
+            } 
+            else {
+                alert("Mes ou ano não inserido. Por favor, tente novamente.");
+            }
+        }
+        function gerarPDFMensal() {
+            mes = new Date().getMonth() + 1; // Mes atual (0-11, por isso +1)
+            ano = new Date().getFullYear(); // Ano atual
+            window.location.href = `/gerar-pdf-mensal/${mes}/${ano}/`;
+        }
+        
+        function gerarPDFGlobal() {
+            window.location.href = `/gerar-pdf-mensal/`;
+        }
+        
+    </script>
+{% endblock %}
+
+{% block content %}
+<center>
+    <h1>Reports</h1>
+</center>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center; margin-top: 20px;">
+    <button class="button_reports" onclick="reportAlunoSala()">Gerar Relatório de Alunos por Sala</button>
+    <button class="button_reports" onclick="gerarPDF('MensalidadeAluno')">Gerar Relatório de Mensalidade Aluno</button>
+    <button class="button_reports" onclick="gerarPDFAluno()">Gerar Relatório de um Aluno</button>
+    <button class="button_reports" onclick="gerarPDFMensalEspecifico()">Gerar Relatório Mensal</button>
+    <button class="button_reports" onclick="gerarPDFMensal()">Gerar Relatório Mês Atual</button>
+    <button class="button_reports" onclick="gerarPDFGlobal()">Gerar Relatório Geral</button>
+</div>
+{% endblock %}
