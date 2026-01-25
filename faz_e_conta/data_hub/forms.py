@@ -93,7 +93,7 @@ class Aluno_financasForm(forms.ModelForm):
 class Aluno_finacas_calcForm(forms.ModelForm):
     class Meta:
         model = AlunoFinacasCalc
-        fields = ['sala_id', 'nome', 'local', 'valencia', 'func_id']
+        fields = ['aluno_id', 'type', 'value', 'unit']
 
         # Adiciona atributos aos campos do formulário
         widgets = Aluno_finacas_calc_widget()

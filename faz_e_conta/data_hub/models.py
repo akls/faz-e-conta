@@ -241,7 +241,7 @@ class AlunoFinacasCalc(models.Model):
     unit = models.CharField(max_length=100, default='')
 
     def __str__(self):
-        return f"{self.nome} {self. local}, Sala Id: {self.sala_id}"
+        return f"Aluno: {self.aluno_id}, Type: {self.type}, Value: {self.value} {self.unit}, ID: {self.aluno_financa_calc_id}"
 
 
 
@@ -298,7 +298,7 @@ class MensalidadeAluno(models.Model):
 
 
 
-class EscaloesRendimento(models.Models):
+class EscaloesRendimento(models.Model):
     class Meta:
         db_table = 'escaloes_rendim'
 
@@ -316,6 +316,7 @@ class ComparticaoMensalSS(models.Model):
 
     mss_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id')
     ano_letivo = models.DateField(null=True, blank=True)
 
     periodo_inicio = models.DateField(default=du.timezone.now)
