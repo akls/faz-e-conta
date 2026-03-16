@@ -290,6 +290,8 @@ class MensalidadeAluno(models.Model):
 
     data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
+    programa_ss = models.CharField(max_length=255, null=True, blank=True)
+
     acordo = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
@@ -303,7 +305,7 @@ class EscaloesRendimento(models.Model):
         db_table = 'escaloes_rendim'
 
     escal_rend_id =  models.AutoField(primary_key=True)
-    rend_per_capita = models.IntegerField(null=True, blank=True)
+    perc_rend_per_capita = models.FloatField(null=True, blank=True)
     escalao = models.CharField(max_length=255, null=True, blank=True)
     comparticipacao_da_familia = models.IntegerField(null=True, blank=True)
 
@@ -332,3 +334,18 @@ class ComparticaoMensalSS(models.Model):
 
     def __str__(self):
         return f"{self.aluno_id} {self.ano_letivo}, MSS Id: {self.mss_id}"
+
+
+
+
+class ConfigIpss(models.Model):
+    class Meta:
+        db_table = "config_ipss"
+
+    ci_id = models.AutoField(primary_key=True)
+    key = models.CharField(max_length=255, null=True, blank=True)
+    value = models.CharField(max_length=255, null=True, blank=True)
+    create_datetime = models.DateField(null=True, blank=True, default=du.timezone.now)
+
+    def __str__(self):
+        return f"{self.key}: {self.value}"
