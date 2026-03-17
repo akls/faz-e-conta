@@ -280,10 +280,10 @@ class MensalidadeAluno(models.Model):
 
     ma_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    ano_letivo = models.ForeignKey(to='AlunoFinancas', on_delete=models.CASCADE, db_column='ano_letivo')
-    periodo_inicio = models.DateField(default= du.timezone.now)
 
-    periodo_fim = models.DateField(default= du.timezone.now, null=True, blank=True)
+    ano = models.IntegerField(null=True, blank=True)
+    mes = models.IntegerField(null=True, blank=True)
+
     mensalidade_calc = models.IntegerField(null=True, blank=True)
     mensalidade_retific = models.IntegerField(null=True, blank=True)
     mensalidade_paga = models.IntegerField(null=True, blank=True)
@@ -295,7 +295,7 @@ class MensalidadeAluno(models.Model):
     acordo = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.aluno_id} {self. ano_letivo}, Ma Id: {self.ma_id}"
+        return f"{self.aluno_id} {self.ano} {self.mes}, Ma Id: {self.ma_id}"
 
 
 
@@ -345,6 +345,7 @@ class ConfigIpss(models.Model):
     ci_id = models.AutoField(primary_key=True)
     key = models.CharField(max_length=255, null=True, blank=True)
     value = models.CharField(max_length=255, null=True, blank=True)
+    active_flag = models.BooleanField(default= True, null=False, blank=False)
     create_datetime = models.DateField(null=True, blank=True, default=du.timezone.now)
 
     def __str__(self):

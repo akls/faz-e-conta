@@ -1,21 +1,21 @@
-ma_id,aluno_id,ano_letivo,periodo_inicio,periodo_fim,mensalidade_calc,mensalidade_retific,mensalidade_paga,data_pagamento,modo_pagamento,programa_ss,acordo
-1,1,2023/2024,2023-09-01,2023-09-30,200,180,180,2023-09-05,Transferência,Comparticipação Jardim Infância,Desconto por bolsa
-2,2,2023/2024,2023-09-01,2023-09-30,220,220,220,2023-09-07,Débito Direto,Comparticipação Jardim Infância,
-3,3,2023/2024,2023-09-01,2023-09-30,250,240,240,2023-09-10,Cheque,Comparticipação Jardim Infância,Atraso justificado
-4,4,2023/2024,2023-09-01,2023-09-30,180,180,180,2023-09-02,Numerário,Comparticipação Jardim Infância,
-5,5,2023/2024,2023-09-01,2023-09-30,190,190,190,2023-09-03,Cheque Creche,Creche Feliz,
-6,6,2023/2024,2023-09-01,2023-09-30,210,210,200,2023-09-09,Outro,Comparticipação Creche,Pagamento parcial acordado
-7,7,2023/2024,2023-09-01,2023-09-30,230,230,230,2023-09-06,Transferência,Creche Feliz,
-8,8,2023/2024,2023-09-01,2023-09-30,170,170,170,2023-09-04,Numerário,Creche Feliz,
-9,9,2023/2024,2023-09-01,2023-09-30,200,190,190,2023-09-08,Cheque Creche,Comparticipação Jardim Infância,Desconto por pontualidade
-10,10,2023/2024,2023-09-01,2023-09-30,250,250,250,2023-09-05,Débito Direto,Comparticipação Creche,
-11,11,2023/2024,2023-09-01,2023-09-30,180,170,170,2023-09-10,Transferência,Comparticipação Jardim Infância,Desconto por irmão matriculado
-12,12,2023/2024,2023-09-01,2023-09-30,220,220,220,2023-09-07,Cheque,Comparticipação Jardim Infância,
-13,13,2023/2024,2023-09-01,2023-09-30,240,240,230,2023-09-06,Numerário,Comparticipação Jardim Infância,Redução por dificuldades financeiras
-14,14,2023/2024,2023-09-01,2023-09-30,210,210,210,2023-09-04,Outro,Comparticipação Creche,
-15,15,2023/2024,2023-09-01,2023-09-30,250,250,250,2023-09-05,Cheque Creche,Creche Feliz,
-16,16,2023/2024,2023-09-01,2023-09-30,180,180,180,2023-09-09,Transferência,Comparticipação Jardim Infância,
-17,17,2023/2024,2023-09-01,2023-09-30,190,190,190,2023-09-08,Débito Direto,Comparticipação Jardim Infância,
-18,18,2023/2024,2023-09-01,2023-09-30,230,230,220,2023-09-07,Outro,Creche Feliz,Reajuste por atraso
-19,19,2023/2024,2023-09-01,2023-09-30,210,210,210,2023-09-06,Numerário,Comparticipação Creche,
-20,20,2023/2024,2023-09-01,2023-09-30,200,200,190,2023-09-05,Cheque,Comparticipação Creche,Pagou parcialmente
+ma_id,aluno_id,ano,mes,mensalidade_calc,mensalidade_retific,mensalidade_paga,data_pagamento,modo_pagamento,programa_ss,acordo
+1,1,2023,05,200,180,180,2023-09-05,Transferência,Comparticipação Jardim Infância,Desconto por bolsa
+2,2,2023,09,220,220,220,2023-09-07,Débito Direto,Comparticipação Jardim Infância,
+3,3,2023,05,250,240,240,2023-09-10,Cheque,Comparticipação Jardim Infância,Atraso justificado
+4,4,2023,09,180,180,180,2023-09-02,Numerário,Comparticipação Jardim Infância,
+5,5,2023,03,190,190,190,2023-09-03,Cheque Creche,Creche Feliz,
+6,6,2023,09,210,210,200,2023-09-09,Outro,Comparticipação Creche,Pagamento parcial acordado
+7,7,2023,04,230,230,230,2023-09-06,Transferência,Creche Feliz,
+8,8,2023,09,170,170,170,2023-09-04,Numerário,Creche Feliz,
+9,9,2023,08,200,190,190,2023-09-08,Cheque Creche,Comparticipação Jardim Infância,Desconto por pontualidade
+10,10,2023,09,250,250,250,2023-09-05,Débito Direto,Comparticipação Creche,
+11,11,2023,07,180,170,170,2023-09-10,Transferência,Comparticipação Jardim Infância,Desconto por irmão matriculado
+12,12,2023,09,220,220,220,2023-09-07,Cheque,Comparticipação Jardim Infância,
+13,13,2023,09,240,240,230,2023-09-06,Numerário,Comparticipação Jardim Infância,Redução por dificuldades financeiras
+14,14,2023,09,210,210,210,2023-09-04,Outro,Comparticipação Creche,
+15,15,2023,09,250,250,250,2023-09-05,Cheque Creche,Creche Feliz,
+16,16,2023,11,180,180,180,2023-09-09,Transferência,Comparticipação Jardim Infância,
+17,17,2023,09,190,190,190,2023-09-08,Débito Direto,Comparticipação Jardim Infância,
+18,18,2023,09,230,230,220,2023-09-07,Outro,Creche Feliz,Reajuste por atraso
+19,19,2023,09,210,210,210,2023-09-06,Numerário,Comparticipação Creche,
+20,20,2023,10,200,200,190,2023-09-05,Cheque,Comparticipação Creche,Pagou parcialmente

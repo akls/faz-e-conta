@@ -1,3 +1,3 @@
-ci_id,key,value,create_datetime
-1,RMMG,920,2024-01-10
-2,SERVICE_COST,450,2024-01-10
+ci_id,key,value,active_flag,create_datetime
+1,RMMG,920,1,2024-01-10
+2,SERVICE_COST,450,1,2024-01-10

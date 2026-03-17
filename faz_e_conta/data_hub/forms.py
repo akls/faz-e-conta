@@ -77,7 +77,7 @@ class SalaForm(forms.ModelForm):
 class Mensalidade_alunoForm(forms.ModelForm):
     class Meta:
         model = MensalidadeAluno
-        fields = ['ma_id', 'aluno_id', 'ano_letivo', 'periodo_inicio', 'periodo_fim', 'mensalidade_calc', 'mensalidade_retific', 'mensalidade_paga', 'data_pagamento', 'modo_pagamento', 'acordo']
+        fields = ['ma_id', 'aluno_id', 'ano', 'mes', 'mensalidade_calc', 'mensalidade_retific', 'mensalidade_paga', 'data_pagamento', 'modo_pagamento', 'acordo']
 
         # Adiciona atributos aos campos do formulário
         widgets = Mensalidade_aluno_widget()
