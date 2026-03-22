@@ -3,51 +3,70 @@
 
 
 {% block content %}
-<!DOCTYPE html>
-<html lang='en'>
 
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Aluno Financas Information</title>
-</head>
-
-<body>
-    <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
+    <h1>Tabela Alunos Finanças</h1>
 
     <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
         <thead>
             <tr style="background-color: #f2f2f2;">
-                {% for item in head %}
-                {% if item != id %}
-                <th style="border: 1px solid #ddd; padding: 10px;">
-                    {{ item|replace:"_, " }}
-                </th>
-                {% endif %}
+                {% for item in head_financas %}
+                    {% if item != id %}
+                        <th style="border: 1px solid #ddd; padding: 10px;">
+                        {{ item|replace:"_, " }}
+                        </th>
+                    {% endif %}
                 {% endfor %}
-
             </tr>
         </thead>
         <tbody>
-            {% for item in data_dict %}
+            {% for item in data_financas %}
             <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
-                {% for field in head %}
-                {% if field != id %}
-                <td>
-                    {% if item|get_item:field == None %}
-                    <hr style="border: none; border-top: 2px dashed black;">
-                    {% else %}
-                    {{ item|get_item:field }}
+                {% for field in head_financas %}
+                    {% if field != id %}
+                    <td>
+                        {% if item|get_item:field == None %}
+                            <hr style="border: none; border-top: 2px dashed black;">
+                        {% else %}
+                            {{ item|get_item:field }}
+                        {% endif %}
+                    </td>
                     {% endif %}
-                </td>
-                {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</body>
 
-</html>
+    <h1>Tabela Mensalidade Alunos</h1>
 
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+            {% for item in head_mensalidade %}
+                {% if item != id %}
+                     <th style="border: 1px solid #ddd; padding: 10px;">
+                    {{ item|replace:"_, " }}
+                     </th>
+                {% endif %}
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data_mensalidade %}
+                <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+                {% for field in head_mensalidade %}
+                    {% if field != id %}
+                        <td>
+                        {% if item|get_item:field == None %}
+                            <hr style="border: none; border-top: 2px dashed black;">
+                        {% else %}
+                            {{ item|get_item:field }}
+                        {% endif %}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
