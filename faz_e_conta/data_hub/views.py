@@ -11,47 +11,34 @@ from django.db.models.functions import Concat
 def starter_page(request):
     return render(request, "show_students.html")
 
+
+
+
 def show_students(request):
-    query = request.GET.get("q", "")  # Get search query from the URL
-    sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
+    # URL query parameters
+    query = request.GET.get("q", "")
+    sala_filter = request.GET.get("sala", "")
 
-    # Base queryset
-    data = Aluno.objects.select_related('sala_id').all()
 
-    # Apply search filter
+
+    # Get alunos in the data base
+    alunos = Aluno.objects.all()
+    # Apply filters
     if query:
-        data = data.filter(
-            Q(nome_proprio__icontains=query) | 
-            Q(apelido__icontains=query) | 
-            Q(processo__icontains=query)
-        )
-
-    # Apply sala_valencia or sala_nome filter
+        alunos = alunos.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query) |Q (processo__icontains=query))
     if sala_filter:
-        data = data.filter(
-            Q(sala_id__sala_valencia__icontains=sala_filter) |
-            Q(sala_id__sala_nome__icontains=sala_filter)
-        )
+        alunos = alunos.filter(Q(sala_id__sala_valencia__icontains=sala_filter) | Q(sala_id__sala_nome__icontains=sala_filter))
 
-    # Define the fields to display
-    head = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao", "sala_id__sala_valencia", "sala_id__sala_nome"]
-    data_dict = list(data.values(*head))
 
-    # Get unique sala_valencia and sala_nome values for the dropdown
-    salas = Sala.objects.values_list("sala_valencia", flat=True).distinct()
-    sala_nomes = Sala.objects.values_list("sala_nome", flat=True).distinct()
+
 
     # Render the template with context
-    context = {
-        "head": head,
-        "data_dict": data_dict,
-        "id": head[0],
-        "query": query,
-        "sala_filter": sala_filter,
-        "salas": salas,
-        "sala_nomes": sala_nomes,
-    }
+    alunoFields = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao", "sala_id__sala_valencia", "sala_id__sala_nome"]
+    context = {"alunos": alunos.values(*alunoFields), "salas": Sala.objects.all(), "alunoCount": alunos.count()}
     return render(request, "show_students.html", context)
+
+
+
 
 def show_financas(request):
     query = request.GET.get("q", "")  # Get search query from the URL
@@ -76,63 +63,36 @@ def show_financas(request):
     }
     return render(request, "show_aluno_financas.html", context)
 
+
+
+
 def show_contactos(request):
-    query = request.GET.get("q", "")  # Get search query from the URL
-    sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
+    # URL query parameters
+    query = request.GET.get("q", "")
+    sala_filter = request.GET.get("sala", "")
 
-    # Base queryset with annotation for full name
-    data = Aluno.objects.select_related('responsaveleducativo', 'sala_id').annotate(
-        responsavel_nome_completo=Concat(
-            F('responsaveleducativo__nome_proprio'),
-            Value(' '),
-            F('responsaveleducativo__apelido'),
-            output_field=CharField()
-        )
-    )
 
+
+
+    # Get guardians
+    encarregadosEducacao = ResponsavelEducativo.objects.all()
     # Apply search filter
     if query:
-        data = data.filter(
-            Q(nome_proprio__icontains=query) |
-            Q(apelido__icontains=query) |
-            Q(responsavel_nome_completo__icontains=query)
-        )
-
+        encarregadosEducacao = encarregadosEducacao.filter(Q(nome_proprio__icontains=query))
     # Apply sala_valencia or sala_nome filter
     if sala_filter:
-        data = data.filter(
-            Q(sala_id__sala_valencia__icontains=sala_filter) |
-            Q(sala_id__sala_nome__icontains=sala_filter)
-        )
+        encarregadosEducacao = encarregadosEducacao.filter(Q(aluno_id__sala_id__sala_nome__icontains=sala_filter))
 
-    # Define the fields to display
-    head = [
-        "responsaveleducativo__responsavel_educativo_id",  # Ensure this field is included
-        "responsavel_nome_completo", 
-        "responsaveleducativo__telefone", 
-        "responsaveleducativo__email", 
-        "nome_proprio", 
-        "apelido", 
-        "sala_id__sala_valencia", 
-        "sala_id__sala_nome"
-    ]
-    data_dict = list(data.values(*head))
 
-    # Get unique sala_valencia and sala_nome values for the dropdown
-    salas = Sala.objects.values_list("sala_valencia", flat=True).distinct()
-    sala_nomes = Sala.objects.values_list("sala_nome", flat=True).distinct()
+
 
     # Render the template with context
-    context = {
-        "head": head,
-        "data_dict": data_dict,
-        "id": "nome_proprio",  # Use student name as identifier
-        "query": query,
-        "sala_filter": sala_filter,
-        "salas": salas,
-        "sala_nomes": sala_nomes,
-    }
+    fields = ["responsavel_educativo_id", "nome_proprio", "telefone", "email", "aluno_id__nome_proprio", "aluno_id__apelido", "aluno_id__sala_id__sala_valencia", "aluno_id__sala_id__sala_nome"]
+    context = {"guardians": encarregadosEducacao.values(*fields), "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count()}
     return render(request, "show_contactos.html", context)
+
+
+
 
 def show_contactos_details(request, responsavel_id):
     responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
@@ -143,6 +103,9 @@ def show_contactos_details(request, responsavel_id):
         "aluno": aluno,
     }
     return render(request, "show_contactos_details.html", context)
+
+
+
 
 def show_aluno(request):
     query = request.GET.get("q", "")  # Get search query from the URL
@@ -179,6 +142,9 @@ def show_aluno(request):
         "salas": salas,
     }
     return render(request, "show_aluno.html", context)
+
+
+
 
 def show_salas(request):
     query_valencia = request.GET.get("valencia", "")  # Filter by valencia
@@ -219,6 +185,9 @@ def show_salas(request):
     }
     return render(request, "show_sala.html", context)
 
+
+
+
 def show_despesas(request):
     start_date = request.GET.get("start_date", "")  # Data inicial
     end_date = request.GET.get("end_date", "")  # Data final
@@ -243,6 +212,9 @@ def show_despesas(request):
     }
     return render(request, "show_despesa.html", context)
 
+
+
+
 def show_student_details(request, aluno_id):
     aluno = get_object_or_404(Aluno, pk=aluno_id)
     responsavel = ResponsavelEducativo.objects.filter(aluno_id=aluno).first()
@@ -255,6 +227,9 @@ def show_student_details(request, aluno_id):
     }
     return render(request, "show_student_details.html", context)
 
+
+
+
 def edit_student(request, aluno_id):
     aluno = get_object_or_404(Aluno, pk=aluno_id)
     if request.method == "POST":
@@ -265,6 +240,9 @@ def edit_student(request, aluno_id):
     else:
         form = AlunoForm(instance=aluno)
     return render(request, 'edit_student.html', {'form': form})
+
+
+
 
 def edit_responsavel_educativo(request, responsavel_id):
     responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
@@ -279,6 +257,9 @@ def edit_responsavel_educativo(request, responsavel_id):
         form = Responsavel_educativoForm(instance=responsavel)  # Use the correct form name
     return render(request, 'edit_responsavel_educativo.html', {'form': form})
 
+
+
+
 def insert_aluno_view(request):
     if request.method == "POST":
         form = AlunoForm(request.POST)
@@ -291,6 +272,9 @@ def insert_aluno_view(request):
         form = AlunoForm()
     return render(request, 'insert_aluno.html', {'form': form})
 
+
+
+
 def insert_responsavel_educativo_view(request):
     if request.method == "POST":
         form = Responsavel_educativoForm(request.POST)
@@ -302,6 +286,9 @@ def insert_responsavel_educativo_view(request):
     else:
         form = Responsavel_educativoForm()
     return render(request, 'insert_responsavel_educativo.html', {'form': form})
+
+
+
 
 def insert_funcionario_view(request):
     if request.method == "POST":
