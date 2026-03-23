@@ -6,67 +6,155 @@
 
     <h1>Tabela Alunos Finanças</h1>
 
-    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                {% for item in head_financas %}
+    <div style="max-height: 800px; overflow-y: auto; border: 1px solid #ddd; margin-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    {% for item in head_financas %}
+                        {% if item != id %}
+                            <th style="border: 1px solid #ddd; padding: 10px; position: sticky; top: 0; background-color: #f2f2f2; z-index: 10;">
+                            {{ item|replace:"_, " }}
+                            </th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data_financas %}
+                <tr style="background-color: {% cycle '#ffffff' '#f2f2f2' %};">
+                    {% for field in head_financas %}
+                        {% if field != id %}
+                        <td>
+                            {% if item|get_item:field == None %}
+                                <hr style="border: none; border-top: 2px dashed black;">
+                            {% else %}
+                                {{ item|get_item:field }}
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <h1>Tabela Mensalidade Alunos</h1>
+
+    <section style="margin-bottom: 20px; padding: 15px; background: #f4f4f4; border-radius: 8px;
+             display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+        <form method="get" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+
+            <div>
+                <label style="display:block">Nome:</label>
+                <input type="text" name="nome" placeholder="Ex: nuno matos" value="{{ filters.nome }}">
+            </div>
+
+            <div>
+                <label style="display:block">Sala:</label>
+                <input type="text" name="sala" placeholder="Ex: verde" value="{{ filters.sala }}">
+            </div>
+
+            <div>
+                <label style="display:block">Mês/Ano:</label>
+                <input type="month" name="ano_mes" value="{{ filters.ano_mes }}">
+            </div>
+
+            <div>
+                <label style="display:block">Mês:</label>
+                <input type="number" name="mes" placeholder="Ex: 09" min="01" max="12" value="{{ filters.mes_apenas }}">
+            </div>
+
+            <div>
+                <label style="display:block">Ano:</label>
+                <input type="number" name="ano" placeholder="Ex: 2023" min="2000" max="2099" value="{{ filters.ano_apenas }}">
+            </div>
+
+            <div>
+                <label style="display:block">Data Nascimento:</label>
+                <input type="date" name="nascimento" value="{{ filters.nascimento }}">
+            </div>
+
+            <button type="submit" style="padding: 5px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px;">Filtrar</button>
+
+            <a href="?" style="text-decoration: none; font-size: 12px; color: #666;">Limpar Filtros</a>
+        </form>
+
+        <div style="flex-shrink: 0;">
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="mensalidadeFinal" value="true"
+                    onclick="return confirm('Calcular mensalidades para o mês atual?')"
+                    style="padding: 15px 25px; background-color: #007bff; color: white; border: none; border-radius: 3px; font-size: large; cursor: pointer;">
+                    Calcular Mensalidades</button>
+            </form>
+        </div>
+
+    </section>
+
+    {% if messages %}
+    <div id="message-container" style="margin-bottom: 10px;">
+        {% for message in messages %}
+        <div style="padding: 15px; border-radius: 4px; width: fit-content; border: 2px solid;
+            margin-bottom: 10px; font-family: Arial, sans-serif;
+            {% if message.tags == 'success' %}
+                background-color: #d4edda; color: #155724; border-color: #c3e6cb;
+            {% elif message.tags == 'error' %}
+                background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;
+            {% else %}
+                background-color: #e2e3e5; color: #383d41; border-color: #d6d8db;
+            {% endif %}">
+            {{ message }}
+            <span onclick="this.parentElement.style.display='none'" style="float:right; cursor:pointer; font-size: 24px; font-weight: bold; line-height: 20px; margin-left: 15px;">&times;</span>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(
+            function() {
+                var msg = document.getElementById('message-container');
+                if (msg) {
+                    msg.style.transition = "opacity 0.6s";
+                    msg.style.opacity = "0";
+                    setTimeout(function() { msg.style.display = "none"; }, 600);
+                }
+            }, 5000
+        );
+    </script>
+    {% endif %}
+
+    <div style="max-height: 800px; overflow-y: auto; border: 1px solid #ddd; margin-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                {% for item in head_mensalidade %}
                     {% if item != id %}
-                        <th style="border: 1px solid #ddd; padding: 10px;">
+                        <th style="border: 1px solid #ddd; padding: 10px; position: sticky; top: 0; background-color: #f2f2f2; z-index: 10;">
                         {{ item|replace:"_, " }}
                         </th>
                     {% endif %}
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data_financas %}
-            <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
-                {% for field in head_financas %}
-                    {% if field != id %}
-                    <td>
-                        {% if item|get_item:field == None %}
-                            <hr style="border: none; border-top: 2px dashed black;">
-                        {% else %}
-                            {{ item|get_item:field }}
-                        {% endif %}
-                    </td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h1>Tabela Mensalidade Alunos</h1>
-
-    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-            {% for item in head_mensalidade %}
-                {% if item != id %}
-                     <th style="border: 1px solid #ddd; padding: 10px;">
-                    {{ item|replace:"_, " }}
-                     </th>
-                {% endif %}
-            {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data_mensalidade %}
-                <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
-                {% for field in head_mensalidade %}
-                    {% if field != id %}
-                        <td>
-                        {% if item|get_item:field == None %}
-                            <hr style="border: none; border-top: 2px dashed black;">
-                        {% else %}
-                            {{ item|get_item:field }}
-                        {% endif %}
-                        </td>
-                    {% endif %}
-                {% endfor %}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for item in data_mensalidade %}
+                    <tr style="background-color: {% cycle '#ffffff' '#f2f2f2' %};">
+                    {% for field in head_mensalidade %}
+                        {% if field != id %}
+                            <td>
+                            {% if item|get_item:field == None %}
+                                <hr style="border: none; border-top: 2px dashed black;">
+                            {% else %}
+                                {{ item|get_item:field }}
+                            {% endif %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 {% endblock %}

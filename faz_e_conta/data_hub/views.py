@@ -3,9 +3,11 @@ from .forms import *
 from .models import *
 from .auto_gen_form_views import *
 from .auto_gen_id_views import *
-from django.db.models import Q  # Import Q for dynamic filtering
+from django.db.models import Q
 from django.db.models import F, Value, CharField
 from django.db.models.functions import Concat, Cast
+from django.db import connection
+from django.contrib import messages
 
 
 def starter_page(request):
@@ -55,16 +57,22 @@ def show_students(request):
 
 def show_financas(request):
 
+    filter_nome = request.GET.get('nome', '')
+    filter_sala = request.GET.get('sala', '')
+    filter_ano_mes = request.GET.get('ano_mes', '')
+    filter_nascimento = request.GET.get('nascimento', '')
+    filter_ano_apenas = request.GET.get('ano', '')
+    filter_mes_apenas = request.GET.get('mes', '')
+
     data_financas = AlunoFinancas.objects.annotate(
         Ano_letivo=F('ano_letivo'),
         Despesa_anual=F('despesa_anual'),
         Rendimento_líquido=F('rendim_líquido'),
-        Nome_Completo=Concat(
-'aluno_id__nome_proprio',
+        Nome=Concat(
+            'aluno_id__nome_proprio',
             Value(' '),
             'aluno_id__apelido',
-            output_field=CharField()
-        ),
+            output_field=CharField()),
         Documento=F('aluno_id__numero_documento')
     )
     data_mensalidade = MensalidadeAluno.objects.annotate(
@@ -74,34 +82,126 @@ def show_financas(request):
             'mes',
             output_field=CharField()
         ),
-        Calculado=F('mensalidade_calc'),
-        Retificado=F('mensalidade_retific'),
-        Quantidade_Paga = F('mensalidade_paga'),
-        Data_Pagamento= Cast('data_pagamento', CharField()),
+        Valor_a_pagar =F('mensalidade_retific'),
+        Valor_pago = F('mensalidade_paga'),
+        Data_Pagamento = Cast('data_pagamento', CharField()),
         Modo_Pagamento=F('modo_pagamento'),
         Serviço=F('programa_ss'),
-        Acordo = F('acordo')
-    ).order_by('ano','mes')
+        Acordo = F('acordo'),
+        Nome=Concat(
+            'aluno_id__nome_proprio',
+            Value(' '),
+            'aluno_id__apelido',
+            output_field=CharField()),
+        Sala = F('aluno_id__sala_id__sala_nome'),
+        Data_Nascimento = Cast('aluno_id__data_nascimento', CharField()),
+    ).order_by('-ano','mes')
 
+
+    if request.method == "POST" and 'mensalidadeFinal' in request.POST:
+        query = """
+                INSERT INTO mensalidade_aluno (
+                    ma_id,
+                    aluno_id,
+                    ano,
+                    mes,
+                    mensalidade_calc,
+                    mensalidade_retific,
+                    mensalidade_paga,
+                    data_pagamento,
+                    modo_pagamento,
+                    programa_ss,
+                    acordo
+                )
+                SELECT
+                    abs(random()),
+                    resultado.id,
+                    strftime('%Y', 'now'),
+                    strftime('%m', 'now'),
+                    resultado.mensalidade_final,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL
+                FROM (
+                         SELECT
+                             calc.aluno_id AS id,
+                             calc.rc AS rc,
+                             e.perc_rend_per_capita AS limite_superior,
+                             (calc.rc * (e.comparticipacao_da_familia / 100.0)) AS mensalidade_final
+                         FROM (
+                                  SELECT
+                                      a.aluno_id,
+                                      ((af.rendim_líquido - af.despesa_anual) / (12.0 * af.agregado)) AS rc,
+                                      c.value As rmmg
+                                  FROM aluno a
+                                           LEFT JOIN aluno_financas af ON a.aluno_id = af.aluno_id
+                                           LEFT JOIN config_ipss c ON c.key='RMMG' AND active_flag = 1
+                              ) AS calc
+                                  LEFT JOIN escaloes_rendim e ON (calc.rc / rmmg) * 100 <= e.perc_rend_per_capita
+                         GROUP BY id
+                         HAVING e.perc_rend_per_capita = MIN(e.perc_rend_per_capita)
+                     ) AS resultado
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM mensalidade_aluno m
+                    WHERE m.aluno_id = resultado.id
+                      AND m.ano = strftime('%Y', 'now')
+                      AND m.mes = strftime('%m', 'now')
+                );
+                """
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                count = cursor.rowcount
+                if count == 0:
+                    messages.warning(request, f"Este registro já existe")
+                else:
+                    messages.success(request, f"Sucesso! {count} mensalidades calculadas.")
+        except Exception as e:
+            messages.error(request, f"Erro ao processar: {e}")
+        return redirect(request.path)
+
+    if filter_nome:
+        data_mensalidade = data_mensalidade.filter(Nome__icontains=filter_nome)
+
+    if filter_sala:
+        data_mensalidade = data_mensalidade.filter(Sala__icontains=filter_sala)
+
+    if filter_nascimento:
+        data_mensalidade = data_mensalidade.filter(Data_Nascimento=filter_nascimento)
+
+    if filter_ano_mes:
+        year, month = filter_ano_mes.split('-')
+        data_mensalidade = data_mensalidade.filter(ano=year, mes=month)
+
+    if filter_mes_apenas:
+        data_mensalidade = data_mensalidade.filter(mes=filter_mes_apenas)
+
+    if filter_ano_apenas:
+        data_mensalidade = data_mensalidade.filter(ano=filter_ano_apenas)
 
     head_financas = \
         [
         "Ano_letivo",
         "Despesa_anual",
         "Rendimento_líquido",
-        "Nome_Completo",
+        "Nome",
         "Documento"
          ]
     head_mensalidade = \
         [
         "Data",
-        "Calculado",
-        "Retificado",
-        "Quantidade_Paga",
+        "Valor_a_pagar",
+        "Valor_pago",
         "Data_Pagamento",
         "Modo_Pagamento",
         "Serviço",
-        "Acordo"
+        "Acordo",
+        "Nome",
+        "Sala",
+        "Data_Nascimento",
         ]
 
 
