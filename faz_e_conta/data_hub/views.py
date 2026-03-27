@@ -75,33 +75,35 @@ def show_contactos(request):
 
 
     # Get guardians
-    encarregadosEducacao = ResponsavelEducativo.objects.all()
+    encarregadosEducacao = ResponsavelEducativo.objects.prefetch_related("aluno_set")
     # Apply search filter
     if query:
-        encarregadosEducacao = encarregadosEducacao.filter(Q(nome_proprio__icontains=query))
+        encarregadosEducacao = encarregadosEducacao.filter(nome_proprio__icontains=query)
     # Apply sala_valencia or sala_nome filter
     if sala_filter:
-        encarregadosEducacao = encarregadosEducacao.filter(Q(aluno_id__sala_id__sala_nome__icontains=sala_filter))
+        encarregadosEducacao = encarregadosEducacao.filter(aluno_id__sala_id__sala_nome__icontains=sala_filter)
+
+
+
+
+    # Get alunos per guardian
+
 
 
 
 
     # Render the template with context
-    fields = ["responsavel_educativo_id", "nome_proprio", "telefone", "email", "aluno_id__nome_proprio", "aluno_id__apelido", "aluno_id__sala_id__sala_valencia", "aluno_id__sala_id__sala_nome"]
-    context = {"guardians": encarregadosEducacao.values(*fields), "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count()}
+    fields = ["responsavel_educativo_id", "nome_proprio", "telefone", "email"]
+    context = {"guardians": encarregadosEducacao, "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count()}
     return render(request, "show_contactos.html", context)
 
 
 
 
 def show_contactos_details(request, responsavel_id):
-    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
-    aluno = responsavel.aluno_id
+    guardian = ResponsavelEducativo.objects.prefetch_related("aluno_set").filter(responsavel_educativo_id=responsavel_id)[0]
 
-    context = {
-        "responsavel": responsavel,
-        "aluno": aluno,
-    }
+    context = {"guardian": guardian}
     return render(request, "show_contactos_details.html", context)
 
 
@@ -216,15 +218,9 @@ def show_despesas(request):
 
 
 def show_student_details(request, aluno_id):
-    aluno = get_object_or_404(Aluno, pk=aluno_id)
-    responsavel = ResponsavelEducativo.objects.filter(aluno_id=aluno).first()
-    sala = aluno.sala_id
+    aluno = Aluno.objects.select_related("sala_id", "responsavel_educativo_id").filter(aluno_id=aluno_id)[0]
 
-    context = {
-        "aluno": aluno,
-        "responsavel": responsavel,
-        "sala": sala,
-    }
+    context = {"aluno": aluno}
     return render(request, "show_student_details.html", context)
 
 

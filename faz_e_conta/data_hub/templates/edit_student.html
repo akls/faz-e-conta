@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Aluno</title>
-</head>
+{% block content %}
+<h1>Editar Aluno</h1>
 
-<body>
-    <h1>Editar Aluno</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
-    <a href="{% url 'show_student_details' aluno_id=form.instance.aluno_id %}">Cancelar</a>
-</body>
+<form method="post" class="form-container">
+    {% csrf_token %}
+    {{ form.as_p }}
 
-</html>
+    <div class="form-actions">
+        <button type="submit" class="btn">Salvar</button>
+        <a href="{% url 'show_student_details' aluno_id=form.instance.aluno_id %}" class="btn cancel">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

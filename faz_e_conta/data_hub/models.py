@@ -31,6 +31,7 @@ class Aluno(models.Model):
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
 
+    responsavel_educativo_id = models.ForeignKey(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='responsavel_educativo_id')
     sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
 
     def __str__(self):
@@ -99,7 +100,6 @@ class ResponsavelEducativo(models.Model):
 
     morada_emprego = models.CharField(max_length=150, null=True, blank=True)
     horario_trabalho = models.TimeField(null=True, blank=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"

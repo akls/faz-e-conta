@@ -5,10 +5,8 @@
 <h1>Alunos</h1>
 
 <!-- Add Student Button -->
-<div style="text-align: right; margin-bottom: 10px;">
-    <a href="{% url 'insert_aluno_view' %}"
-        style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Adicionar
-        Aluno</a>
+<div>
+    <a href="{% url 'insert_aluno_view' %}">Adicionar Aluno</a>
 </div>
 
 
@@ -37,27 +35,35 @@
 
 <!-- Students -->
 <p>Total de alunos: {{ alunoCount }}</p>
-<table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+<table>
 
     <thead>
 
-        <tr style="background-color: #f2f2f2;">
+        <tr>
 
-            {% for nameColuna in alunos|first %}
-            <th style="border: 1px solid #ddd; padding: 10px;">
-
-                {% if nameColuna == "sala_id__sala_valencia" %}
-                Sala valencia
-                {% elif nameColuna == "sala_id__sala_nome" %}
-                Sala nome
-                {% else %}
-                {{ nameColuna|replace:"_, " }}
-                {% endif %}
-
+            <th>
+                Aluno Id
             </th>
-            {% endfor %}
+            <th>
+                Nome
+            </th>
+            <th>
+                Processo
+            </th>
+            <th>
+                Numero Documento
+            </th>
+            <th>
+                Data Admissao
+            </th>
+            <th>
+                Sala valencia
+            </th>
+            <th>
+                Sala
+            </th>
 
-            <th style="border: 1px solid #ddd; padding: 10px;">Detalhes</th>
+            <th>Detalhes</th>
 
         </tr>
 
@@ -66,13 +72,29 @@
 
     <tbody>
         {% for aluno in alunos %}
-        <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+        <tr>
 
-            {% for coluna in aluno.values %}
             <td>
-                {{ coluna }}
+                {{ aluno.aluno_id }}
             </td>
-            {% endfor %}
+            <td>
+                {{ aluno.nome_proprio }} {{ aluno.apelido }}
+            </td>
+            <td>
+                {{ aluno.processo }}
+            </td>
+            <td>
+                {{ aluno.numero_documento }}
+            </td>
+            <td>
+                {{ aluno.data_admissao }}
+            </td>
+            <td>
+                {{ aluno.sala_id__sala_valencia}}
+            </td>
+            <td>
+                {{ aluno.sala_id__sala_nome }}
+            </td>
 
             <td>
                 <a href="{% url 'aluno_view' aluno_id=aluno.aluno_id %}">Ver detalhes</a>

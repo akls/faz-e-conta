@@ -22,39 +22,39 @@
 
 <a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
 
-{% if responsavel %}
+{% if aluno.responsavel_educativo_id %}
 <h2>Responsável Educativo</h2>
 <table>
     <tr>
         <th>Nome:</th>
-        <td>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</td>
+        <td>{{ aluno.responsavel_educativo_id.nome_proprio }} {{ aluno.responsavel_educativo_id.apelido }}</td>
     </tr>
     <tr>
         <th>Telefone:</th>
-        <td>{{ responsavel.telefone }}</td>
+        <td>{{ aluno.responsavel_educativo_id.telefone }}</td>
     </tr>
     <tr>
         <th>Email:</th>
-        <td>{{ responsavel.email }}</td>
+        <td>{{ aluno.responsavel_educativo_id.email }}</td>
     </tr>
     <!-- Add more fields as needed -->
 </table>
-<a href="{% url 'edit_responsavel_educativo' responsavel_id=responsavel.responsavel_educativo_id %}">Editar
+<a href="{% url 'edit_responsavel_educativo' responsavel_id=aluno.responsavel_educativo_id.responsavel_educativo_id %}">Editar
     Responsável</a>
 {% else %}
 <p>Sem responsável educativo associado.</p>
 {% endif %}
 
-{% if sala %}
+{% if aluno.sala_id %}
 <h2>Sala</h2>
 <table>
     <tr>
         <th>Nome:</th>
-        <td>{{ sala.sala_nome }}</td>
+        <td>{{ aluno.sala_id.sala_nome }}</td>
     </tr>
     <tr>
         <th>Valência:</th>
-        <td>{{ sala.sala_valencia }}</td>
+        <td>{{ aluno.sala_id.sala_valencia }}</td>
     </tr>
     <!-- Add more fields as needed -->
 </table>
