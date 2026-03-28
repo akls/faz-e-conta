@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <body>
     <h1>Editar Responsável Educativo</h1>
-    <form method="post">
+    <form method="post" id="form">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Salvar</button>
     </form>
     <a href="{% url 'show_contactos' %}">Cancelar</a>
+
+    <script src="{% static 'js/forms.js' %}"></script>
 </body>
 {% endblock %}

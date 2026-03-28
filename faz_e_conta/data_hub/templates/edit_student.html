@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Editar Aluno</h1>
+<body>
+    <h1>Editar Aluno</h1>
 
-<form method="post" class="form-container">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="post" class="form-container" id="form">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-    <div class="form-actions">
-        <button type="submit" class="btn">Salvar</button>
-        <a href="{% url 'show_student_details' aluno_id=form.instance.aluno_id %}" class="btn cancel">Cancelar</a>
-    </div>
-</form>
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{% url 'show_student_details' aluno_id=form.instance.aluno_id %}" class="btn cancel">Cancelar</a>
+        </div>
+    </form>
+
+    <script src="{% static 'js/forms.js' %}"></script>
+</body>
 {% endblock %}
