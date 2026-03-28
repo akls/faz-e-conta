@@ -10,7 +10,7 @@
     </tr>
     <tr>
         <th>Processo:</th>
-        <td>{{ aluno.processo }}</td>
+        <td>{% if aluno.processo %}{{ aluno.processo }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
     <tr>
         <th>Data de Admissão:</th>
@@ -33,11 +33,11 @@
     </tr>
     <tr>
         <th>Telefone:</th>
-        <td>{{ guardian.telefone }}</td>
+        <td>{% if guardian.telefone %}{{ guardian.telefone }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
     <tr>
         <th>Email:</th>
-        <td>{{ guardian.email }}</td>
+        <td>{% if guardian.email %}{{ guardian.email }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
 </table>
 <a href="{% url 'edit_responsavel_educativo' responsavel_id=guardian.responsavel_educativo_id %}">Editar Responsável</a>

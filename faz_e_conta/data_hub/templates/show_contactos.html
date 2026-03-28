@@ -74,15 +74,20 @@
 
             <td>{{ guardian.responsavel_educativo_id }}</td>
             <td>{{ guardian.nome_proprio }} {{ guardian.apelido }}</td>
-            <td>{{ guardian.telefone }}</td>
-            <td>{{ guardian.email }}</td>
+            <td>{% if guardian.telefone %}{{ guardian.telefone }}{% else %}Nenhum dado{% endif %}</td>
+            <td>{% if guardian.email %}{{ guardian.email }}{% else %}Nenhum dado{% endif %}</td>
 
-
+            {% if guardian.alunos.all %}
             <td>
                 {% for aluno in guardian.alunos.all %}
                 {{ aluno.nome_proprio }} {{aluno.apelido}}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </td>
+            {% else %}
+            <td>
+                Nenhum dado
+            </td>
+            {% endif %}
 
             <td>
                 <a href="{% url 'show_contactos_details' responsavel_id=guardian.responsavel_educativo_id %}">Ver detalhes</a>
@@ -95,6 +100,6 @@
     </table>
 
 </body>
--->
+
 </html>
 {% endblock %}

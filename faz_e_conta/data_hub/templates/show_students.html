@@ -84,7 +84,7 @@
                 {{ aluno.nome_proprio }} {{ aluno.apelido }}
             </td>
             <td>
-                {{ aluno.processo }}
+                {% if aluno.processo %}{{ aluno.processo }}{% else %}Nenhum dado{% endif %}
             </td>
             <td>
                 {{ aluno.numero_documento }}

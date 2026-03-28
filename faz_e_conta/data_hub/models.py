@@ -79,21 +79,21 @@ class ResponsavelEducativo(models.Model):
         db_table = 'responsavel_educativo'
 
     responsavel_educativo_id = models.AutoField(primary_key=True)
-    nome_proprio = models.CharField(max_length=100, default='')
-    apelido = models.CharField(max_length=250, default='')
-    data_nascimento = models.DateField(default= du.timezone.now)
+    nome_proprio = models.CharField(max_length=100, blank=False)
+    apelido = models.CharField(max_length=250, blank=False)
+    data_nascimento = models.DateField(blank=False)
 
-    documento = models.CharField(max_length=150, default='')
-    numero_documento = models.IntegerField()
-    data_validade = models.DateField(default= du.timezone.now)
+    documento = models.CharField(max_length=150, blank=False)
+    numero_documento = models.IntegerField(blank=False)
+    data_validade = models.DateField(blank=False)
     niss = models.IntegerField(null=True, blank=True)
 
     nif = models.IntegerField(null=True, blank=True)
-    morada = models.CharField(max_length=250, default='')
-    codigo_postal = models.CharField(max_length=100, default='')
-    concelho = models.CharField(max_length=150, default='')
+    morada = models.CharField(max_length=250, blank=False)
+    codigo_postal = models.CharField(max_length=100, blank=False)
+    concelho = models.CharField(max_length=150, blank=False)
 
-    fregesia = models.CharField(max_length=150, default='')
+    fregesia = models.CharField(max_length=150, blank=False)
     telefone = models.IntegerField(null=True, blank=True)
     email = models.CharField(max_length=150, null=True, blank=True)
     profissao = models.CharField(max_length=150, null=True, blank=True)
