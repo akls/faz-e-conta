@@ -79,7 +79,7 @@
 
 
             <td>
-                {% for aluno in guardian.aluno_set.all %}
+                {% for aluno in guardian.alunos.all %}
                 {{ aluno.nome_proprio }} {{aluno.apelido}}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </td>

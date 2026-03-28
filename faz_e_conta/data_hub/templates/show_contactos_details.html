@@ -82,7 +82,7 @@
         </tr>
         <tr>
             <th>Alunos:</th>
-            {% for aluno in guardian.aluno_set.all %}
+            {% for aluno in guardian.alunos.all %}
             <td>{{ aluno.nome_proprio }} {{ aluno.apelido }}</td>
             {% endfor %}
         </tr>

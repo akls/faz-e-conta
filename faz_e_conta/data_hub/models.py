@@ -31,7 +31,7 @@ class Aluno(models.Model):
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
 
-    responsavel_educativo_id = models.ForeignKey(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='responsavel_educativo_id')
+    responsaveis_educativos_ids = models.ManyToManyField(to='ResponsavelEducativo', related_name='alunos')
     sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
 
     def __str__(self):

@@ -2,7 +2,6 @@
 
 {% block content %}
 <h1>Detalhes do Aluno</h1>
-
 <h2>Informações do Aluno</h2>
 <table>
     <tr>
@@ -19,35 +18,41 @@
     </tr>
     <!-- Add more fields as needed -->
 </table>
-
 <a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
 
-{% if aluno.responsavel_educativo_id %}
-<h2>Responsável Educativo</h2>
+
+
+
+{% if aluno.responsaveis_educativos_ids %}
+<h2>Responsáveis Educativos</h2>
+{% for guardian in aluno.responsaveis_educativos_ids.all %}
 <table>
     <tr>
         <th>Nome:</th>
-        <td>{{ aluno.responsavel_educativo_id.nome_proprio }} {{ aluno.responsavel_educativo_id.apelido }}</td>
+        <td>{{ guardian.nome_proprio }} {{ aluno.responsavel_educativo_id.apelido }}</td>
     </tr>
     <tr>
         <th>Telefone:</th>
-        <td>{{ aluno.responsavel_educativo_id.telefone }}</td>
+        <td>{{ guardian.telefone }}</td>
     </tr>
     <tr>
         <th>Email:</th>
-        <td>{{ aluno.responsavel_educativo_id.email }}</td>
+        <td>{{ guardian.email }}</td>
     </tr>
-    <!-- Add more fields as needed -->
 </table>
-<a href="{% url 'edit_responsavel_educativo' responsavel_id=aluno.responsavel_educativo_id.responsavel_educativo_id %}">Editar
-    Responsável</a>
+<a href="{% url 'edit_responsavel_educativo' responsavel_id=guardian.responsavel_educativo_id %}">Editar Responsável</a>
+{% endfor %}
 {% else %}
 <p>Sem responsável educativo associado.</p>
 {% endif %}
 
+
+
+
 {% if aluno.sala_id %}
 <h2>Sala</h2>
 <table>
+
     <tr>
         <th>Nome:</th>
         <td>{{ aluno.sala_id.sala_nome }}</td>
@@ -56,11 +61,14 @@
         <th>Valência:</th>
         <td>{{ aluno.sala_id.sala_valencia }}</td>
     </tr>
-    <!-- Add more fields as needed -->
+
 </table>
 {% else %}
 <p>Sem sala associada.</p>
 {% endif %}
+
+
+
 
 <a href="{% url 'show_students' %}">Voltar</a>
 {% endblock %}

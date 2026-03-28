@@ -5,7 +5,7 @@ from .widgets import *
 class AlunoForm(forms.ModelForm):
     class Meta:
         model = Aluno
-        fields = ['aluno_id', 'nome_proprio', 'apelido', 'archive_flag', 'processo', 'data_admissao', 'data_ultima_renovacao', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'escolaridade_anterior', 'motivo_admissao', 'cuidados_especias', 'sala_id', 'responsavel_educativo_id']
+        fields = ['aluno_id', 'nome_proprio', 'apelido', 'archive_flag', 'processo', 'data_admissao', 'data_ultima_renovacao', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'escolaridade_anterior', 'motivo_admissao', 'cuidados_especias', 'sala_id', 'responsaveis_educativos_ids']
 
 
         # Adiciona atributos aos campos do formulário
@@ -13,7 +13,7 @@ class AlunoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['responsavel_educativo_id'].queryset = ResponsavelEducativo.objects.order_by('nome_proprio', 'apelido')
+        self.fields['responsaveis_educativos_ids'].queryset = ResponsavelEducativo.objects.order_by('nome_proprio', 'apelido')
         self.fields['sala_id'].queryset = Sala.objects.order_by("sala_nome")
 
 class Responsavel_educativoForm(forms.ModelForm):
