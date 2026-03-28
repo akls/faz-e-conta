@@ -7,24 +7,24 @@ class Aluno(models.Model):
         db_table = 'aluno'
 
     aluno_id = models.AutoField(primary_key=True)
-    nome_proprio = models.CharField(max_length=100, default='')
-    apelido = models.CharField(max_length=250, default='')
+    nome_proprio = models.CharField(max_length=100, blank=False)
+    apelido = models.CharField(max_length=250, blank=False)
     archive_flag = models.BooleanField(default=False)
 
     processo = models.CharField(max_length=150, null=True, blank=True)
-    data_admissao = models.DateTimeField()
+    data_admissao = models.DateTimeField(blank=False)
     data_ultima_renovacao = models.DateTimeField(null=True, blank=True)
-    data_nascimento = models.DateTimeField()
+    data_nascimento = models.DateTimeField(blank=False)
 
-    documento = models.CharField(max_length=250, default='')
-    numero_documento = models.CharField(max_length=100, default='')
-    data_validade = models.DateTimeField()
+    documento = models.CharField(max_length=250, blank=False)
+    numero_documento = models.CharField(max_length=100, blank=False)
+    data_validade = models.DateTimeField(blank=False)
     niss = models.IntegerField(null=True, blank=True)
 
     nif = models.IntegerField(null=True, blank=True)
-    morada = models.CharField(max_length=150, default='')
-    codigo_postal = models.CharField(max_length=150, default='')
-    concelho = models.CharField(max_length=150, default='')
+    morada = models.CharField(max_length=150, blank=False)
+    codigo_postal = models.CharField(max_length=150, blank=False)
+    concelho = models.CharField(max_length=150, blank=False)
 
     fregesia = models.CharField(max_length=150, null=True, blank=True)
     escolaridade_anterior = models.CharField(max_length=150, null=True, blank=True)

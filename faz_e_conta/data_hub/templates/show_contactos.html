@@ -27,7 +27,7 @@
 
     <!-- Filter Form -->
     <form method="GET" action="{% url 'show_contactos' %}">
-        <input type="text" name="q" placeholder="Pesquisar encarregados de educação..." value="{{ query }}">
+        <input type="text" name="q" placeholder="Pesquisar encarregados de educação..." value="{{ filtersValue.name }}">
 
 
         <button type="submit">Buscar</button>

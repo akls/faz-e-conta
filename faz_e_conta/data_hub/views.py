@@ -25,7 +25,7 @@ def show_students(request):
     alunos = Aluno.objects.all()
     # Apply filters
     if query:
-        alunos = alunos.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query) |Q (processo__icontains=query))
+        alunos = alunos.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query))
     if sala_filter:
         alunos = alunos.filter(Q(sala_id__sala_valencia__icontains=sala_filter) | Q(sala_id__sala_nome__icontains=sala_filter))
 
@@ -34,7 +34,7 @@ def show_students(request):
 
     # Render the template with context
     alunoFields = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao", "sala_id__sala_valencia", "sala_id__sala_nome"]
-    context = {"alunos": alunos.values(*alunoFields), "salas": Sala.objects.all(), "alunoCount": alunos.count()}
+    context = {"alunos": alunos.values(*alunoFields), "salas": Sala.objects.all(), "alunoCount": alunos.count(), "filtersValue": {"sala": sala_filter, "name": query}}
     return render(request, "show_students.html", context)
 
 
@@ -78,7 +78,7 @@ def show_contactos(request):
     encarregadosEducacao = ResponsavelEducativo.objects.prefetch_related("aluno_set")
     # Apply search filter
     if query:
-        encarregadosEducacao = encarregadosEducacao.filter(nome_proprio__icontains=query)
+        encarregadosEducacao = encarregadosEducacao.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query))
     # Apply sala_valencia or sala_nome filter
     if sala_filter:
         encarregadosEducacao = encarregadosEducacao.filter(aluno_id__sala_id__sala_nome__icontains=sala_filter)
@@ -94,7 +94,7 @@ def show_contactos(request):
 
     # Render the template with context
     fields = ["responsavel_educativo_id", "nome_proprio", "telefone", "email"]
-    context = {"guardians": encarregadosEducacao, "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count()}
+    context = {"guardians": encarregadosEducacao, "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count(), "filtersValue": {"name": query}}
     return render(request, "show_contactos.html", context)
 
 

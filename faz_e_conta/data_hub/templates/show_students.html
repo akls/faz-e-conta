@@ -14,16 +14,19 @@
 
 <!-- Filter Form -->
 <form method="GET" action="{% url 'show_students' %}">
-    <input type="text" name="q" placeholder="Pesquisar alunos..." value="{{ query }}">
+
+    <input type="text" name="q" placeholder="Pesquisar alunos..." value="{{ filtersValue.name }}">
 
 
     <select name="sala">
-        <option value="">Todas as salas</option>
+
+        <option value="" {% if filtersValue.sala == "" %} selected {% endif %}> Todas as salas </option>
+
+
         {% for sala in salas %}
-        <option value="{{ sala.sala_nome }}">
-            {{ sala.sala_nome }}
-        </option>
+        <option value="{{ sala.sala_nome }}" {% if filtersValue.sala == sala.sala_nome %} selected {% endif %}> {{ sala.sala_nome }} </option>
         {% endfor %}
+
     </select>
 
 
@@ -87,7 +90,7 @@
                 {{ aluno.numero_documento }}
             </td>
             <td>
-                {{ aluno.data_admissao }}
+                {{ aluno.data_admissao|date:"d/m/Y" }}
             </td>
             <td>
                 {{ aluno.sala_id__sala_valencia}}
