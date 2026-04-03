@@ -9,7 +9,12 @@
 </head>
 
 <body>
-    <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
+    <h1>{{ alunos.nome_proprio }} {{ alunos.apelido }}</h1>
+
+
+
+
+
     <form method="get">
         <input type="text" name="q" placeholder="Pesquisar..." value="{{ query }}">
         <select name="sala">
@@ -23,22 +28,29 @@
         </select>
         <button type="submit">Filtrar</button>
     </form>
+
+
+
+
     <table>
         {% for field in head %}
-        {% if field != id %}
         <tr align='left'>
             <th>{{ field|replace:'_id_id, '|replace:'_, '}}</th>
-            {% if data_dict|get_item:field == None %}
+            {% if alunos_dict|get_item:field == None %}
             <td>
                 <hr style='border: none; border-top: 3px dashed black;'>
             </td>
             {% else %}
-            <td>{{ data_dict|get_item:field }}</td>
+            <td>{{ alunos_dict|get_item:field }}</td>
             {% endif %}
         </tr>
         {% endif %}
         {% endfor %}
     </table>
+
+
+
+
     <a href="{% url 'show_students' %}">Voltar</a>
 </body>
 

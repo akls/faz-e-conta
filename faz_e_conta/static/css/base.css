@@ -1,124 +1,158 @@
-/* General Styles */
+/* CSS para o body */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    background-color: #f4f6f8;
     color: #333;
 }
 
-h1,
-h2,
-h3 {
-    color: #1660e9;
+h1, h2, h3 {
+    color: #1f3c88;
     margin-bottom: 20px;
 }
 
 a {
     text-decoration: none;
-    color: #007bff;
+    color: #1f3c88;
     transition: color 0.3s ease;
 }
 
 a:hover {
-    color: #0056b3;
+    color: #0d1a4d;
 }
 
-/* Navbar Styles */
+
+
+
+/* CSS para a navbar */
 .navbar {
-    background-color: #1660e9;
-    overflow: hidden;
+    background-color: #1f3c88;
     display: flex;
-    padding: 10px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 0 0 8px 8px;
 }
 
 .navbar a {
     color: white;
-    text-decoration: none;
-    padding: 14px 20px;
+    padding: 12px 18px;
     text-align: center;
+    border-radius: 5px;
 }
 
 .navbar a:hover {
-    background-color: #0647b7;
+    background-color: #16316a;
 }
 
-/* Table Styles */
+
+
+
+/* CSS para os butoes */
+button{
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #1f3c88;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover{
+    background-color: #16316a;
+    transform: translateY(-2px);
+}
+
+
+
+
+/* CSS para os forms */
+form {
+    margin: 20px 0;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+input[type="text"], select {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #1f3c88;
+    box-shadow: 0 0 5px rgba(31,60,136,0.3);
+    outline: none;
+}
+
+input.error,
+select.error,
+textarea.error {
+    border: 2px solid #c33b3b;
+}
+
+
+
+
+/* CSS para as tables */
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    font-size: 1em;
+    font-size: 0.95em;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+table th, table td {
+    padding: 12px 15px;
     text-align: left;
 }
 
-table th,
-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-}
-
 table th {
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: #e0e4f1;
+    color: #1f3c88;
+    font-weight: 600;
 }
 
 table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f7f9fc;
 }
 
-table tr:hover {
-    background-color: #f1f1f1;
+table tbody tr {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Button Styles */
-button,
-.btn {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+table tbody tr:hover {
+    background-color: #e8edf7;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-button:hover,
-.btn:hover {
-    background-color: #0056b3;
-}
 
-/* Form Styles */
-form {
-    margin: 20px 0;
-}
 
-input,
-select,
-textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-}
 
-label {
-    font-weight: bold;
-    color: #555;
-}
-
-/* Footer Styles */
-.footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: #666;
-}
-
-/* Content Spacing */
+/* CSS para o container */
 .container {
-    padding: 20px 40px;
+    padding: 30px 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.text-right {
+    text-align: right;
+}
+
+p {
+    font-weight: 500;
+    color: #555;
 }
