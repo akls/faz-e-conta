@@ -1,5 +1,8 @@
+{% extends 'base.html' %}
 {% load custom_filters %}
 {% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang='en'>
 
@@ -10,66 +13,93 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 
+
+
+
 <body>
-    <h1>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</h1>
+    <h1>{{ guardian.responsavel_educativo_id }}: {{ guardian.nome_proprio }} {{ guardian.apelido }}</h1>
+
     <table>
         <tr>
             <th>Data de Nascimento:</th>
-            <td>{{ responsavel.data_nascimento }}</td>
+            <td>{% if guardian.data_nascimento %}{{ guardian.data_nascimento }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Documento:</th>
-            <td>{{ responsavel.documento }}</td>
+            <td>{% if guardian.documento %}{{ guardian.documento }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Número do Documento:</th>
-            <td>{{ responsavel.numero_documento }}</td>
+            <td>{% if guardian.numero_documento %}{{ guardian.numero_documento }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Data de Validade:</th>
-            <td>{{ responsavel.data_validade }}</td>
+            <td>{% if guardian.data_validade %}{{ guardian.data_validade }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Telefone:</th>
-            <td>{{ responsavel.telefone }}</td>
+            <td>{% if guardian.telefone %}{{ guardian.telefone }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Email:</th>
-            <td>{{ responsavel.email }}</td>
+            <td>{% if guardian.email %}{{ guardian.email }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Morada:</th>
-            <td>{{ responsavel.morada }}</td>
+            <td>{% if guardian.morada %}{{ guardian.morada }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Código Postal:</th>
-            <td>{{ responsavel.codigo_postal }}</td>
+            <td>{% if guardian.codigo_postal %}{{ guardian.codigo_postal }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Concelho:</th>
-            <td>{{ responsavel.concelho }}</td>
+            <td>{% if guardian.concelho %}{{ guardian.concelho }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Freguesia:</th>
-            <td>{{ responsavel.fregesia }}</td>
+            <td>{% if guardian.fregesia %}{{ guardian.fregesia }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Profissão:</th>
-            <td>{{ responsavel.profissao }}</td>
+            <td>{% if guardian.profissao %}{{ guardian.profissao }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Morada do Emprego:</th>
-            <td>{{ responsavel.morada_emprego }}</td>
+            <td>{% if guardian.morada_emprego %}{{ guardian.morada_emprego }}{% else %}Nenhum dado{% endif %}</td>
         </tr>
         <tr>
             <th>Horário de Trabalho:</th>
-            <td>{{ responsavel.horario_trabalho }}</td>
+            <td>{% if guardian.horario_trabalho %}{{ guardian.horario_trabalho }}{% else %}Nenhum dado{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Niss:</th>
+            <td>{% if guardian.niss %}{{ guardian.niss }}{% else %}Nenhum dado{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Nif:</th>
+            <td>{% if guardian.nif %}{{ guardian.nif }}{% else %}Nenhum dado{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Alunos:</th>
+            <td>
+                {% if guardian.alunos.all %}
+                {% for aluno in guardian.alunos.all %}
+                {{ aluno.nome_proprio }} {{ aluno.apelido }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                {% else %}
+                Nenhum dado
+                {% endif %}
+            </td>
         </tr>
     </table>
 
+
+
+
     <!-- Button to edit the information -->
     <div style="margin-top: 20px;">
-        <a href="{% url 'edit_responsavel_educativo' responsavel_id=responsavel.responsavel_educativo_id %}"
+        <a href="{% url 'edit_responsavel_educativo' responsavel_id=guardian.responsavel_educativo_id %}"
             style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Editar
             Informações</a>
     </div>
@@ -78,3 +108,4 @@
 </body>
 
 </html>
+{% endblock %}

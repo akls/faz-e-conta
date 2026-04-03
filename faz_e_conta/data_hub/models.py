@@ -7,30 +7,31 @@ class Aluno(models.Model):
         db_table = 'aluno'
 
     aluno_id = models.AutoField(primary_key=True)
-    nome_proprio = models.CharField(max_length=100, default='')
-    apelido = models.CharField(max_length=250, default='')
+    nome_proprio = models.CharField(max_length=100, blank=False)
+    apelido = models.CharField(max_length=250, blank=False)
     archive_flag = models.BooleanField(default=False)
 
     processo = models.CharField(max_length=150, null=True, blank=True)
-    data_admissao = models.DateTimeField()
+    data_admissao = models.DateTimeField(blank=False)
     data_ultima_renovacao = models.DateTimeField(null=True, blank=True)
-    data_nascimento = models.DateTimeField()
+    data_nascimento = models.DateTimeField(blank=False)
 
-    documento = models.CharField(max_length=250, default='')
-    numero_documento = models.CharField(max_length=100, default='')
-    data_validade = models.DateTimeField()
+    documento = models.CharField(max_length=250, blank=False)
+    numero_documento = models.CharField(max_length=100, blank=False)
+    data_validade = models.DateTimeField(blank=False)
     niss = models.IntegerField(null=True, blank=True)
 
     nif = models.IntegerField(null=True, blank=True)
-    morada = models.CharField(max_length=150, default='')
-    codigo_postal = models.CharField(max_length=150, default='')
-    concelho = models.CharField(max_length=150, default='')
+    morada = models.CharField(max_length=150, blank=False)
+    codigo_postal = models.CharField(max_length=150, blank=False)
+    concelho = models.CharField(max_length=150, blank=False)
 
     fregesia = models.CharField(max_length=150, null=True, blank=True)
     escolaridade_anterior = models.CharField(max_length=150, null=True, blank=True)
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
 
+    responsaveis_educativos_ids = models.ManyToManyField(to='ResponsavelEducativo', related_name='alunos')
     sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
 
     def __str__(self):
@@ -78,28 +79,27 @@ class ResponsavelEducativo(models.Model):
         db_table = 'responsavel_educativo'
 
     responsavel_educativo_id = models.AutoField(primary_key=True)
-    nome_proprio = models.CharField(max_length=100, default='')
-    apelido = models.CharField(max_length=250, default='')
-    data_nascimento = models.DateField(default= du.timezone.now)
+    nome_proprio = models.CharField(max_length=100, blank=False)
+    apelido = models.CharField(max_length=250, blank=False)
+    data_nascimento = models.DateField(blank=False)
 
-    documento = models.CharField(max_length=150, default='')
-    numero_documento = models.IntegerField()
-    data_validade = models.DateField(default= du.timezone.now)
+    documento = models.CharField(max_length=150, blank=False)
+    numero_documento = models.IntegerField(blank=False)
+    data_validade = models.DateField(blank=False)
     niss = models.IntegerField(null=True, blank=True)
 
     nif = models.IntegerField(null=True, blank=True)
-    morada = models.CharField(max_length=250, default='')
-    codigo_postal = models.CharField(max_length=100, default='')
-    concelho = models.CharField(max_length=150, default='')
+    morada = models.CharField(max_length=250, blank=False)
+    codigo_postal = models.CharField(max_length=100, blank=False)
+    concelho = models.CharField(max_length=150, blank=False)
 
-    fregesia = models.CharField(max_length=150, default='')
+    fregesia = models.CharField(max_length=150, blank=False)
     telefone = models.IntegerField(null=True, blank=True)
     email = models.CharField(max_length=150, null=True, blank=True)
     profissao = models.CharField(max_length=150, null=True, blank=True)
 
     morada_emprego = models.CharField(max_length=150, null=True, blank=True)
     horario_trabalho = models.TimeField(null=True, blank=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"

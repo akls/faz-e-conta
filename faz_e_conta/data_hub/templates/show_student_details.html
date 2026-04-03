@@ -2,7 +2,6 @@
 
 {% block content %}
 <h1>Detalhes do Aluno</h1>
-
 <h2>Informações do Aluno</h2>
 <table>
     <tr>
@@ -11,7 +10,7 @@
     </tr>
     <tr>
         <th>Processo:</th>
-        <td>{{ aluno.processo }}</td>
+        <td>{% if aluno.processo %}{{ aluno.processo }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
     <tr>
         <th>Data de Admissão:</th>
@@ -19,48 +18,57 @@
     </tr>
     <!-- Add more fields as needed -->
 </table>
-
 <a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
 
-{% if responsavel %}
-<h2>Responsável Educativo</h2>
+
+
+
+{% if aluno.responsaveis_educativos_ids %}
+<h2>Responsáveis Educativos</h2>
+{% for guardian in aluno.responsaveis_educativos_ids.all %}
 <table>
     <tr>
         <th>Nome:</th>
-        <td>{{ responsavel.nome_proprio }} {{ responsavel.apelido }}</td>
+        <td>{{ guardian.nome_proprio }} {{ aluno.responsavel_educativo_id.apelido }}</td>
     </tr>
     <tr>
         <th>Telefone:</th>
-        <td>{{ responsavel.telefone }}</td>
+        <td>{% if guardian.telefone %}{{ guardian.telefone }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
     <tr>
         <th>Email:</th>
-        <td>{{ responsavel.email }}</td>
+        <td>{% if guardian.email %}{{ guardian.email }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
-    <!-- Add more fields as needed -->
 </table>
-<a href="{% url 'edit_responsavel_educativo' responsavel_id=responsavel.responsavel_educativo_id %}">Editar
-    Responsável</a>
+<a href="{% url 'edit_responsavel_educativo' responsavel_id=guardian.responsavel_educativo_id %}">Editar Responsável</a>
+{% endfor %}
 {% else %}
 <p>Sem responsável educativo associado.</p>
 {% endif %}
 
-{% if sala %}
+
+
+
+{% if aluno.sala_id %}
 <h2>Sala</h2>
 <table>
+
     <tr>
         <th>Nome:</th>
-        <td>{{ sala.sala_nome }}</td>
+        <td>{{ aluno.sala_id.sala_nome }}</td>
     </tr>
     <tr>
         <th>Valência:</th>
-        <td>{{ sala.sala_valencia }}</td>
+        <td>{{ aluno.sala_id.sala_valencia }}</td>
     </tr>
-    <!-- Add more fields as needed -->
+
 </table>
 {% else %}
 <p>Sem sala associada.</p>
 {% endif %}
+
+
+
 
 <a href="{% url 'show_students' %}">Voltar</a>
 {% endblock %}

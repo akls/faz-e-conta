@@ -15,6 +15,8 @@ def Responsavel_educativo_widget():
         'nome': forms.TextInput(attrs={'placeholder': 'Nome do responsável'}),
         'telefone': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'Telefone'}),
         'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
+        'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+        'data_validade': forms.DateInput(attrs={'type': 'date'}),
     }
     return widgets
 
