@@ -1,6 +1,8 @@
 from django.db import models
 import datetime
 import django.utils as du
+from django.db.models.fields import AutoField
+
 
 class Aluno(models.Model):
     class Meta:
@@ -33,10 +35,23 @@ class Aluno(models.Model):
 
     responsaveis_educativos_ids = models.ManyToManyField(to='ResponsavelEducativo', related_name='alunos')
     sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
+    programa_id = models.ForeignKey(to="programa", related_name="aluno", on_delete=models.CASCADE, db_column='programa_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Aluno Id: {self.aluno_id}"
 
+
+
+class programa(models.Model):
+    class Meta:
+        db_table = 'programa'
+
+    programa_id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=150, blank=False)
+    custo = models.FloatField(blank=False)
+
+    def __str__(self):
+        return f"{self.nome}: {self.custo}€"
 
 
 
