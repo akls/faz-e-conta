@@ -3,51 +3,170 @@
 
 
 {% block content %}
-<!DOCTYPE html>
-<html lang='en'>
 
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Aluno Financas Information</title>
-</head>
+    <h1>Tabela Alunos Finanças</h1>
 
-<body>
-    <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
-
-    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                {% for item in head %}
-                {% if item != id %}
-                <th style="border: 1px solid #ddd; padding: 10px;">
-                    {{ item|replace:"_, " }}
-                </th>
-                {% endif %}
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    {% for item in head_financas %}
+                        {% if item != id %}
+                            <th>
+                            {{ item|replace:"_, " }}
+                            </th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data_financas %}
+                <tr>
+                    {% for field in head_financas %}
+                        {% if field != id %}
+                        <td>
+                            {% if item|get_item:field == None %}
+                                <hr>
+                            {% else %}
+                                {{ item|get_item:field }}
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
                 {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data_dict %}
-            <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
-                {% for field in head %}
-                {% if field != id %}
-                <td>
-                    {% if item|get_item:field == None %}
-                    <hr style="border: none; border-top: 2px dashed black;">
-                    {% else %}
-                    {{ item|get_item:field }}
+
+    <h1>Tabela Mensalidade Alunos</h1>
+
+    <section id="mensalidadesFilt">
+
+        <form method="get" id="filter-form">
+            <label>Nome:</label>
+            <input type="text" name="nome" id="input_nome" placeholder="Ex: nuno matos" value="{{ filtersValue.nome }}">
+
+            <label>Sala:</label>
+            <select name="sala" id="select_sala">
+                <option value="" {% if filtersValue.sala == "" %} selected {% endif %}> Todas as salas </option>
+
+                {% for sala in data_salas %}
+                <option value="{{ sala.sala_nome }}" {% if filtersValue.sala == sala.sala_nome %} selected {% endif %}>
+                    {{ sala.sala_nome }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Mês:</label>
+            <select name="mes" id="select_mes">
+                <option value="" {% if filtersValue.mes == None %} selected {% endif %}>Todos os meses</option>
+                {% for m in meses_range %}
+                <option value="{{ m }}" {% if filtersValue.mes == m %} selected {% endif %}>
+                    {{ m }}
+                </option>
+                {% endfor %}
+            </select>
+
+
+            <label>Ano:</label>
+            <select name="ano" id="select_ano">
+                <option value="" {% if filtersValue.ano == None %} selected {% endif %}>Todos os anos</option>
+                {% for a in anos_range %}
+                <option value="{{ a }}" {% if filtersValue.ano == a %} selected {% endif %}>
+                    {{ a }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filtrar</button>
+
+        </form>
+
+        <form method="post" id="calc-form">
+            {% csrf_token %}
+
+            <input type="hidden" name="filter_nome" id="hidden_nome">
+            <input type="hidden" name="filter_sala" id="hidden_sala">
+            <input type="hidden" name="filter_mes" id="hidden_mes">
+            <input type="hidden" name="filter_ano" id="hidden_ano">
+
+            <button type="submit" name="mensalidadeFinal" value="true" onclick="return syncAndConfirm()">
+                Calcular Mensalidades
+            </button>
+
+            {% if messages %}
+            <div id="message-container" style="margin-top: 10px;">
+                {% for message in messages %}
+                <div class="alert-box {{ message.tags }}">
+                    {{ message }}
+                    <span onclick="this.parentElement.style.display='none'" class="close-btn">&times;</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <script>
+                function syncAndConfirm() {
+                    document.getElementById('hidden_nome').value = document.getElementById('input_nome').value;
+                    document.getElementById('hidden_sala').value = document.getElementById('select_sala').value;
+                    document.getElementById('hidden_mes').value = document.getElementById('select_mes').value;
+                    document.getElementById('hidden_ano').value = document.getElementById('select_ano').value;
+
+                    const mes = document.getElementById('select_mes').value || "atual";
+                    const ano = document.getElementById('select_ano').value || "atual";
+
+                    return confirm(`Calcular mensalidades para o período ${mes}/${ano}?`);
+                }
+
+                setTimeout(function() {
+                    var msg = document.getElementById('message-container');
+                    if (msg) {
+                        msg.style.transition = "opacity 0.6s";
+                        msg.style.opacity = "0";
+                        setTimeout(function() { msg.style.display = "none"; }, 600);
+                    }
+                }, 5000);
+            </script>
+        </form>
+
+    </section>
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                {% for item in head_mensalidade %}
+                    {% if item != id %}
+                        <th>
+                        {{ item|replace:"_, " }}
+                        </th>
                     {% endif %}
-                </td>
-                {% endif %}
                 {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
-
-</html>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data_mensalidade %}
+                    <tr>
+                        {% for field in head_mensalidade %}
+                            {% if field != id %}
+                            <td>
+                                {% if item|get_item:field == None %}
+                                    <hr>
+                                    {% else %}
+                                        {% if field == 'Valor_a_pagar' or field == 'Valor_pago' %}
+                                            {{ item|get_item:field|floatformat:2 }}
+                                    {% else %}
+                                        {{ item|get_item:field }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}
