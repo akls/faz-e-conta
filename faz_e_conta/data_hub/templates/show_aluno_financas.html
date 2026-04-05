@@ -6,13 +6,13 @@
 
     <h1>Tabela Alunos Finanças</h1>
 
-    <div style="max-height: 800px; overflow-y: auto; border: 1px solid #ddd; margin-top: 10px;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+    <div>
+        <table>
             <thead>
-                <tr style="background-color: #f2f2f2;">
+                <tr>
                     {% for item in head_financas %}
                         {% if item != id %}
-                            <th style="border: 1px solid #ddd; padding: 10px; position: sticky; top: 0; background-color: #f2f2f2; z-index: 10;">
+                            <th>
                             {{ item|replace:"_, " }}
                             </th>
                         {% endif %}
@@ -21,12 +21,12 @@
             </thead>
             <tbody>
                 {% for item in data_financas %}
-                <tr style="background-color: {% cycle '#ffffff' '#f2f2f2' %};">
+                <tr>
                     {% for field in head_financas %}
                         {% if field != id %}
                         <td>
                             {% if item|get_item:field == None %}
-                                <hr style="border: none; border-top: 2px dashed black;">
+                                <hr>
                             {% else %}
                                 {{ item|get_item:field }}
                             {% endif %}
@@ -42,95 +42,103 @@
 
     <h1>Tabela Mensalidade Alunos</h1>
 
-    <section style="margin-bottom: 20px; padding: 15px; background: #f4f4f4; border-radius: 8px;
-             display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
-        <form method="get" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+    <section id="mensalidadesFilt">
 
-            <div>
-                <label style="display:block">Nome:</label>
-                <input type="text" name="nome" placeholder="Ex: nuno matos" value="{{ filters.nome }}">
-            </div>
+        <form method="get" id="filter-form">
+            <label>Nome:</label>
+            <input type="text" name="nome" id="input_nome" placeholder="Ex: nuno matos" value="{{ filtersValue.nome }}">
 
-            <div>
-                <label style="display:block">Sala:</label>
-                <input type="text" name="sala" placeholder="Ex: verde" value="{{ filters.sala }}">
-            </div>
+            <label>Sala:</label>
+            <select name="sala" id="select_sala">
+                <option value="" {% if filtersValue.sala == "" %} selected {% endif %}> Todas as salas </option>
 
-            <div>
-                <label style="display:block">Mês/Ano:</label>
-                <input type="month" name="ano_mes" value="{{ filters.ano_mes }}">
-            </div>
+                {% for sala in data_salas %}
+                <option value="{{ sala.sala_nome }}" {% if filtersValue.sala == sala.sala_nome %} selected {% endif %}>
+                    {{ sala.sala_nome }}
+                </option>
+                {% endfor %}
+            </select>
 
-            <div>
-                <label style="display:block">Mês:</label>
-                <input type="number" name="mes" placeholder="Ex: 09" min="01" max="12" value="{{ filters.mes_apenas }}">
-            </div>
+            <label>Mês:</label>
+            <select name="mes" id="select_mes">
+                <option value="" {% if filtersValue.mes == None %} selected {% endif %}>Todos os meses</option>
+                {% for m in meses_range %}
+                <option value="{{ m }}" {% if filtersValue.mes == m %} selected {% endif %}>
+                    {{ m }}
+                </option>
+                {% endfor %}
+            </select>
 
-            <div>
-                <label style="display:block">Ano:</label>
-                <input type="number" name="ano" placeholder="Ex: 2023" min="2000" max="2099" value="{{ filters.ano_apenas }}">
-            </div>
 
-            <div>
-                <label style="display:block">Data Nascimento:</label>
-                <input type="date" name="nascimento" value="{{ filters.nascimento }}">
-            </div>
+            <label>Ano:</label>
+            <select name="ano" id="select_ano">
+                <option value="" {% if filtersValue.ano == None %} selected {% endif %}>Todos os anos</option>
+                {% for a in anos_range %}
+                <option value="{{ a }}" {% if filtersValue.ano == a %} selected {% endif %}>
+                    {{ a }}
+                </option>
+                {% endfor %}
+            </select>
 
-            <button type="submit" style="padding: 5px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px;">Filtrar</button>
+            <button type="submit">Filtrar</button>
 
-            <a href="?" style="text-decoration: none; font-size: 12px; color: #666;">Limpar Filtros</a>
         </form>
 
-        <div style="flex-shrink: 0;">
-            <form method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" name="mensalidadeFinal" value="true"
-                    onclick="return confirm('Calcular mensalidades para o mês atual?')"
-                    style="padding: 15px 25px; background-color: #007bff; color: white; border: none; border-radius: 3px; font-size: large; cursor: pointer;">
-                    Calcular Mensalidades</button>
-            </form>
-        </div>
+        <form method="post" id="calc-form">
+            {% csrf_token %}
+
+            <input type="hidden" name="filter_nome" id="hidden_nome">
+            <input type="hidden" name="filter_sala" id="hidden_sala">
+            <input type="hidden" name="filter_mes" id="hidden_mes">
+            <input type="hidden" name="filter_ano" id="hidden_ano">
+
+            <button type="submit" name="mensalidadeFinal" value="true" onclick="return syncAndConfirm()">
+                Calcular Mensalidades
+            </button>
+
+            {% if messages %}
+            <div id="message-container" style="margin-top: 10px;">
+                {% for message in messages %}
+                <div class="alert-box {{ message.tags }}">
+                    {{ message }}
+                    <span onclick="this.parentElement.style.display='none'" class="close-btn">&times;</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <script>
+                function syncAndConfirm() {
+                    document.getElementById('hidden_nome').value = document.getElementById('input_nome').value;
+                    document.getElementById('hidden_sala').value = document.getElementById('select_sala').value;
+                    document.getElementById('hidden_mes').value = document.getElementById('select_mes').value;
+                    document.getElementById('hidden_ano').value = document.getElementById('select_ano').value;
+
+                    const mes = document.getElementById('select_mes').value || "atual";
+                    const ano = document.getElementById('select_ano').value || "atual";
+
+                    return confirm(`Calcular mensalidades para o período ${mes}/${ano}?`);
+                }
+
+                setTimeout(function() {
+                    var msg = document.getElementById('message-container');
+                    if (msg) {
+                        msg.style.transition = "opacity 0.6s";
+                        msg.style.opacity = "0";
+                        setTimeout(function() { msg.style.display = "none"; }, 600);
+                    }
+                }, 5000);
+            </script>
+        </form>
 
     </section>
 
-    {% if messages %}
-    <div id="message-container" style="margin-bottom: 10px;">
-        {% for message in messages %}
-        <div style="padding: 15px; border-radius: 4px; width: fit-content; border: 2px solid;
-            margin-bottom: 10px; font-family: Arial, sans-serif;
-            {% if message.tags == 'success' %}
-                background-color: #d4edda; color: #155724; border-color: #c3e6cb;
-            {% elif message.tags == 'error' %}
-                background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;
-            {% else %}
-                background-color: #e2e3e5; color: #383d41; border-color: #d6d8db;
-            {% endif %}">
-            {{ message }}
-            <span onclick="this.parentElement.style.display='none'" style="float:right; cursor:pointer; font-size: 24px; font-weight: bold; line-height: 20px; margin-left: 15px;">&times;</span>
-        </div>
-        {% endfor %}
-    </div>
-    <script>
-        setTimeout(
-            function() {
-                var msg = document.getElementById('message-container');
-                if (msg) {
-                    msg.style.transition = "opacity 0.6s";
-                    msg.style.opacity = "0";
-                    setTimeout(function() { msg.style.display = "none"; }, 600);
-                }
-            }, 5000
-        );
-    </script>
-    {% endif %}
-
-    <div style="max-height: 800px; overflow-y: auto; border: 1px solid #ddd; margin-top: 10px;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+    <div>
+        <table>
             <thead>
-                <tr style="background-color: #f2f2f2;">
+                <tr>
                 {% for item in head_mensalidade %}
                     {% if item != id %}
-                        <th style="border: 1px solid #ddd; padding: 10px; position: sticky; top: 0; background-color: #f2f2f2; z-index: 10;">
+                        <th>
                         {{ item|replace:"_, " }}
                         </th>
                     {% endif %}
@@ -139,18 +147,22 @@
             </thead>
             <tbody>
                 {% for item in data_mensalidade %}
-                    <tr style="background-color: {% cycle '#ffffff' '#f2f2f2' %};">
-                    {% for field in head_mensalidade %}
-                        {% if field != id %}
+                    <tr>
+                        {% for field in head_mensalidade %}
+                            {% if field != id %}
                             <td>
-                            {% if item|get_item:field == None %}
-                                <hr style="border: none; border-top: 2px dashed black;">
-                            {% else %}
-                                {{ item|get_item:field }}
-                            {% endif %}
+                                {% if item|get_item:field == None %}
+                                    <hr>
+                                    {% else %}
+                                        {% if field == 'Valor_a_pagar' or field == 'Valor_pago' %}
+                                            {{ item|get_item:field|floatformat:2 }}
+                                    {% else %}
+                                        {{ item|get_item:field }}
+                                    {% endif %}
+                                {% endif %}
                             </td>
-                        {% endif %}
-                    {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>

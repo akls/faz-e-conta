@@ -1,7 +1,9 @@
+from _datetime import datetime as dt
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import *
 from .models import *
 from .auto_gen_form_views import *
+from django.utils.http import urlencode
 from .auto_gen_id_views import *
 from django.db.models import Q
 from django.db.models import F, Value, CharField
@@ -11,7 +13,7 @@ from django.contrib import messages
 
 
 def starter_page(request):
-    return render(request, "show_students.html")
+    return render(request, "starter_page.html")
 
 
 
@@ -44,13 +46,24 @@ def show_students(request):
 
 def show_financas(request):
 
-    filter_nome = request.GET.get('nome', '')
-    filter_sala = request.GET.get('sala', '')
-    filter_ano_mes = request.GET.get('ano_mes', '')
-    filter_nascimento = request.GET.get('nascimento', '')
-    filter_ano_apenas = request.GET.get('ano', '')
-    filter_mes_apenas = request.GET.get('mes', '')
+    has_filters = any(key in request.GET for key in ['nome', 'sala', 'mes', 'ano'])
 
+    if not has_filters:
+        filter_mes = dt.now().month
+        filter_ano = dt.now().year
+        filter_nome = ''
+        filter_sala = ''
+    else:
+        filter_nome = request.GET.get('nome', '')
+        filter_sala = request.GET.get('sala', '')
+        filter_mes = request.GET.get('mes', '')
+        filter_ano = request.GET.get('ano', '')
+
+    ano_atual = dt.now().year
+    meses_range = range(1, 13)
+    anos_range = range(2000, ano_atual + 1)
+
+    data_salas = Sala.objects.all()
     data_financas = AlunoFinancas.objects.annotate(
         Ano_letivo=F('ano_letivo'),
         Despesa_anual=F('despesa_anual'),
@@ -69,7 +82,7 @@ def show_financas(request):
             'mes',
             output_field=CharField()
         ),
-        Valor_a_pagar =F('mensalidade_retific'),
+        Valor_a_pagar =F('mensalidade_calc'),
         Valor_pago = F('mensalidade_paga'),
         Data_Pagamento = Cast('data_pagamento', CharField()),
         Modo_Pagamento=F('modo_pagamento'),
@@ -86,7 +99,34 @@ def show_financas(request):
 
 
     if request.method == "POST" and 'mensalidadeFinal' in request.POST:
-        query = """
+        p_nome = request.POST.get('filter_nome', '')
+        p_sala = request.POST.get('filter_sala', '')
+        p_mes = request.POST.get('filter_mes') or dt.now().month
+        p_ano = request.POST.get('filter_ano') or dt.now().year
+
+        extra_filters = ""
+        filter_params = []
+        params_url = urlencode({
+            'nome': p_nome,
+            'sala': p_sala,
+            'mes': p_mes,
+            'ano': p_ano
+        })
+
+        if p_nome:
+            extra_filters += " AND (a.nome_proprio || ' ' || a.apelido) LIKE %s"
+            filter_params.append(f"%{p_nome}%")
+
+        if p_sala:
+            extra_filters += " AND s.sala_nome = %s"
+            filter_params.append(p_sala)
+
+        target_ano = p_ano if p_ano else dt.now().year
+        target_mes = p_mes if p_mes else dt.now().month
+
+        all_params = [target_ano, target_mes] + filter_params + [target_ano, target_mes]
+
+        query = f"""
                 INSERT INTO mensalidade_aluno (
                     ma_id,
                     aluno_id,
@@ -103,9 +143,9 @@ def show_financas(request):
                 SELECT
                     abs(random()),
                     resultado.id,
-                    strftime('%Y', 'now'),
-                    strftime('%m', 'now'),
-                    resultado.mensalidade_final,
+                    %s,
+                    %s,
+                    ROUND(resultado.mensalidade_final,2 ),
                     NULL,
                     NULL,
                     NULL,
@@ -126,6 +166,8 @@ def show_financas(request):
                                   FROM aluno a
                                            LEFT JOIN aluno_financas af ON a.aluno_id = af.aluno_id
                                            LEFT JOIN config_ipss c ON c.key='RMMG' AND active_flag = 1
+                                           LEFT JOIN sala s ON a.sala_id = s.sala_id
+                                  WHERE 1=1 {extra_filters}
                               ) AS calc
                                   LEFT JOIN escaloes_rendim e ON (calc.rc / rmmg) * 100 <= e.perc_rend_per_capita
                          GROUP BY id
@@ -134,21 +176,21 @@ def show_financas(request):
                 WHERE NOT EXISTS (
                     SELECT 1 FROM mensalidade_aluno m
                     WHERE m.aluno_id = resultado.id
-                      AND m.ano = strftime('%Y', 'now')
-                      AND m.mes = strftime('%m', 'now')
+                      AND m.ano = %s
+                      AND m.mes = %s
                 );
                 """
         try:
             with connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, all_params)
                 count = cursor.rowcount
                 if count == 0:
-                    messages.warning(request, f"Este registro já existe")
+                    messages.warning(request, f"Mensalidades já existem para {target_mes}/{target_ano}.")
                 else:
-                    messages.success(request, f"Sucesso! {count} mensalidades calculadas.")
+                    messages.success(request, f"Sucesso! {count} mensalidades calculadas para {target_mes}/{target_ano}.")
         except Exception as e:
-            messages.error(request, f"Erro ao processar: {e}")
-        return redirect(request.path)
+            messages.error(request, f"Erro: {e}")
+        return redirect(f"{request.path}?{params_url}")
 
     if filter_nome:
         data_mensalidade = data_mensalidade.filter(Nome__icontains=filter_nome)
@@ -156,29 +198,20 @@ def show_financas(request):
     if filter_sala:
         data_mensalidade = data_mensalidade.filter(Sala__icontains=filter_sala)
 
-    if filter_nascimento:
-        data_mensalidade = data_mensalidade.filter(Data_Nascimento=filter_nascimento)
+    if filter_mes:
+        data_mensalidade = data_mensalidade.filter(mes=filter_mes)
 
-    if filter_ano_mes:
-        year, month = filter_ano_mes.split('-')
-        data_mensalidade = data_mensalidade.filter(ano=year, mes=month)
+    if filter_ano:
+        data_mensalidade = data_mensalidade.filter(ano=filter_ano)
 
-    if filter_mes_apenas:
-        data_mensalidade = data_mensalidade.filter(mes=filter_mes_apenas)
-
-    if filter_ano_apenas:
-        data_mensalidade = data_mensalidade.filter(ano=filter_ano_apenas)
-
-    head_financas = \
-        [
+    head_financas = [
         "Ano_letivo",
         "Despesa_anual",
         "Rendimento_líquido",
         "Nome",
         "Documento"
          ]
-    head_mensalidade = \
-        [
+    head_mensalidade = [
         "Data",
         "Valor_a_pagar",
         "Valor_pago",
@@ -191,6 +224,12 @@ def show_financas(request):
         "Data_Nascimento",
         ]
 
+    filtersValue = {
+        "sala": filter_sala,
+        "nome": filter_nome,
+        "mes": int(filter_mes) if str(filter_mes).isdigit() else None,
+        "ano": int(filter_ano) if str(filter_ano).isdigit() else None,
+    }
 
     data_financas = list(data_financas.values(*head_financas))
     data_mensalidade = list(data_mensalidade.values(*head_mensalidade))
@@ -200,6 +239,10 @@ def show_financas(request):
         "data_financas": data_financas,
         "head_mensalidade": head_mensalidade,
         "data_mensalidade": data_mensalidade,
+        "data_salas": data_salas,
+        "meses_range": meses_range,
+        "anos_range": anos_range,
+        "filtersValue": filtersValue,
     }
     return render(request, "show_aluno_financas.html", context)
 
