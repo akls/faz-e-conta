@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<body>
 
     <div class="form-container">
         <h1>Inserir Aluno</h1>
@@ -12,10 +11,12 @@
         </form>
         <div class="actions">
             <button type='submit' form="form" onclick="validateForm()">Inserir</button>
-            <a href="{% url 'starter_page' %}">Voltar</a>
+            <a href="{% url 'show_students' %}">Voltar</a>
         </div>
     </div>
 
-    <script src="{% static 'js/forms.js' %}"></script>
-</body>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/forms.js' %}"></script>
 {% endblock %}

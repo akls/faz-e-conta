@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<body>
+
     <h1>Editar Responsável Educativo</h1>
     <form method="post" id="form">
         {% csrf_token %}
@@ -11,6 +11,8 @@
     </form>
     <a href="{% url 'show_contactos' %}">Cancelar</a>
 
-    <script src="{% static 'js/forms.js' %}"></script>
-</body>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/forms.js' %}"></script>
 {% endblock %}

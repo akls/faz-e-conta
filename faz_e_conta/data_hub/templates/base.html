@@ -7,6 +7,8 @@
     <title>{% block title %}My Django App{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
@@ -25,6 +27,7 @@
         {% endblock %}
     </div>
 
+    {% block extra_js %}{% endblock %}
 </body>
 
 </html>
