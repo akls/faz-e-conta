@@ -46,8 +46,10 @@ def show_students(request):
 
 def show_financas(request):
 
+    # Filtros
     has_filters = any(key in request.GET for key in ['nome', 'sala', 'mes', 'ano'])
 
+    # Verefica se existe parametros para os filtros
     if not has_filters:
         filter_mes = dt.now().month
         filter_ano = dt.now().year
@@ -58,7 +60,6 @@ def show_financas(request):
         filter_sala = request.GET.get('sala', '')
         filter_mes = request.GET.get('mes', '')
         filter_ano = request.GET.get('ano', '')
-
     ano_atual = dt.now().year
     meses_range = range(1, 13)
     anos_range = range(2000, ano_atual + 1)
@@ -126,9 +127,9 @@ def show_financas(request):
 
         all_params = [target_ano, target_mes] + filter_params + [target_ano, target_mes]
 
-        query = f"""
+        # Query do calculo da mensalidade
+        queryMensalidade = f"""
                 INSERT INTO mensalidade_aluno (
-                    ma_id,
                     aluno_id,
                     ano,
                     mes,
@@ -141,7 +142,6 @@ def show_financas(request):
                     acordo
                 )
                 SELECT
-                    abs(random()),
                     resultado.id,
                     %s,
                     %s,
@@ -180,9 +180,42 @@ def show_financas(request):
                       AND m.mes = %s
                 );
                 """
+
+        # Query calculo comparticoes
+        queryComparticaoSS = f"""
+                INSERT INTO comparticipacao_mensal_ss (
+                aluno_id,
+                aluno_mensalidade_id,
+                ano_letivo,
+                periodo_inicio,
+                mensalidade_valor,
+                programa_ss
+                )
+                SELECT 
+                ma.aluno_id,
+                ma.ma_id,
+                ma.ano,
+                CURRENT_DATE AS periodo_inicio,
+                CASE 
+                  WHEN a.comparticao_ss_custom IS NOT NULL THEN a.comparticao_ss_custom
+                  ELSE p.custo
+                END,
+                p.nome AS programa_ss
+                from mensalidade_aluno ma
+                JOIN aluno a ON ma.aluno_id = a.aluno_id
+                JOIN programa p ON a.programa_id = p.programa_id
+                ON CONFLICT(aluno_mensalidade_id)
+                DO UPDATE SET
+                mensalidade_valor = excluded.mensalidade_valor,
+                programa_ss = excluded.programa_ss,
+                periodo_inicio = excluded.periodo_inicio;
+                """
+
+        # Exucutar as mudandças/querys
         try:
             with connection.cursor() as cursor:
-                cursor.execute(query, all_params)
+                cursor.execute(queryMensalidade, all_params)
+                cursor.execute(queryComparticaoSS)
                 count = cursor.rowcount
                 if count == 0:
                     messages.warning(request, f"Mensalidades já existem para {target_mes}/{target_ano}.")
@@ -192,6 +225,7 @@ def show_financas(request):
             messages.error(request, f"Erro: {e}")
         return redirect(f"{request.path}?{params_url}")
 
+    # Aplica os filtros
     if filter_nome:
         data_mensalidade = data_mensalidade.filter(Nome__icontains=filter_nome)
 
@@ -204,6 +238,9 @@ def show_financas(request):
     if filter_ano:
         data_mensalidade = data_mensalidade.filter(ano=filter_ano)
 
+
+
+    # Headers
     head_financas = [
         "Ano_letivo",
         "Despesa_anual",
@@ -224,6 +261,10 @@ def show_financas(request):
         "Data_Nascimento",
         ]
 
+
+
+
+    #
     filtersValue = {
         "sala": filter_sala,
         "nome": filter_nome,
