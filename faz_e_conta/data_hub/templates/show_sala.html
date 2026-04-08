@@ -2,6 +2,7 @@
 {% load custom_filters %}
 
 {% block content %}
+
 <h1>Salas</h1>
 
 <!-- Filter Form -->
@@ -31,16 +32,16 @@
 
 <!-- List of Rooms -->
 <h2>Lista de Salas</h2>
-<table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
+<table>
     <thead>
-        <tr style="background-color: #f2f2f2;">
-            <th style="border: 1px solid #ddd; padding: 10px;">Valência</th>
-            <th style="border: 1px solid #ddd; padding: 10px;">Sala</th>
+        <tr>
+            <th>Valência</th>
+            <th>Sala</th>
         </tr>
     </thead>
     <tbody>
         {% for sala in salas %}
-        <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
+        <tr>
             <td>{{ sala.sala_valencia }}</td>
             <td>{{ sala.sala_nome }}</td>
         </tr>

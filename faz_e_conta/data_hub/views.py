@@ -281,45 +281,6 @@ def show_contactos_details(request, responsavel_id):
 
 
 
-def show_aluno(request):
-    query = request.GET.get("q", "")  # Get search query from the URL
-    sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
-
-    # Base queryset
-    data = Aluno.objects.all()
-
-    # Apply search filter
-    if query:
-        data = data.filter(
-            Q(nome_proprio__icontains=query) |
-            Q(apelido__icontains=query)
-        )
-
-    # Apply sala_valencia filter
-    if sala_filter:
-        data = data.filter(sala_id__sala_valencia__icontains=sala_filter)
-
-    # Define the fields to display
-    head = ["nome_proprio", "apelido", "processo", "sala_id__sala_valencia"]
-    data_dict = list(data.values(*head))
-
-    # Get unique sala_valencia values for the dropdown
-    salas = Sala.objects.values_list("sala_valencia", flat=True).distinct()
-
-    # Render the template with context
-    context = {
-        "head": head,
-        "data_dict": data_dict,
-        "id": "nome_proprio",  # Use student name as identifier
-        "query": query,
-        "sala_filter": sala_filter,
-        "salas": salas,
-    }
-    return render(request, "show_aluno.html", context)
-
-
-
-
 def show_salas(request):
     query_valencia = request.GET.get("valencia", "")  # Filter by valencia
     query_room = request.GET.get("room", "")  # Filter by room
@@ -454,18 +415,3 @@ def insert_responsavel_educativo_view(request):
     else:
         form = Responsavel_educativoForm()
     return render(request, 'insert_responsavel_educativo.html', {'form': form})
-
-
-
-
-def insert_funcionario_view(request):
-    if request.method == "POST":
-        form = FuncionarioForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('starter_page')  # Redirect to the starter page
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = FuncionarioForm()
-    return render(request, 'insert_funcionario.html', {'form': form})

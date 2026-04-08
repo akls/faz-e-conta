@@ -3,20 +3,7 @@
 {% load static %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang='en'>
 
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Detalhes do Responsável Educativo</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-</head>
-
-
-
-
-<body>
     <h1>{{ guardian.responsavel_educativo_id }}: {{ guardian.nome_proprio }} {{ guardian.apelido }}</h1>
 
     <table>
@@ -105,7 +92,5 @@
     </div>
 
     <a href="{% url 'show_contactos' %}" style="margin-top: 10px; display: inline-block;">Voltar</a>
-</body>
 
-</html>
 {% endblock %}
