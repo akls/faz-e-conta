@@ -73,3 +73,161 @@ After doing changes to the (data) model:
 To run the server:
 
 6. `python manage.py runserver`
+
+# Estado dos Requisitos
+
+## Legenda
+- ✅ Feito
+- 🔄 Em progresso
+- ❌ Não iniciado
+- ♻️ Refeito / Melhorado
+
+---
+
+# 1. Funcionalidades
+
+## 1.1 Mensalidades e Pagamentos
+
+- [ ] RQ_F07 - Cálculo da mensalidade  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F08 - Registo de pagamentos  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F09 - Monitoramento de pagamentos em atraso  
+  Estado:  
+  Notas:  
+
+---
+
+## 1.2 Despesas
+
+- [ ] RQ_F10 - Registo de despesas diárias  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F11 - Definição de despesas fixas  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F12 - Revisão de despesas mensais  
+  Estado:  
+  Notas:  
+
+---
+
+## 1.3 Saúde Financeira
+
+- [ ] RQ_F13 - Análises e cálculos financeiros  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F14 - Relatórios (Excel/PDF com filtros)  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F15 - Guardar filtros de relatórios  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F16 - Envio automático de relatórios  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F17 - Comunicação com pais (email/SMS)  
+  Estado:  
+  Notas:  
+
+---
+
+# 2. Base de Dados
+
+- [ ] RQ_F01 - Criação de contas e aprovação  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F04 - Questionário de inscrição  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F05 - Dados do aluno  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F02 - Importação de Excel/CSV  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F03 - Organização por anos letivos  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F06 - Dados dos encarregados  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F08 - Registo de pagamentos  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F21 - Monitorização de vacinação  
+  Estado:  
+  Notas:  
+
+---
+
+# 3. Segurança
+
+- [ ] RQ_F18 - Aprovação de alterações na BD  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F19 - Notificações e logs  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_F20 - Base de dados alumni  
+  Estado:  
+  Notas:  
+
+---
+
+# 4. Requisitos Não Funcionais
+
+- [ ] RQ_NF01 - Backend em Python  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF02 - HTML + CSS  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF03 - JavaScript  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF04 - Base de dados SQLite  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF05 - Fácil instalação  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF06 - Interface intuitiva  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF07 - Arquitetura modular  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF08 - Backups automáticos  
+  Estado:  
+  Notas:  
+
+- [ ] RQ_NF09 - Limpeza de backups (>72h)  
+  Estado:  
+  Notas:  
