@@ -336,7 +336,7 @@ class ComparticaoMensalSS(models.Model):
 
     mss_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', unique=True, related_name="")
+    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', unique=True)
     ano_letivo = models.DateField(null=True, blank=True)
 
     periodo_inicio = models.DateField(default=du.timezone.now)
