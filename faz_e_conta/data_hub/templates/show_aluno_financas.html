@@ -9,65 +9,102 @@
 {% block content %}
 
     <h1>Tabela Alunos Finanças</h1>
-
     <div>
         <table>
+
             <thead>
                 <tr>
-                    {% for item in head_financas %}
-                        {% if item != id %}
-                            <th>
-                            {{ item|replace:"_, " }}
-                            </th>
-                        {% endif %}
-                    {% endfor %}
+                    <th>
+                        Nome
+                    </th>
+
+                    <th>
+                        Ano Letivo
+                    </th>
+
+                    <th>
+                        Rendimento Líquido
+                    </th>
+
+                    <th>
+                        Despesa Anual
+                    </th>
+
+                    <th>
+                        Documento
+                    </th>
                 </tr>
             </thead>
+
+
+
+
             <tbody>
-                {% for item in data_financas %}
-                <tr>
-                    {% for field in head_financas %}
-                        {% if field != id %}
+
+                {% for financa in financas %}
+                    <tr>
+
                         <td>
-                            {% if item|get_item:field == None %}
-                                <hr>
-                            {% else %}
-                                {{ item|get_item:field }}
-                            {% endif %}
+                            {{ financa.aluno_id.nome_proprio }} {{ financa.aluno_id.apelido }}
                         </td>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
+
+                        <td>
+                            {{ financa.ano_letivo }}
+                        </td>
+
+                        <td>
+                            {{ financa.rendim_líquido }}
+                        </td>
+
+                        <td>
+                            {{ financa.despesa_anual }}
+                        </td>
+
+                        <td>
+                            {{ financa.aluno_id.numero_documento }}
+                        </td>
+
+                    </tr>
                 {% endfor %}
+
             </tbody>
+
         </table>
     </div>
 
 
-    <h1>Tabela Mensalidade Alunos</h1>
 
+
+
+
+
+
+    <h1>Tabela Mensalidade Alunos</h1>
     <section id="mensalidadesFilt">
 
+        <!-- Form para pesquisar mensalidades -->
         <form method="get" id="filter-form">
             <label>Nome:</label>
-            <input type="text" name="nome" id="input_nome" placeholder="Ex: nuno matos" value="{{ filtersValue.nome }}">
+            <input type="text" name="nome" id="input_nome" placeholder="Ex: Nuno Matos" value="{{ filtros.nome }}">
+
 
             <label>Sala:</label>
             <select name="sala" id="select_sala">
-                <option value="" {% if filtersValue.sala == "" %} selected {% endif %}> Todas as salas </option>
+                <option value="" {% if filtros.sala == "" %} selected {% endif %}> Todas as salas </option>
 
-                {% for sala in data_salas %}
-                <option value="{{ sala.sala_nome }}" {% if filtersValue.sala == sala.sala_nome %} selected {% endif %}>
+                {% for sala in valoresDosFiltros.salas %}
+                <option value="{{ sala.sala_nome }}" {% if filtros.sala == sala.sala_nome %} selected {% endif %}>
                     {{ sala.sala_nome }}
                 </option>
                 {% endfor %}
             </select>
 
+
             <label>Mês:</label>
             <select name="mes" id="select_mes">
-                <option value="" {% if filtersValue.mes == None %} selected {% endif %}>Todos os meses</option>
-                {% for m in meses_range %}
-                <option value="{{ m }}" {% if filtersValue.mes == m %} selected {% endif %}>
+                <option value="" {% if filtros.mes == None %} selected {% endif %}>Todos os meses</option>
+                {% for m in valoresDosFiltros.meses_range %}
+                <option value="{{ m }}" {% if filtros.mes == m %} selected {% endif %}>
                     {{ m }}
                 </option>
                 {% endfor %}
@@ -76,9 +113,9 @@
 
             <label>Ano:</label>
             <select name="ano" id="select_ano">
-                <option value="" {% if filtersValue.ano == None %} selected {% endif %}>Todos os anos</option>
-                {% for a in anos_range %}
-                <option value="{{ a }}" {% if filtersValue.ano == a %} selected {% endif %}>
+                <option value="" {% if filtros.ano == None %} selected {% endif %}>Todos os anos</option>
+                {% for a in valoresDosFiltros.anos_range %}
+                <option value="{{ a }}" {% if filtros.ano == a %} selected {% endif %}>
                     {{ a }}
                 </option>
                 {% endfor %}
@@ -88,6 +125,9 @@
         </form>
 
 
+
+
+        <!-- Form para calcular as mensalidades -->
         <form method="post" id="calc-form">
             {% csrf_token %}
 
@@ -114,40 +154,164 @@
 
     </section>
 
+
+
+
     <div>
+
         <table>
+
             <thead>
+
                 <tr>
-                {% for item in head_mensalidade %}
-                    {% if item != id %}
-                        <th>
-                        {{ item|replace:"_, " }}
-                        </th>
-                    {% endif %}
-                {% endfor %}
+
+                    <th>
+                        Nome
+                    </th>
+
+                    <th>
+                        Data
+                    </th>
+
+                    <th>
+                        Sala
+                    </th>
+
+                    <th>
+                        Escalão
+                    </th>
+
+                    <th>
+                        Valor a pagar
+                    </th>
+
+                    <th>
+                        Valor pago
+                    </th>
+
+                    <th>
+                        Data pagamento
+                    </th>
+
+                    <th>
+                        Modo pagamento
+                    </th>
+
+                    <th>
+                        Acordo
+                    </th>
+
                 </tr>
+
             </thead>
+
             <tbody>
-                {% for item in data_mensalidade %}
+
+                {% for mensalidade in mensalidades %}
                     <tr>
-                        {% for field in head_mensalidade %}
-                            {% if field != id %}
-                            <td>
-                                {% if item|get_item:field == None %}
-                                    <hr>
-                                    {% else %}
-                                        {% if field == 'Valor_a_pagar' or field == 'Valor_pago' %}
-                                            {{ item|get_item:field|floatformat:2 }}
-                                    {% else %}
-                                        {{ item|get_item:field }}
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                            {% endif %}
-                        {% endfor %}
+
+                        <td>
+                            {{ mensalidade.aluno_id.nome_proprio }} {{ mensalidade.aluno_id.apelido }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.mes }}/{{ mensalidade.ano }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.aluno_id.sala_id.sala_nome }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.escalao }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.mensalidade_calc }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.mensalidade_paga }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.data_pagamento }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.modo_pagamento }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.acordo }}
+                        </td>
+
                     </tr>
                 {% endfor %}
+
             </tbody>
+
+        </table>
+
+    </div>
+
+
+
+
+    <h1>Tabela das compartiçoes mensais da Segurança social</h1>
+    <div>
+        <table>
+
+            <thead>
+                <tr>
+                    <th>
+                        Nome
+                    </th>
+
+                    <th>
+                        Ano letivo
+                    </th>
+
+                    <th>
+                        Mensalidade a pagar
+                    </th>
+
+                    <th>
+                        Mensalidade a paga
+                    </th>
+
+                    <th>
+                        Data do pagamento
+                    </th>
+                </tr>
+            </thead>
+
+            {% for comparticao in comparticoesSS %}
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ comparticao.aluno_id.nome_proprio }} {{ comparticao.aluno_id.apelido }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.ano_letivo }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.mensalidade_valor }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.mensalidade_paga }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.data_pagamento }}
+                        </td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+
         </table>
     </div>
 

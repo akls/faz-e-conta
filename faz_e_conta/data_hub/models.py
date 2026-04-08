@@ -44,6 +44,7 @@ class Aluno(models.Model):
 
 
 
+
 class programa(models.Model):
     class Meta:
         db_table = 'programa'
@@ -302,7 +303,7 @@ class MensalidadeAluno(models.Model):
     ano = models.IntegerField(null=True, blank=True)
     mes = models.IntegerField(null=True, blank=True)
 
-    mensalidade_calc = models.IntegerField(null=True, blank=True)
+    mensalidade_calc = models.FloatField(null=True, blank=True)
     mensalidade_retific = models.IntegerField(null=True, blank=True)
     mensalidade_paga = models.IntegerField(null=True, blank=True)
 
@@ -311,6 +312,7 @@ class MensalidadeAluno(models.Model):
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
 
     acordo = models.CharField(max_length=255, null=True, blank=True)
+    escalao = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.aluno_id} {self.ano} {self.mes}, Ma Id: {self.ma_id}"
@@ -323,9 +325,10 @@ class EscaloesRendimento(models.Model):
         db_table = 'escaloes_rendim'
 
     escal_rend_id =  models.AutoField(primary_key=True)
-    perc_rend_per_capita = models.FloatField(null=True, blank=True)
-    escalao = models.CharField(max_length=255, null=True, blank=True)
-    comparticipacao_da_familia = models.IntegerField(null=True, blank=True)
+    perc_rend_per_capita_min = models.FloatField(null=False, blank=False)
+    perc_rend_per_capita_max = models.FloatField(null=True, blank=True)
+    escalao = models.CharField(max_length=255, null=False, blank=False)
+    comparticipacao_da_familia = models.IntegerField(null=False, blank=False)
 
 
 
@@ -336,7 +339,7 @@ class ComparticaoMensalSS(models.Model):
 
     mss_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', unique=True)
+    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', related_name="comparticao", unique=True)
     ano_letivo = models.DateField(null=True, blank=True)
 
     periodo_inicio = models.DateField(default=du.timezone.now)
@@ -345,7 +348,7 @@ class ComparticaoMensalSS(models.Model):
     mensalidade_valor = models.IntegerField(null=True, blank=True)
     mensalidade_paga = models.IntegerField(null=True, blank=True)
 
-    data_pagamento = models.DateField(null=True, blank=True, default=du.timezone.now)
+    data_pagamento = models.DateField(null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
     acordo = models.CharField(max_length=255, null=True, blank=True)

@@ -1,15 +1,12 @@
-from _datetime import datetime as dt
+
+from _datetime import datetime as dt, timezone
+from decimal import Decimal
+
 from django.shortcuts import redirect, render, get_object_or_404
-from .forms import *
-from .models import *
-from .auto_gen_form_views import *
-from django.utils.http import urlencode
 from .auto_gen_id_views import *
 from django.db.models import Q
-from django.db.models import F, Value, CharField
-from django.db.models.functions import Concat, Cast
-from django.db import connection
-from django.contrib import messages
+from django.utils import timezone
+
 
 
 def starter_page(request):
@@ -46,245 +43,127 @@ def show_students(request):
 
 def show_financas(request):
 
-    # Filtros
-    has_filters = any(key in request.GET for key in ['nome', 'sala', 'mes', 'ano'])
-
-    # Verefica se existe parametros para os filtros
-    if not has_filters:
-        filter_mes = dt.now().month
-        filter_ano = dt.now().year
-        filter_nome = ''
-        filter_sala = ''
-    else:
-        filter_nome = request.GET.get('nome', '')
-        filter_sala = request.GET.get('sala', '')
-        filter_mes = request.GET.get('mes', '')
-        filter_ano = request.GET.get('ano', '')
-    ano_atual = dt.now().year
-    meses_range = range(1, 13)
-    anos_range = range(2000, ano_atual + 1)
-
-    data_salas = Sala.objects.all()
-    data_financas = AlunoFinancas.objects.annotate(
-        Ano_letivo=F('ano_letivo'),
-        Despesa_anual=F('despesa_anual'),
-        Rendimento_líquido=F('rendim_líquido'),
-        Nome=Concat(
-            'aluno_id__nome_proprio',
-            Value(' '),
-            'aluno_id__apelido',
-            output_field=CharField()),
-        Documento=F('aluno_id__numero_documento')
-    )
-    data_mensalidade = MensalidadeAluno.objects.annotate(
-        Data=Concat(
-            'ano',
-            Value('/'),
-            'mes',
-            output_field=CharField()
-        ),
-        Valor_a_pagar =F('mensalidade_calc'),
-        Valor_pago = F('mensalidade_paga'),
-        Data_Pagamento = Cast('data_pagamento', CharField()),
-        Modo_Pagamento=F('modo_pagamento'),
-        Serviço=F('programa_ss'),
-        Acordo = F('acordo'),
-        Nome=Concat(
-            'aluno_id__nome_proprio',
-            Value(' '),
-            'aluno_id__apelido',
-            output_field=CharField()),
-        Sala = F('aluno_id__sala_id__sala_nome'),
-        Data_Nascimento = Cast('aluno_id__data_nascimento', CharField()),
-    ).order_by('-ano','mes')
-
-
+    # Verefica se o request é um post
     if request.method == "POST" and 'mensalidadeFinal' in request.POST:
-        p_nome = request.POST.get('filter_nome', '')
-        p_sala = request.POST.get('filter_sala', '')
-        p_mes = request.POST.get('filter_mes') or dt.now().month
-        p_ano = request.POST.get('filter_ano') or dt.now().year
 
-        extra_filters = ""
-        filter_params = []
-        params_url = urlencode({
-            'nome': p_nome,
-            'sala': p_sala,
-            'mes': p_mes,
-            'ano': p_ano
-        })
+        now = timezone.now()
+        # Calcular mensalidades
+        for financa in AlunoFinancas.objects.all():
 
-        if p_nome:
-            extra_filters += " AND (a.nome_proprio || ' ' || a.apelido) LIKE %s"
-            filter_params.append(f"%{p_nome}%")
+            # Calculo da perc
+            RMM = (financa.rendim_líquido - financa.despesa_anual) / (12 * financa.agregado)
+            RMMG = float(ConfigIpss.objects.all().get(Q(key="RMMG") & Q(active_flag=1)).value)
+            percParaEscaloes = (RMM / RMMG) * 100
 
-        if p_sala:
-            extra_filters += " AND s.sala_nome = %s"
-            filter_params.append(p_sala)
+            # Saber o escalao e a percentagem para aplicar a capital
+            escaloes = EscaloesRendimento.objects.all()
+            escalaoDoAluno = ""
+            percParaAplicarCapital = 0.0
+            for escalao in escaloes:
+                if escalao.perc_rend_per_capita_max is None and percParaEscaloes >= escalao.perc_rend_per_capita_min:
+                    escalaoDoAluno = escalao.escalao
+                    percParaAplicarCapital = escalao.comparticipacao_da_familia
+                    break
+                elif percParaEscaloes >= escalao.perc_rend_per_capita_min and percParaEscaloes < escalao.perc_rend_per_capita_max:
+                    escalaoDoAluno = escalao.escalao
+                    percParaAplicarCapital = escalao.comparticipacao_da_familia
+                    break
+            valorFinal = RMM * (percParaAplicarCapital/100)
 
-        target_ano = p_ano if p_ano else dt.now().year
-        target_mes = p_mes if p_mes else dt.now().month
 
-        all_params = [target_ano, target_mes] + filter_params + [target_ano, target_mes]
+            # Vereficar se exista ja o registo
+            if MensalidadeAluno.objects.filter(Q(ano=now.year) & Q(mes=now.month) & Q(aluno_id=financa.aluno_id)).exists():
+                mensalidade = MensalidadeAluno.objects.get(Q(ano=now.year) & Q(mes=now.month) & Q(aluno_id=financa.aluno_id))
+                mensalidade.aluno_id = financa.aluno_id
+                mensalidade.mes = now.month
+                mensalidade.ano = now.year
+                mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
+                mensalidade.escalao = escalaoDoAluno
+                mensalidade.save()
+            else:
+                mensalidade = MensalidadeAluno()
+                mensalidade.aluno_id = financa.aluno_id
+                mensalidade.mes = now.month
+                mensalidade.ano = now.year
+                mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
+                mensalidade.escalao = escalaoDoAluno
+                mensalidade.save()
 
-        # Query do calculo da mensalidade
-        queryMensalidade = f"""
-                INSERT INTO mensalidade_aluno (
-                    aluno_id,
-                    ano,
-                    mes,
-                    mensalidade_calc,
-                    mensalidade_retific,
-                    mensalidade_paga,
-                    data_pagamento,
-                    modo_pagamento,
-                    programa_ss,
-                    acordo
-                )
-                SELECT
-                    resultado.id,
-                    %s,
-                    %s,
-                    ROUND(resultado.mensalidade_final,2 ),
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL
-                FROM (
-                         SELECT
-                             calc.aluno_id AS id,
-                             calc.rc AS rc,
-                             e.perc_rend_per_capita AS limite_superior,
-                             (calc.rc * (e.comparticipacao_da_familia / 100.0)) AS mensalidade_final
-                         FROM (
-                                  SELECT
-                                      a.aluno_id,
-                                      ((af.rendim_líquido - af.despesa_anual) / (12.0 * af.agregado)) AS rc,
-                                      c.value As rmmg
-                                  FROM aluno a
-                                           LEFT JOIN aluno_financas af ON a.aluno_id = af.aluno_id
-                                           LEFT JOIN config_ipss c ON c.key='RMMG' AND active_flag = 1
-                                           LEFT JOIN sala s ON a.sala_id = s.sala_id
-                                  WHERE 1=1 {extra_filters}
-                              ) AS calc
-                                  LEFT JOIN escaloes_rendim e ON (calc.rc / rmmg) * 100 <= e.perc_rend_per_capita
-                         GROUP BY id
-                         HAVING e.perc_rend_per_capita = MIN(e.perc_rend_per_capita)
-                     ) AS resultado
-                WHERE NOT EXISTS (
-                    SELECT 1 FROM mensalidade_aluno m
-                    WHERE m.aluno_id = resultado.id
-                      AND m.ano = %s
-                      AND m.mes = %s
-                );
-                """
 
-        # Query calculo comparticoes
-        queryComparticaoSS = f"""
-                INSERT INTO comparticipacao_mensal_ss (
-                aluno_id,
-                aluno_mensalidade_id,
-                ano_letivo,
-                periodo_inicio,
-                mensalidade_valor,
-                programa_ss
-                )
-                SELECT 
-                ma.aluno_id,
-                ma.ma_id,
-                ma.ano,
-                CURRENT_DATE AS periodo_inicio,
-                CASE 
-                  WHEN a.comparticao_ss_custom IS NOT NULL THEN a.comparticao_ss_custom
-                  ELSE p.custo
-                END,
-                p.nome AS programa_ss
-                from mensalidade_aluno ma
-                JOIN aluno a ON ma.aluno_id = a.aluno_id
-                JOIN programa p ON a.programa_id = p.programa_id
-                ON CONFLICT(aluno_mensalidade_id)
-                DO UPDATE SET
-                mensalidade_valor = excluded.mensalidade_valor,
-                programa_ss = excluded.programa_ss,
-                periodo_inicio = excluded.periodo_inicio;
-                """
 
-        # Exucutar as mudandças/querys
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(queryMensalidade, all_params)
-                cursor.execute(queryComparticaoSS)
-                count = cursor.rowcount
-                if count == 0:
-                    messages.warning(request, f"Mensalidades já existem para {target_mes}/{target_ano}.")
+
+        # Calcula as comparticoes da SS
+        for mensalidade in MensalidadeAluno.objects.all():
+
+            if ComparticaoMensalSS.objects.filter(aluno_mensalidade_id=mensalidade.ma_id).exists():
+                comparticao = ComparticaoMensalSS.objects.get(aluno_mensalidade_id=mensalidade.ma_id)
+                comparticao.ano_letivo = now.date()
+                comparticao.periodo_inicio = now.date()
+
+                if(comparticao.aluno_id.comparticao_ss_custom is None):
+                    comparticao.mensalidade_valor = mensalidade.aluno_id.programa_id.custo
                 else:
-                    messages.success(request, f"Sucesso! {count} mensalidades calculadas para {target_mes}/{target_ano}.")
-        except Exception as e:
-            messages.error(request, f"Erro: {e}")
-        return redirect(f"{request.path}?{params_url}")
+                    comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
+
+                comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
+                comparticao.aluno_id = mensalidade.aluno_id
+                comparticao.aluno_mensalidade_id = mensalidade
+                comparticao.save()
+            else:
+                comparticao = ComparticaoMensalSS()
+                comparticao.ano_letivo = now.date()
+                comparticao.periodo_inicio = now.date()
+
+                if(comparticao.aluno_id.comparticao_ss_custom is None):
+                    comparticao.mensalidade_valor = mensalidade.aluno_id.programa_id.custo
+                else:
+                    comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
+
+                comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
+                comparticao.aluno_id = mensalidade.aluno_id
+                comparticao.aluno_mensalidade_id = mensalidade
+                comparticao.save()
+
+        return redirect("show_aluno_financas")
+
+    # Filtros
+    filtros = {"nome": request.GET.get('nome', ''), "sala": request.GET.get('sala', ''), "mes": int(request.GET.get('mes')) if request.GET.get('mes') else '', "ano": int(request.GET.get('ano')) if request.GET.get('ano') else ''}
+
+    # Valores para escolher os filtros no template
+    valoresDosFiltros = {"salas": Sala.objects.all(), "meses_range": range(1, 13), "anos_range": range(2000, dt.now().year + 1)}
+
+
+
+
+    # Vai buscar dados
+    financas = AlunoFinancas.objects.all()
+    mensalidades = MensalidadeAluno.objects.select_related("comparticao").order_by('-ano','mes')
+    comparticoesSS = ComparticaoMensalSS.objects.all()
+
+
+
 
     # Aplica os filtros
-    if filter_nome:
-        data_mensalidade = data_mensalidade.filter(Nome__icontains=filter_nome)
+    if filtros["nome"]:
+        mensalidades = mensalidades.filter(aluno_id__nome_proprio__icontains=filtros["nome"])
 
-    if filter_sala:
-        data_mensalidade = data_mensalidade.filter(Sala__icontains=filter_sala)
+    if filtros["sala"]:
+        mensalidades = mensalidades.filter(aluno_id__sala_id__sala_nome__icontains=filtros["sala"])
 
-    if filter_mes:
-        data_mensalidade = data_mensalidade.filter(mes=filter_mes)
+    if filtros["mes"]:
+        mensalidades = mensalidades.filter(mes=filtros["mes"])
 
-    if filter_ano:
-        data_mensalidade = data_mensalidade.filter(ano=filter_ano)
-
-
-
-    # Headers
-    head_financas = [
-        "Ano_letivo",
-        "Despesa_anual",
-        "Rendimento_líquido",
-        "Nome",
-        "Documento"
-         ]
-    head_mensalidade = [
-        "Data",
-        "Valor_a_pagar",
-        "Valor_pago",
-        "Data_Pagamento",
-        "Modo_Pagamento",
-        "Serviço",
-        "Acordo",
-        "Nome",
-        "Sala",
-        "Data_Nascimento",
-        ]
-
-
-
-
-    #
-    filtersValue = {
-        "sala": filter_sala,
-        "nome": filter_nome,
-        "mes": int(filter_mes) if str(filter_mes).isdigit() else None,
-        "ano": int(filter_ano) if str(filter_ano).isdigit() else None,
-    }
-
-    data_financas = list(data_financas.values(*head_financas))
-    data_mensalidade = list(data_mensalidade.values(*head_mensalidade))
+    if filtros["ano"]:
+        mensalidades = mensalidades.filter(ano=filtros["ano"])
 
     context = {
-        "head_financas": head_financas,
-        "data_financas": data_financas,
-        "head_mensalidade": head_mensalidade,
-        "data_mensalidade": data_mensalidade,
-        "data_salas": data_salas,
-        "meses_range": meses_range,
-        "anos_range": anos_range,
-        "filtersValue": filtersValue,
+        "financas": financas,
+        "mensalidades": mensalidades,
+        "comparticoesSS": comparticoesSS,
+        "valoresDosFiltros": valoresDosFiltros,
+        "filtros": filtros
     }
+
     return render(request, "show_aluno_financas.html", context)
 
 
