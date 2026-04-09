@@ -23,3 +23,27 @@ class Responsavel_educativoForm(forms.ModelForm):
 
         # Adiciona atributos aos campos do formulário
         widgets = Responsavel_educativo_widget()
+
+class SalaForm(forms.ModelForm):
+    class Meta:
+        model = Sala
+        fields = ["sala_nome", "sala_local", "sala_valencia"]
+
+class FinancasForm(forms.ModelForm):
+    class Meta:
+        model = AlunoFinancas
+        fields = [
+            "ano_letivo",
+            "aluno_id",
+            "data",
+            "agregado",
+            "rendim_líquido",
+            "despesa_anual",
+            "irs",
+            "tax_soc",
+            "tax_impos",
+            "renda",
+            "med_transp",
+            "medicacao",
+            "outros",
+        ]

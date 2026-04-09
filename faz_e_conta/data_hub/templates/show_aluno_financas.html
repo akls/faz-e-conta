@@ -9,6 +9,7 @@
 {% block content %}
 
     <h1>Tabela Alunos Finanças</h1>
+    <a href="{% url 'insert_financas' %}">Adicionar Finanças</a>
     <div>
         <table>
 
@@ -16,6 +17,10 @@
                 <tr>
                     <th>
                         Nome
+                    </th>
+
+                    <th>
+                        Agregado familiar
                     </th>
 
                     <th>
@@ -33,6 +38,10 @@
                     <th>
                         Documento
                     </th>
+
+                    <th>
+                        Editar finança
+                    </th>
                 </tr>
             </thead>
 
@@ -46,6 +55,10 @@
 
                         <td>
                             {{ financa.aluno_id.nome_proprio }} {{ financa.aluno_id.apelido }}
+                        </td>
+
+                        <td>
+                            {{ financa.agregado }}
                         </td>
 
                         <td>
@@ -64,6 +77,9 @@
                             {{ financa.aluno_id.numero_documento }}
                         </td>
 
+                        <td>
+                            <a href="{% url 'edit_financas' financa_id=financa.af_id %}">Editar finança</a>
+                        </td>
                     </tr>
                 {% endfor %}
 
@@ -269,7 +285,11 @@
                     </th>
 
                     <th>
-                        Ano letivo
+                        Data
+                    </th>
+
+                    <th>
+                        Sala
                     </th>
 
                     <th>
@@ -294,7 +314,11 @@
                         </td>
 
                         <td>
-                            {{ comparticao.ano_letivo }}
+                            {{ comparticao.periodo_inicio }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.aluno_id.sala_id.sala_nome }}
                         </td>
 
                         <td>

@@ -92,6 +92,10 @@ def show_financas(request):
 
 
 
+
+
+
+
         # Calcula as comparticoes da SS
         for mensalidade in MensalidadeAluno.objects.all():
 
@@ -99,6 +103,7 @@ def show_financas(request):
                 comparticao = ComparticaoMensalSS.objects.get(aluno_mensalidade_id=mensalidade.ma_id)
                 comparticao.ano_letivo = now.date()
                 comparticao.periodo_inicio = now.date()
+                comparticao.aluno_id = mensalidade.aluno_id
 
                 if(comparticao.aluno_id.comparticao_ss_custom is None):
                     comparticao.mensalidade_valor = mensalidade.aluno_id.programa_id.custo
@@ -106,13 +111,13 @@ def show_financas(request):
                     comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
 
                 comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
-                comparticao.aluno_id = mensalidade.aluno_id
                 comparticao.aluno_mensalidade_id = mensalidade
                 comparticao.save()
             else:
                 comparticao = ComparticaoMensalSS()
                 comparticao.ano_letivo = now.date()
                 comparticao.periodo_inicio = now.date()
+                comparticao.aluno_id = mensalidade.aluno_id
 
                 if(comparticao.aluno_id.comparticao_ss_custom is None):
                     comparticao.mensalidade_valor = mensalidade.aluno_id.programa_id.custo
@@ -120,7 +125,6 @@ def show_financas(request):
                     comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
 
                 comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
-                comparticao.aluno_id = mensalidade.aluno_id
                 comparticao.aluno_mensalidade_id = mensalidade
                 comparticao.save()
 
@@ -143,18 +147,25 @@ def show_financas(request):
 
 
 
-    # Aplica os filtros
+    # Aplica os filtros para as mensalidades e para as comparticoes da SS
     if filtros["nome"]:
-        mensalidades = mensalidades.filter(aluno_id__nome_proprio__icontains=filtros["nome"])
+        mensalidades = mensalidades.filter(Q(aluno_id__nome_proprio__icontains=filtros["nome"]) | Q(aluno_id__apelido__icontains=filtros["nome"]))
+        comparticoesSS = comparticoesSS.filter(Q(aluno_id__nome_proprio__icontains=filtros["nome"]) | Q(aluno_id__apelido__icontains=filtros["nome"]))
 
     if filtros["sala"]:
         mensalidades = mensalidades.filter(aluno_id__sala_id__sala_nome__icontains=filtros["sala"])
+        comparticoesSS = comparticoesSS.filter(aluno_id__sala_id__sala_nome__icontains=filtros["sala"])
 
     if filtros["mes"]:
         mensalidades = mensalidades.filter(mes=filtros["mes"])
+        comparticoesSS = comparticoesSS.filter(periodo_inicio__month=filtros["mes"])
 
     if filtros["ano"]:
         mensalidades = mensalidades.filter(ano=filtros["ano"])
+        comparticoesSS = comparticoesSS.filter(periodo_inicio__year=filtros["ano"])
+
+
+
 
     context = {
         "financas": financas,
@@ -165,6 +176,37 @@ def show_financas(request):
     }
 
     return render(request, "show_aluno_financas.html", context)
+
+
+
+
+def insert_financas(request):
+    if request.method == "POST":
+        form = FinancasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_aluno_financas')
+        else:
+            print(form.errors)
+    else:
+        form = FinancasForm()
+        return render(request, 'insert_financas.html', {'form': form})
+
+
+
+
+def edit_financas(request, financa_id):
+    alunoFinanca = get_object_or_404(AlunoFinancas, pk=financa_id)
+    if request.method == "POST":
+        form = FinancasForm(request.POST, instance=alunoFinanca)
+        if form.is_valid():
+            form.save()
+            return redirect('show_aluno_financas')
+        else:
+            print(form.errors)
+    else:
+        form = FinancasForm(instance=alunoFinanca)
+        return render(request, 'insert_financas.html', {'form': form})
 
 
 
@@ -202,43 +244,55 @@ def show_contactos_details(request, responsavel_id):
 
 
 def show_salas(request):
-    query_valencia = request.GET.get("valencia", "")  # Filter by valencia
-    query_room = request.GET.get("room", "")  # Filter by room
+    query_valencia = request.GET.get("valencia", "")
+    query_room = request.GET.get("room", "")
 
-    # Base queryset for rooms, ordered alphabetically
+    # Buscar salas
     salas = Sala.objects.all().order_by('sala_valencia', 'sala_nome')
 
-    # Apply filters
+    # Aplicar filtros
     if query_valencia:
         salas = salas.filter(sala_valencia__icontains=query_valencia)
     if query_room:
         salas = salas.filter(sala_nome__icontains=query_room)
 
-    # Get unique valencias and room names for dropdown filters
-    valencias = Sala.objects.values_list("sala_valencia", flat=True).distinct()
-    room_names = Sala.objects.values_list("sala_nome", flat=True).distinct()
-
-    # Get all students
-    students = Aluno.objects.all()
-
-    if request.method == "POST":
-        # Assign students to a room
-        selected_room_id = request.POST.get("room_id")
-        selected_students = request.POST.getlist("students")
-
-        if selected_room_id and selected_students:
-            room = Sala.objects.get(id=selected_room_id)
-            Aluno.objects.filter(id__in=selected_students).update(sala_id=room)
+    # Obter os valores para os filtros no template
+    valoresFiltros = {"valencias": Sala.objects.values_list("sala_valencia", flat=True).distinct(), "salas_nomes": Sala.objects.values_list("sala_nome", flat=True).distinct()}
 
     context = {
         "salas": salas,
-        "valencias": valencias,
-        "room_names": room_names,
-        "students": students,
-        "query_valencia": query_valencia,
-        "query_room": query_room,
+        "valoresFiltros": valoresFiltros,
     }
     return render(request, "show_sala.html", context)
+
+
+
+
+def insert_sala_view(request):
+    if request.method == "POST":
+        form = SalaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_salas')
+        else:
+            print(form.errors)
+    else:
+        form = SalaForm()
+        return render(request, 'insert_sala.html', {'form': form})
+
+
+
+
+def edit_sala(request, sala_id):
+    sala = get_object_or_404(Sala, pk=sala_id)
+    if request.method == "POST":
+        form = SalaForm(request.POST, instance=sala)
+        if form.is_valid():
+            form.save()
+            return redirect('show_salas')
+    else:
+        form = SalaForm(instance=sala)
+    return render(request, 'edit_sala.html', {'form': form})
 
 
 
