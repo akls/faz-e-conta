@@ -86,6 +86,7 @@ def show_financas(request):
                 mensalidade.mes = now.month
                 mensalidade.ano = now.year
                 mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
+                mensalidade.mensalidade_paga = 0
                 mensalidade.escalao = escalaoDoAluno
                 mensalidade.save()
 
@@ -102,7 +103,8 @@ def show_financas(request):
             if ComparticaoMensalSS.objects.filter(aluno_mensalidade_id=mensalidade.ma_id).exists():
                 comparticao = ComparticaoMensalSS.objects.get(aluno_mensalidade_id=mensalidade.ma_id)
                 comparticao.ano_letivo = now.date()
-                comparticao.periodo_inicio = now.date()
+                comparticao.periodo_inicio_mes = mensalidade.mes
+                comparticao.periodo_inicio_ano = mensalidade.ano
                 comparticao.aluno_id = mensalidade.aluno_id
 
                 if(comparticao.aluno_id.comparticao_ss_custom is None):
@@ -116,7 +118,8 @@ def show_financas(request):
             else:
                 comparticao = ComparticaoMensalSS()
                 comparticao.ano_letivo = now.date()
-                comparticao.periodo_inicio = now.date()
+                comparticao.periodo_inicio_mes = mensalidade.mes
+                comparticao.periodo_inicio_ano = mensalidade.ano
                 comparticao.aluno_id = mensalidade.aluno_id
 
                 if(comparticao.aluno_id.comparticao_ss_custom is None):
@@ -124,6 +127,7 @@ def show_financas(request):
                 else:
                     comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
 
+                mensalidade.mensalidade_paga = 0
                 comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
                 comparticao.aluno_mensalidade_id = mensalidade
                 comparticao.save()
@@ -167,9 +171,23 @@ def show_financas(request):
 
 
 
+    # Calcula as dividas de cada aluno
+    dividasPorAlunoID = {}
+    for aluno in Aluno.objects.all():
+        mensalidadesDoAluno = MensalidadeAluno.objects.filter(aluno_id=aluno.aluno_id)
+        divida = 0
+        for mensalidadeDoAluno in mensalidadesDoAluno:
+            divida += mensalidadeDoAluno.mensalidade_calc - mensalidadeDoAluno.mensalidade_paga
+        dividasPorAlunoID[aluno.aluno_id] = divida
+
+
+
+
+
     context = {
         "financas": financas,
         "mensalidades": mensalidades,
+        "dividas": dividasPorAlunoID,
         "comparticoesSS": comparticoesSS,
         "valoresDosFiltros": valoresDosFiltros,
         "filtros": filtros

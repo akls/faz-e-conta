@@ -305,7 +305,7 @@ class MensalidadeAluno(models.Model):
 
     mensalidade_calc = models.FloatField(null=True, blank=True)
     mensalidade_retific = models.IntegerField(null=True, blank=True)
-    mensalidade_paga = models.IntegerField(null=True, blank=True)
+    mensalidade_paga = models.FloatField(null=True, blank=True)
 
     data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
@@ -342,11 +342,14 @@ class ComparticaoMensalSS(models.Model):
     aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', related_name="comparticao", unique=True)
     ano_letivo = models.DateField(null=True, blank=True)
 
-    periodo_inicio = models.DateField(default=du.timezone.now)
-    periodo_fim = models.DateField(null=True, blank=True)
+    periodo_inicio_ano = models.IntegerField(null=True, blank=True)
+    periodo_inicio_mes = models.IntegerField(null=True, blank=True)
+    periodo_fim_ano = models.IntegerField(null=True, blank=True)
+    periodo_fim_mes = models.IntegerField(null=True, blank=True)
 
-    mensalidade_valor = models.IntegerField(null=True, blank=True)
-    mensalidade_paga = models.IntegerField(null=True, blank=True)
+
+    mensalidade_valor = models.FloatField(null=True, blank=True)
+    mensalidade_paga = models.FloatField(null=True, blank=True)
 
     data_pagamento = models.DateField(null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)

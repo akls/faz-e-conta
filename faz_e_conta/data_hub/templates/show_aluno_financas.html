@@ -214,7 +214,7 @@
                     </th>
 
                     <th>
-                        Acordo
+                        Divida
                     </th>
 
                 </tr>
@@ -259,7 +259,7 @@
                         </td>
 
                         <td>
-                            {{ mensalidade.acordo }}
+                            {{ dividas|get_item:mensalidade.aluno_id.aluno_id }}
                         </td>
 
                     </tr>
@@ -314,7 +314,7 @@
                         </td>
 
                         <td>
-                            {{ comparticao.periodo_inicio }}
+                            {{ comparticao.periodo_inicio_mes }}/{{ comparticao.periodo_inicio_ano }}
                         </td>
 
                         <td>
