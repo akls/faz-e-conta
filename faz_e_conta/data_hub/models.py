@@ -1,6 +1,8 @@
 from django.db import models
 import datetime
 import django.utils as du
+from django.db.models.fields import AutoField
+
 
 class Aluno(models.Model):
     class Meta:
@@ -31,11 +33,28 @@ class Aluno(models.Model):
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
 
+    comparticao_ss_custom = models.FloatField(blank=True, null=True)
+
     responsaveis_educativos_ids = models.ManyToManyField(to='ResponsavelEducativo', related_name='alunos')
     sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
+    programa_id = models.ForeignKey(to="programa", related_name="aluno", on_delete=models.CASCADE, db_column='programa_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Aluno Id: {self.aluno_id}"
+
+
+
+
+class programa(models.Model):
+    class Meta:
+        db_table = 'programa'
+
+    programa_id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=150, blank=False)
+    custo = models.FloatField(blank=False)
+
+    def __str__(self):
+        return f"{self.nome}: {self.custo}€"
 
 
 
@@ -284,15 +303,16 @@ class MensalidadeAluno(models.Model):
     ano = models.IntegerField(null=True, blank=True)
     mes = models.IntegerField(null=True, blank=True)
 
-    mensalidade_calc = models.IntegerField(null=True, blank=True)
+    mensalidade_calc = models.FloatField(null=True, blank=True)
     mensalidade_retific = models.IntegerField(null=True, blank=True)
-    mensalidade_paga = models.IntegerField(null=True, blank=True)
+    mensalidade_paga = models.FloatField(null=True, blank=True)
 
     data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
 
     acordo = models.CharField(max_length=255, null=True, blank=True)
+    escalao = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.aluno_id} {self.ano} {self.mes}, Ma Id: {self.ma_id}"
@@ -305,9 +325,10 @@ class EscaloesRendimento(models.Model):
         db_table = 'escaloes_rendim'
 
     escal_rend_id =  models.AutoField(primary_key=True)
-    perc_rend_per_capita = models.FloatField(null=True, blank=True)
-    escalao = models.CharField(max_length=255, null=True, blank=True)
-    comparticipacao_da_familia = models.IntegerField(null=True, blank=True)
+    perc_rend_per_capita_min = models.FloatField(null=False, blank=False)
+    perc_rend_per_capita_max = models.FloatField(null=True, blank=True)
+    escalao = models.CharField(max_length=255, null=False, blank=False)
+    comparticipacao_da_familia = models.IntegerField(null=False, blank=False)
 
 
 
@@ -318,16 +339,19 @@ class ComparticaoMensalSS(models.Model):
 
     mss_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id')
+    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', related_name="comparticao", unique=True)
     ano_letivo = models.DateField(null=True, blank=True)
 
-    periodo_inicio = models.DateField(default=du.timezone.now)
-    periodo_fim = models.DateField(null=True, blank=True)
+    periodo_inicio_ano = models.IntegerField(null=True, blank=True)
+    periodo_inicio_mes = models.IntegerField(null=True, blank=True)
+    periodo_fim_ano = models.IntegerField(null=True, blank=True)
+    periodo_fim_mes = models.IntegerField(null=True, blank=True)
 
-    mensalidade_valor = models.IntegerField(null=True, blank=True)
-    mensalidade_paga = models.IntegerField(null=True, blank=True)
 
-    data_pagamento = models.DateField(null=True, blank=True, default=du.timezone.now)
+    mensalidade_valor = models.FloatField(null=True, blank=True)
+    mensalidade_paga = models.FloatField(null=True, blank=True)
+
+    data_pagamento = models.DateField(null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
     acordo = models.CharField(max_length=255, null=True, blank=True)

@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <h1>Editar Aluno</h1>
+    <h1>Editar Sala</h1>
 
     <form method="post" class="form-container" id="form">
         {% csrf_token %}
@@ -11,7 +11,7 @@
 
         <div class="form-actions">
             <button type="submit" class="btn">Salvar</button>
-            <a href="{% url 'show_student_details' aluno_id=form.instance.aluno_id %}" class="btn cancel">Cancelar</a>
+            <a href="{% url 'show_salas' %}" class="btn cancel">Cancelar</a>
         </div>
     </form>
 

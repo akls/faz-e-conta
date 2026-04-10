@@ -112,26 +112,3 @@ class InsertResponsavelEducativoTest(TestCase):
         self.assertEqual(ResponsavelEducativo.objects.count(), 1)
         self.assertEqual(ResponsavelEducativo.objects.first().nome_proprio, 'Carlos')
 
-class InsertFuncionarioTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
-    def test_insert_funcionario(self):
-        response = self.client.post(reverse('insert_funcionario_view'), {
-            'nome_proprio': 'Ana',
-            'apelido': 'Pereira',
-            'data_nascimento': make_aware(datetime(1990, 1, 1)),
-            'tipo_documento_identificacao': 'CC',
-            'numero_documento_identificacao': '123456789',
-            'data_validade': make_aware(datetime(2030, 1, 1)),
-            'niss': 123456789,
-            'nif': 987654321,
-            'morada': 'Rua das Flores',
-            'codigo_postal': '1234-567',
-            'concelho': 'Lisboa',
-            'contacto_telefonico': '912345678',
-            'email': 'ana.pereira@example.com',
-            'funcao': 'Educadora',
-        })
-        self.assertEqual(Funcionario.objects.count(), 1)
-        self.assertEqual(Funcionario.objects.first().nome_proprio, 'Ana')

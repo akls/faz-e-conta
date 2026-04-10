@@ -14,6 +14,10 @@ urlpatterns = [
     path('aluno/<int:aluno_id>/editar/', views.edit_student, name='edit_student'),
     path('responsavel/<int:responsavel_id>/editar/', views.edit_responsavel_educativo, name='edit_responsavel_educativo'),
     path('responsavel/<int:responsavel_id>/', views.show_contactos_details, name='show_contactos_details'),
+    path('insert_sala/', views.insert_sala_view, name='insert_sala_view'),
+    path("salas/<int:sala_id>/edit", views.edit_sala, name="edit_sala"),
+    path('insert_financas/', views.insert_financas, name='insert_financas'),
+    path('alunos_financas/<int:financa_id>', views.edit_financas, name='edit_financas')
 ]
 
 urlpatterns = add_form_urlpatterns(urlpatterns)

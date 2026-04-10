@@ -1,15 +1,16 @@
+
+from _datetime import datetime as dt, timezone
+from decimal import Decimal
+
 from django.shortcuts import redirect, render, get_object_or_404
-from .forms import *
-from .models import *
-from .auto_gen_form_views import *
 from .auto_gen_id_views import *
-from django.db.models import Q  # Import Q for dynamic filtering
-from django.db.models import F, Value, CharField
-from django.db.models.functions import Concat
+from django.db.models import Q
+from django.utils import timezone
+
 
 
 def starter_page(request):
-    return render(request, "show_students.html")
+    return render(request, "starter_page.html")
 
 
 
@@ -41,27 +42,189 @@ def show_students(request):
 
 
 def show_financas(request):
-    query = request.GET.get("q", "")  # Get search query from the URL
 
-    # Base queryset
-    data = AlunoFinancas.objects.all()
+    # Verefica se o request é um post
+    if request.method == "POST" and 'mensalidadeFinal' in request.POST:
 
-    # Apply search filter by student ID
-    if query:
-        data = data.filter(aluno_id__aluno_id__icontains=query)
+        now = timezone.now()
+        # Calcular mensalidades
+        for financa in AlunoFinancas.objects.all():
 
-    # Define the fields to display
-    head = ["ano_letivo", "despesa_anual", "rendim_líquido", "aluno_id__nome_proprio", "aluno_id__apelido", "aluno_id__numero_documento"]
-    data_dict = list(data.values(*head))
+            # Calculo da perc
+            RMM = (financa.rendim_líquido - financa.despesa_anual) / (12 * financa.agregado)
+            RMMG = float(ConfigIpss.objects.all().get(Q(key="RMMG") & Q(active_flag=1)).value)
+            percParaEscaloes = (RMM / RMMG) * 100
 
-    # Render the template with context
+            # Saber o escalao e a percentagem para aplicar a capital
+            escaloes = EscaloesRendimento.objects.all()
+            escalaoDoAluno = ""
+            percParaAplicarCapital = 0.0
+            for escalao in escaloes:
+                if escalao.perc_rend_per_capita_max is None and percParaEscaloes >= escalao.perc_rend_per_capita_min:
+                    escalaoDoAluno = escalao.escalao
+                    percParaAplicarCapital = escalao.comparticipacao_da_familia
+                    break
+                elif percParaEscaloes >= escalao.perc_rend_per_capita_min and percParaEscaloes < escalao.perc_rend_per_capita_max:
+                    escalaoDoAluno = escalao.escalao
+                    percParaAplicarCapital = escalao.comparticipacao_da_familia
+                    break
+            valorFinal = RMM * (percParaAplicarCapital/100)
+
+
+            # Vereficar se exista ja o registo
+            if MensalidadeAluno.objects.filter(Q(ano=now.year) & Q(mes=now.month) & Q(aluno_id=financa.aluno_id)).exists():
+                mensalidade = MensalidadeAluno.objects.get(Q(ano=now.year) & Q(mes=now.month) & Q(aluno_id=financa.aluno_id))
+                mensalidade.aluno_id = financa.aluno_id
+                mensalidade.mes = now.month
+                mensalidade.ano = now.year
+                mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
+                mensalidade.escalao = escalaoDoAluno
+                mensalidade.save()
+            else:
+                mensalidade = MensalidadeAluno()
+                mensalidade.aluno_id = financa.aluno_id
+                mensalidade.mes = now.month
+                mensalidade.ano = now.year
+                mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
+                mensalidade.mensalidade_paga = 0
+                mensalidade.escalao = escalaoDoAluno
+                mensalidade.save()
+
+
+
+
+
+
+
+
+        # Calcula as comparticoes da SS
+        for mensalidade in MensalidadeAluno.objects.all():
+
+            if ComparticaoMensalSS.objects.filter(aluno_mensalidade_id=mensalidade.ma_id).exists():
+                comparticao = ComparticaoMensalSS.objects.get(aluno_mensalidade_id=mensalidade.ma_id)
+                comparticao.ano_letivo = now.date()
+                comparticao.periodo_inicio_mes = mensalidade.mes
+                comparticao.periodo_inicio_ano = mensalidade.ano
+                comparticao.aluno_id = mensalidade.aluno_id
+
+                if(comparticao.aluno_id.comparticao_ss_custom is None):
+                    comparticao.mensalidade_valor = mensalidade.aluno_id.programa_id.custo
+                else:
+                    comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
+
+                comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
+                comparticao.aluno_mensalidade_id = mensalidade
+                comparticao.save()
+            else:
+                comparticao = ComparticaoMensalSS()
+                comparticao.ano_letivo = now.date()
+                comparticao.periodo_inicio_mes = mensalidade.mes
+                comparticao.periodo_inicio_ano = mensalidade.ano
+                comparticao.aluno_id = mensalidade.aluno_id
+
+                if(comparticao.aluno_id.comparticao_ss_custom is None):
+                    comparticao.mensalidade_valor = mensalidade.aluno_id.programa_id.custo
+                else:
+                    comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
+
+                mensalidade.mensalidade_paga = 0
+                comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
+                comparticao.aluno_mensalidade_id = mensalidade
+                comparticao.save()
+
+        return redirect("show_aluno_financas")
+
+    # Filtros
+    filtros = {"nome": request.GET.get('nome', ''), "sala": request.GET.get('sala', ''), "mes": int(request.GET.get('mes')) if request.GET.get('mes') else '', "ano": int(request.GET.get('ano')) if request.GET.get('ano') else ''}
+
+    # Valores para escolher os filtros no template
+    valoresDosFiltros = {"salas": Sala.objects.all(), "meses_range": range(1, 13), "anos_range": range(2000, dt.now().year + 1)}
+
+
+
+
+    # Vai buscar dados
+    financas = AlunoFinancas.objects.all()
+    mensalidades = MensalidadeAluno.objects.select_related("comparticao").order_by('-ano','mes')
+    comparticoesSS = ComparticaoMensalSS.objects.all()
+
+
+
+
+    # Aplica os filtros para as mensalidades e para as comparticoes da SS
+    if filtros["nome"]:
+        mensalidades = mensalidades.filter(Q(aluno_id__nome_proprio__icontains=filtros["nome"]) | Q(aluno_id__apelido__icontains=filtros["nome"]))
+        comparticoesSS = comparticoesSS.filter(Q(aluno_id__nome_proprio__icontains=filtros["nome"]) | Q(aluno_id__apelido__icontains=filtros["nome"]))
+
+    if filtros["sala"]:
+        mensalidades = mensalidades.filter(aluno_id__sala_id__sala_nome__icontains=filtros["sala"])
+        comparticoesSS = comparticoesSS.filter(aluno_id__sala_id__sala_nome__icontains=filtros["sala"])
+
+    if filtros["mes"]:
+        mensalidades = mensalidades.filter(mes=filtros["mes"])
+        comparticoesSS = comparticoesSS.filter(periodo_inicio__month=filtros["mes"])
+
+    if filtros["ano"]:
+        mensalidades = mensalidades.filter(ano=filtros["ano"])
+        comparticoesSS = comparticoesSS.filter(periodo_inicio__year=filtros["ano"])
+
+
+
+
+    # Calcula as dividas de cada aluno
+    dividasPorAlunoID = {}
+    for aluno in Aluno.objects.all():
+        mensalidadesDoAluno = MensalidadeAluno.objects.filter(aluno_id=aluno.aluno_id)
+        divida = 0
+        for mensalidadeDoAluno in mensalidadesDoAluno:
+            divida += mensalidadeDoAluno.mensalidade_calc - mensalidadeDoAluno.mensalidade_paga
+        dividasPorAlunoID[aluno.aluno_id] = divida
+
+
+
+
+
     context = {
-        "head": head,
-        "data_dict": data_dict,
-        "id": "aluno_id__nome_proprio",  # Use student name as identifier
-        "query": query,
+        "financas": financas,
+        "mensalidades": mensalidades,
+        "dividas": dividasPorAlunoID,
+        "comparticoesSS": comparticoesSS,
+        "valoresDosFiltros": valoresDosFiltros,
+        "filtros": filtros
     }
+
     return render(request, "show_aluno_financas.html", context)
+
+
+
+
+def insert_financas(request):
+    if request.method == "POST":
+        form = FinancasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_aluno_financas')
+        else:
+            print(form.errors)
+    else:
+        form = FinancasForm()
+        return render(request, 'insert_financas.html', {'form': form})
+
+
+
+
+def edit_financas(request, financa_id):
+    alunoFinanca = get_object_or_404(AlunoFinancas, pk=financa_id)
+    if request.method == "POST":
+        form = FinancasForm(request.POST, instance=alunoFinanca)
+        if form.is_valid():
+            form.save()
+            return redirect('show_aluno_financas')
+        else:
+            print(form.errors)
+    else:
+        form = FinancasForm(instance=alunoFinanca)
+        return render(request, 'insert_financas.html', {'form': form})
 
 
 
@@ -98,83 +261,56 @@ def show_contactos_details(request, responsavel_id):
 
 
 
-def show_aluno(request):
-    query = request.GET.get("q", "")  # Get search query from the URL
-    sala_filter = request.GET.get("sala", "")  # Get sala filter from the URL
-
-    # Base queryset
-    data = Aluno.objects.all()
-
-    # Apply search filter
-    if query:
-        data = data.filter(
-            Q(nome_proprio__icontains=query) |
-            Q(apelido__icontains=query)
-        )
-
-    # Apply sala_valencia filter
-    if sala_filter:
-        data = data.filter(sala_id__sala_valencia__icontains=sala_filter)
-
-    # Define the fields to display
-    head = ["nome_proprio", "apelido", "processo", "sala_id__sala_valencia"]
-    data_dict = list(data.values(*head))
-
-    # Get unique sala_valencia values for the dropdown
-    salas = Sala.objects.values_list("sala_valencia", flat=True).distinct()
-
-    # Render the template with context
-    context = {
-        "head": head,
-        "data_dict": data_dict,
-        "id": "nome_proprio",  # Use student name as identifier
-        "query": query,
-        "sala_filter": sala_filter,
-        "salas": salas,
-    }
-    return render(request, "show_aluno.html", context)
-
-
-
-
 def show_salas(request):
-    query_valencia = request.GET.get("valencia", "")  # Filter by valencia
-    query_room = request.GET.get("room", "")  # Filter by room
+    query_valencia = request.GET.get("valencia", "")
+    query_room = request.GET.get("room", "")
 
-    # Base queryset for rooms, ordered alphabetically
+    # Buscar salas
     salas = Sala.objects.all().order_by('sala_valencia', 'sala_nome')
 
-    # Apply filters
+    # Aplicar filtros
     if query_valencia:
         salas = salas.filter(sala_valencia__icontains=query_valencia)
     if query_room:
         salas = salas.filter(sala_nome__icontains=query_room)
 
-    # Get unique valencias and room names for dropdown filters
-    valencias = Sala.objects.values_list("sala_valencia", flat=True).distinct()
-    room_names = Sala.objects.values_list("sala_nome", flat=True).distinct()
-
-    # Get all students
-    students = Aluno.objects.all()
-
-    if request.method == "POST":
-        # Assign students to a room
-        selected_room_id = request.POST.get("room_id")
-        selected_students = request.POST.getlist("students")
-
-        if selected_room_id and selected_students:
-            room = Sala.objects.get(id=selected_room_id)
-            Aluno.objects.filter(id__in=selected_students).update(sala_id=room)
+    # Obter os valores para os filtros no template
+    valoresFiltros = {"valencias": Sala.objects.values_list("sala_valencia", flat=True).distinct(), "salas_nomes": Sala.objects.values_list("sala_nome", flat=True).distinct()}
 
     context = {
         "salas": salas,
-        "valencias": valencias,
-        "room_names": room_names,
-        "students": students,
-        "query_valencia": query_valencia,
-        "query_room": query_room,
+        "valoresFiltros": valoresFiltros,
     }
     return render(request, "show_sala.html", context)
+
+
+
+
+def insert_sala_view(request):
+    if request.method == "POST":
+        form = SalaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_salas')
+        else:
+            print(form.errors)
+    else:
+        form = SalaForm()
+        return render(request, 'insert_sala.html', {'form': form})
+
+
+
+
+def edit_sala(request, sala_id):
+    sala = get_object_or_404(Sala, pk=sala_id)
+    if request.method == "POST":
+        form = SalaForm(request.POST, instance=sala)
+        if form.is_valid():
+            form.save()
+            return redirect('show_salas')
+    else:
+        form = SalaForm(instance=sala)
+    return render(request, 'edit_sala.html', {'form': form})
 
 
 
@@ -271,18 +407,3 @@ def insert_responsavel_educativo_view(request):
     else:
         form = Responsavel_educativoForm()
     return render(request, 'insert_responsavel_educativo.html', {'form': form})
-
-
-
-
-def insert_funcionario_view(request):
-    if request.method == "POST":
-        form = FuncionarioForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('starter_page')  # Redirect to the starter page
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = FuncionarioForm()
-    return render(request, 'insert_funcionario.html', {'form': form})

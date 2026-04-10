@@ -1,7 +1,7 @@
-perc_rend_per_capita,escalao,comparticipacao_da_familia
-30,Escalão 1,20
-50,Escalão 2,30
-70,Escalão 3,35
-100,Escalão 4,42
-150,Escalão 5,43
-151,Escalão 6,45
+perc_rend_per_capita_min,perc_rend_per_capita_max,escalao,comparticipacao_da_familia
+0,31,Escalão 1,15
+31,51,Escalão 2,22.5
+51,71,Escalão 3,27.5
+71,101,Escalão 4,30
+101,151,Escalão 5,32.5
+151,,Escalão 6,35

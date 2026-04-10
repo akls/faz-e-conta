@@ -7,15 +7,17 @@
     <title>{% block title %}My Django App{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
     <div class="navbar">
+        <a href="{% url 'starter_page' %}">FazeConta</a>
         <a href="{% url 'show_students' %}">Alunos</a>
-        <a href="{% url 'show_contactos' %}">Contactos</a>
+        <a href="{% url 'show_contactos' %}">Encarregados de educação</a>
         <a href="{% url 'show_salas' %}">Salas</a>
-        <a href="{% url 'show_despesas' %}">Despesas</a>
         <a href="{% url 'show_aluno_financas' %}">Finanças</a>
         <a href="#">Mais Opções</a>
     </div>
@@ -25,6 +27,7 @@
         {% endblock %}
     </div>
 
+    {% block extra_js %}{% endblock %}
 </body>
 
 </html>

@@ -78,7 +78,7 @@ form {
 }
 
 input[type="text"], select {
-    width: 100%;
+    width: 20%;
     padding: 10px 12px;
     margin: 8px 0;
     border: 1px solid #ccc;
@@ -103,23 +103,35 @@ textarea.error {
 
 
 /* CSS para as tables */
+
+.table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
     font-size: 0.95em;
     background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: center;
 }
 
 table th, table td {
-    padding: 12px 15px;
-    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid #aaa
 }
 
 table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border: 1px solid #aaa;
     background-color: #e0e4f1;
     color: #1f3c88;
     font-weight: 600;
@@ -137,7 +149,6 @@ table tbody tr:hover {
     background-color: #e8edf7;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-
 
 
 

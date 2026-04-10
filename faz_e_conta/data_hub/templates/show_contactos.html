@@ -2,8 +2,6 @@
 {% load custom_filters %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang='en'>
 
 <head>
     <meta charset='UTF-8'>
@@ -12,7 +10,7 @@
 </head>
 
 <body>
-    <h1>Contactos</h1>
+    <h1>Encarregados de educação</h1>
 
 
 
@@ -30,7 +28,7 @@
         <input type="text" name="q" placeholder="Pesquisar encarregados de educação..." value="{{ filtersValue.name }}">
 
 
-        <button type="submit">Buscar</button>
+        <button type="submit">Filtrar</button>
     </form>
 
 
@@ -99,7 +97,4 @@
 
     </table>
 
-</body>
-
-</html>
 {% endblock %}
