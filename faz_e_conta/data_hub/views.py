@@ -162,11 +162,11 @@ def show_financas(request):
 
     if filtros["mes"]:
         mensalidades = mensalidades.filter(mes=filtros["mes"])
-        comparticoesSS = comparticoesSS.filter(periodo_inicio__month=filtros["mes"])
+        comparticoesSS = comparticoesSS.filter(periodo_inicio_mes=filtros["mes"])
 
     if filtros["ano"]:
         mensalidades = mensalidades.filter(ano=filtros["ano"])
-        comparticoesSS = comparticoesSS.filter(periodo_inicio__year=filtros["ano"])
+        comparticoesSS = comparticoesSS.filter(periodo_inicio_ano=filtros["ano"])
 
 
 
