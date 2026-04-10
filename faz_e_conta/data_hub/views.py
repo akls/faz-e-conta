@@ -127,7 +127,7 @@ def show_financas(request):
                 else:
                     comparticao.mensalidade_valor = comparticao.aluno_id.comparticao_ss_custom
 
-                mensalidade.mensalidade_paga = 0
+                comparticao.mensalidade_paga = 0.0
                 comparticao.programa_ss = mensalidade.aluno_id.programa_id.nome
                 comparticao.aluno_mensalidade_id = mensalidade
                 comparticao.save()
