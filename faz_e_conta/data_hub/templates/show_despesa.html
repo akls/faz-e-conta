@@ -5,41 +5,154 @@
 
     <h1>Despesas</h1>
 
-    <form method="get">
-        <label for="start_date">Data Inicial:</label>
-        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+    <h2>Total Despesas</h2>
 
-        <label for="end_date">Data Final:</label>
-        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+    <table>
 
-        <button type="submit">Filtrar</button>
-    </form>
+        <thead>
+        <tr>
 
+            <th>Total Despesas</th>
+
+            <th>Total Despesas Fixas</th>
+
+            <th>Total Despesas Variaveis</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+
+            <td>{{ totais.geral|floatformat:2 }}€</td>
+
+            <td>{{ totais.fixas|floatformat:2 }}€</td>
+
+            <td>{{ totais.variaveis|floatformat:2 }}€</td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+    <h2>Lista de Despesas Fixas</h2>
+
+    <div>
+        <a href="{% url 'insert_despesa_view' tipo_despesa='fixa' %}">Adicionar Despesa Fixa</a>
+    </div>
+
+    <h1></h1>
+
+    <table>
+
+        <thead>
+        <tr>
+
+            <th>ID</th>
+
+            <th>Fatura</th>
+
+            <th>Tipo de Pagamento</th>
+
+            <th>Data e Hora</th>
+
+            <th>Produto</th>
+
+            <th>Valor</th>
+
+            <th>Notas</th>
+
+            <th>Fornecedor</th>
+
+        </tr>
+        </thead>
+
+
+        <tbody>
+        {% for despesafix in despesas.despesasFix %}
+        <tr>
+
+            <td>{{ despesafix.despfix_id }}</td>
+
+            <td>{{ despesafix.fatura }}</td>
+
+            <td>{{ despesafix.pagamento }}</td>
+
+            <td>{{ despesafix.data }}</td>
+
+            <td>{{ despesafix.produto }}</td>
+
+            <td>{{ despesafix.valor|floatformat:2 }}€</td>
+
+            <td>{{ despesafix.notas }}</td>
+
+            <td>{{ despesafix.fornecedor }}</td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+
+    <h2>Lista de Despesas Variaveis</h2>
+
+    <div>
+        <a href="{% url 'insert_despesa_view' tipo_despesa='variavel' %}">Adicionar Despesa Variável</a>
+    </div>
+
+    <h1></h1>
 
     <table>
         <thead>
-            <tr>
-                {% for item in head %}
-                <th>
-                    {{ item|replace:"_, " }}
-                </th>
-                {% endfor %}
-            </tr>
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Fatura</th>
+
+            <th>Tipo de Pagamento</th>
+
+            <th>Data e Hora</th>
+
+            <th>Produto</th>
+
+            <th>Valor</th>
+
+            <th>Notas</th>
+
+            <th>Fornecedor</th>
+
+        </tr>
+
         </thead>
+
+
         <tbody>
-            {% for item in data_dict %}
-            <tr>
-                {% for field in head %}
-                <td>
-                    {% if item|get_item:field == None %}
-                    <hr>
-                    {% else %}
-                    {{ item|get_item:field }}
-                    {% endif %}
-                </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
+
+        {% for despesavar in despesas.despesasVar %}
+        <tr>
+
+            <td>{{ despesavar.despvar_id }}</td>
+
+            <td>{{ despesavar.fatura }}</td>
+
+            <td>{{ despesavar.pagamento }}</td>
+
+            <td>{{ despesavar.data }}</td>
+
+            <td>{{ despesavar.produto }}</td>
+
+            <td>{{ despesavar.valor|floatformat:2 }}€</td>
+
+            <td>{{ despesavar.notas }}</td>
+
+            <td>{{ despesavar.fornecedor }}</td>
+
+        </tr>
+        {% endfor %}
+
         </tbody>
     </table>
 

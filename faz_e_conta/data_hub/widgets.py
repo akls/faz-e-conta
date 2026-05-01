@@ -18,3 +18,10 @@ def Responsavel_educativo_widget():
         'data_validade': forms.DateInput(attrs={'type': 'date'}),
     }
     return widgets
+
+def Despesa_widget():
+    widgets = {
+        'data': forms.DateInput(attrs={'type': 'date'}),
+    }
+    return widgets
+

@@ -47,3 +47,15 @@ class FinancasForm(forms.ModelForm):
             "medicacao",
             "outros",
         ]
+
+class DespesaFixaForm(forms.ModelForm):
+    class Meta:
+        model = DespesaFixa
+        fields = ["produto", "valor", "data", "fatura","pagamento","notas","fornecedor"]
+        widgets = Despesa_widget()
+
+class DespesasVariavelForm(forms.ModelForm):
+    class Meta:
+        model = DespesasVariavel
+        fields = ["produto", "valor", "data", "fatura","pagamento","notas","fornecedor"]
+        widgets = Despesa_widget()

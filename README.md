@@ -29,7 +29,7 @@ Your branch is up to date with 'origin/dev'.
 
 nothing to commit, working tree clean
 ```
-
+ 
 Step 3: Create a feature branch
 
 Create the local feature branch using a name that follows the common _feature/issue-title_ pattern. After creating the local branch, push the change to the remote repository. An example using the branch name _feature/issue10-standardize-cdm_:

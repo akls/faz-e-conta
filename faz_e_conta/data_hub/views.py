@@ -4,17 +4,18 @@ from decimal import Decimal
 
 from django.shortcuts import redirect, render, get_object_or_404
 from .auto_gen_id_views import *
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.utils import timezone
 
 
 
+#Starter Page
 def starter_page(request):
     return render(request, "starter_page.html")
 
 
 
-
+#Starter Page
 def show_students(request):
     # URL query parameters
     query = request.GET.get("q", "")
@@ -37,6 +38,224 @@ def show_students(request):
     alunoFields = ["aluno_id", "nome_proprio", "apelido", "processo", "numero_documento", "data_admissao", "sala_id__sala_valencia", "sala_id__sala_nome"]
     context = {"alunos": alunos.values(*alunoFields), "salas": Sala.objects.all(), "alunoCount": alunos.count(), "filtersValue": {"sala": sala_filter, "name": query}}
     return render(request, "show_students.html", context)
+
+
+
+
+def show_student_details(request, aluno_id):
+    aluno = Aluno.objects.select_related("sala_id").prefetch_related("responsaveis_educativos_ids").get(aluno_id=aluno_id)
+
+    context = {"aluno": aluno}
+    return render(request, "show_student_details.html", context)
+
+
+
+
+def edit_student(request, aluno_id):
+    aluno = get_object_or_404(Aluno, pk=aluno_id)
+    if request.method == "POST":
+        form = AlunoForm(request.POST, instance=aluno)
+        if form.is_valid():
+            form.save()
+            return redirect('show_student_details', aluno_id=aluno_id)
+    else:
+        form = AlunoForm(instance=aluno)
+    return render(request, 'edit_student.html', {'form': form})
+
+
+
+
+def insert_aluno_view(request):
+    if request.method == "POST":
+        form = AlunoForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the form data to the database
+            return redirect('show_students')  # Redirect to the students list page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = AlunoForm()
+    return render(request, 'insert_aluno.html', {'form': form})
+
+
+
+
+def edit_responsavel_educativo(request, responsavel_id):
+    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
+    if request.method == "POST":
+        form = Responsavel_educativoForm(request.POST, instance=responsavel)  # Use the correct form name
+        if form.is_valid():
+            form.save()
+            return redirect('show_contactos')
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = Responsavel_educativoForm(instance=responsavel)  # Use the correct form name
+    return render(request, 'edit_responsavel_educativo.html', {'form': form})
+
+
+
+
+def insert_responsavel_educativo_view(request):
+    if request.method == "POST":
+        form = Responsavel_educativoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_contactos')  # Redirect to the contactos list page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = Responsavel_educativoForm()
+    return render(request, 'insert_responsavel_educativo.html', {'form': form})
+
+
+
+
+def show_contactos(request):
+    # URL query parameters
+    query = request.GET.get("q", "")
+
+
+
+
+    # Get guardians
+    encarregadosEducacao = ResponsavelEducativo.objects.prefetch_related("alunos")
+    # Apply search filter
+    if query:
+        encarregadosEducacao = encarregadosEducacao.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query))
+
+
+
+
+    # Render the template with context
+    context = {"guardians": encarregadosEducacao, "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count(), "filtersValue": {"name": query}}
+    return render(request, "show_contactos.html", context)
+
+
+
+
+def show_contactos_details(request, responsavel_id):
+    guardian = ResponsavelEducativo.objects.prefetch_related("alunos").get(responsavel_educativo_id=responsavel_id)
+
+    context = {"guardian": guardian}
+    return render(request, "show_contactos_details.html", context)
+
+
+
+
+def show_salas(request):
+    query_valencia = request.GET.get("valencia", "")
+    query_room = request.GET.get("room", "")
+
+    # Buscar salas
+    salas = Sala.objects.all().order_by('sala_valencia', 'sala_nome')
+
+    # Aplicar filtros
+    if query_valencia:
+        salas = salas.filter(sala_valencia__icontains=query_valencia)
+    if query_room:
+        salas = salas.filter(sala_nome__icontains=query_room)
+
+    # Obter os valores para os filtros no template
+    valoresFiltros = {"valencias": Sala.objects.values_list("sala_valencia", flat=True).distinct(), "salas_nomes": Sala.objects.values_list("sala_nome", flat=True).distinct()}
+
+    context = {
+        "salas": salas,
+        "valoresFiltros": valoresFiltros,
+    }
+    return render(request, "show_sala.html", context)
+
+
+
+
+def insert_sala_view(request):
+    if request.method == "POST":
+        form = SalaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_salas')
+        else:
+            print(form.errors)
+    else:
+        form = SalaForm()
+        return render(request, 'insert_sala.html', {'form': form})
+
+
+
+
+def edit_sala(request, sala_id):
+    sala = get_object_or_404(Sala, pk=sala_id)
+    if request.method == "POST":
+        form = SalaForm(request.POST, instance=sala)
+        if form.is_valid():
+            form.save()
+            return redirect('show_salas')
+    else:
+        form = SalaForm(instance=sala)
+    return render(request, 'edit_sala.html', {'form': form})
+
+
+
+
+def show_despesas(request):
+    start_date = request.GET.get("start_date", "")
+    end_date = request.GET.get("end_date", "")
+
+
+    despesasVar = DespesasVariavel.objects.all()
+    despesasFix = DespesaFixa.objects.all()
+
+    if start_date and end_date:
+        despesasFix = despesasFix.filter(data__range=[start_date, end_date])
+        despesasVar = despesasVar.filter(data__range=[start_date, end_date])
+
+    total_fixas = despesasFix.aggregate(Sum('valor'))['valor__sum'] or 0.0
+    total_variaveis = despesasVar.aggregate(Sum('valor'))['valor__sum'] or 0.0
+    total_geral = total_fixas + total_variaveis
+
+    valoresFiltros = {
+        "start_date": start_date,
+        "end_date": end_date,
+    }
+
+    totais = {
+        "fixas": total_fixas,
+        "variaveis": total_variaveis,
+        "geral": total_geral,
+    }
+
+    despesas = {
+        "despesasFix": despesasFix,
+        "despesasVar": despesasVar,
+    }
+
+    context = {
+        "despesas": despesas,
+        "valoresFiltros": valoresFiltros,
+        "totais": totais,
+    }
+    return render(request, "show_despesa.html", context)
+
+
+
+
+def insert_despesa_view(request, tipo_despesa):
+    if tipo_despesa == 'fixa':
+        form_class = DespesaFixaForm
+        titulo = "Inserir Despesa Fixa"
+    else:
+        form_class = DespesasVariavelForm
+        titulo = "Inserir Despesa Variável"
+
+    if request.method == "POST":
+        form = form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_despesas')
+    else:
+        form = form_class()
+
+    return render(request, 'insert_despesa.html', {'form': form, 'titulo': titulo})
 
 
 
@@ -225,185 +444,3 @@ def edit_financas(request, financa_id):
     else:
         form = FinancasForm(instance=alunoFinanca)
         return render(request, 'insert_financas.html', {'form': form})
-
-
-
-
-def show_contactos(request):
-    # URL query parameters
-    query = request.GET.get("q", "")
-
-
-
-
-    # Get guardians
-    encarregadosEducacao = ResponsavelEducativo.objects.prefetch_related("alunos")
-    # Apply search filter
-    if query:
-        encarregadosEducacao = encarregadosEducacao.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query))
-
-
-
-
-    # Render the template with context
-    context = {"guardians": encarregadosEducacao, "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count(), "filtersValue": {"name": query}}
-    return render(request, "show_contactos.html", context)
-
-
-
-
-def show_contactos_details(request, responsavel_id):
-    guardian = ResponsavelEducativo.objects.prefetch_related("alunos").get(responsavel_educativo_id=responsavel_id)
-
-    context = {"guardian": guardian}
-    return render(request, "show_contactos_details.html", context)
-
-
-
-
-def show_salas(request):
-    query_valencia = request.GET.get("valencia", "")
-    query_room = request.GET.get("room", "")
-
-    # Buscar salas
-    salas = Sala.objects.all().order_by('sala_valencia', 'sala_nome')
-
-    # Aplicar filtros
-    if query_valencia:
-        salas = salas.filter(sala_valencia__icontains=query_valencia)
-    if query_room:
-        salas = salas.filter(sala_nome__icontains=query_room)
-
-    # Obter os valores para os filtros no template
-    valoresFiltros = {"valencias": Sala.objects.values_list("sala_valencia", flat=True).distinct(), "salas_nomes": Sala.objects.values_list("sala_nome", flat=True).distinct()}
-
-    context = {
-        "salas": salas,
-        "valoresFiltros": valoresFiltros,
-    }
-    return render(request, "show_sala.html", context)
-
-
-
-
-def insert_sala_view(request):
-    if request.method == "POST":
-        form = SalaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('show_salas')
-        else:
-            print(form.errors)
-    else:
-        form = SalaForm()
-        return render(request, 'insert_sala.html', {'form': form})
-
-
-
-
-def edit_sala(request, sala_id):
-    sala = get_object_or_404(Sala, pk=sala_id)
-    if request.method == "POST":
-        form = SalaForm(request.POST, instance=sala)
-        if form.is_valid():
-            form.save()
-            return redirect('show_salas')
-    else:
-        form = SalaForm(instance=sala)
-    return render(request, 'edit_sala.html', {'form': form})
-
-
-
-
-def show_despesas(request):
-    start_date = request.GET.get("start_date", "")  # Data inicial
-    end_date = request.GET.get("end_date", "")  # Data final
-
-    # Base queryset para despesas variáveis
-    despesas = DespesasVariavel.objects.all()
-
-    # Aplicar filtros de data, se fornecidos
-    if start_date and end_date:
-        despesas = despesas.filter(data__range=[start_date, end_date])
-
-    # Definir os campos a exibir
-    head = ["despvar_id","fatura", "pagamento", "data", "produto", "valor"]
-    data_dict = list(despesas.values(*head))
-
-    # Renderizar o template com o contexto
-    context = {
-        "head": head,
-        "data_dict": data_dict,
-        "start_date": start_date,
-        "end_date": end_date,
-    }
-    return render(request, "show_despesa.html", context)
-
-
-
-
-def show_student_details(request, aluno_id):
-    aluno = Aluno.objects.select_related("sala_id").prefetch_related("responsaveis_educativos_ids").get(aluno_id=aluno_id)
-
-    context = {"aluno": aluno}
-    return render(request, "show_student_details.html", context)
-
-
-
-
-def edit_student(request, aluno_id):
-    aluno = get_object_or_404(Aluno, pk=aluno_id)
-    if request.method == "POST":
-        form = AlunoForm(request.POST, instance=aluno)
-        if form.is_valid():
-            form.save()
-            return redirect('show_student_details', aluno_id=aluno_id)
-    else:
-        form = AlunoForm(instance=aluno)
-    return render(request, 'edit_student.html', {'form': form})
-
-
-
-
-def edit_responsavel_educativo(request, responsavel_id):
-    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
-    if request.method == "POST":
-        form = Responsavel_educativoForm(request.POST, instance=responsavel)  # Use the correct form name
-        if form.is_valid():
-            form.save()
-            return redirect('show_contactos')
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = Responsavel_educativoForm(instance=responsavel)  # Use the correct form name
-    return render(request, 'edit_responsavel_educativo.html', {'form': form})
-
-
-
-
-def insert_aluno_view(request):
-    if request.method == "POST":
-        form = AlunoForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the form data to the database
-            return redirect('show_students')  # Redirect to the students list page
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = AlunoForm()
-    return render(request, 'insert_aluno.html', {'form': form})
-
-
-
-
-def insert_responsavel_educativo_view(request):
-    if request.method == "POST":
-        form = Responsavel_educativoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('show_contactos')  # Redirect to the contactos list page
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = Responsavel_educativoForm()
-    return render(request, 'insert_responsavel_educativo.html', {'form': form})

@@ -172,6 +172,8 @@ class DespesasVariavel(models.Model):
 
     fatura = models.IntegerField()
     pagamento = models.CharField(max_length=250, default='')
+    notas = models.CharField(max_length=250, default='')
+    fornecedor = models.CharField(max_length=250, default='')
 
     def __str__(self):
         return f"{self.produto} {self. valor}, Despvar Id: {self.despvar_id}"
@@ -190,6 +192,8 @@ class DespesaFixa(models.Model):
 
     fatura = models.IntegerField()
     pagamento = models.CharField(max_length=250, default='')
+    notas = models.CharField(max_length=250, default='')
+    fornecedor = models.CharField(max_length=250, default='')
 
     def __str__(self):
         return f"{self.produto} {self. valor}, Despfix Id: {self.despfix_id}"
