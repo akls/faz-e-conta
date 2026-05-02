@@ -1,5 +1,5 @@
 from django.db import models
-import datetime
+from datetime import date
 import django.utils as du
 from django.db.models.fields import AutoField
 
@@ -378,3 +378,21 @@ class ConfigIpss(models.Model):
 
     def __str__(self):
         return f"{self.key}: {self.value}"
+
+
+
+
+class SaudeFinanceira(models.Model):
+    class Meta:
+        db_table = "saude_financeira"
+
+    sf_id = models.AutoField(primary_key=True)
+
+    custo_despesas_totais = models.IntegerField()
+    mensalidades_pagas_total = models.IntegerField()
+    mensalidades_nao_pagas_total = models.IntegerField()
+    receita = models.IntegerField()
+
+    comparticoes_pagas_total = models.IntegerField(default=0)
+    comparticoes_nao_pagas_total = models.IntegerField(default=0)
+    data = models.DateField(default=date.today)
