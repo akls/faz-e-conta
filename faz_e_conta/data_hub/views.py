@@ -11,7 +11,16 @@ from datetime import date
 
 #Starter Page
 def starter_page(request):
-    return render(request, "starter_page.html")
+
+    nome_do_utilizador = ""
+    if request.user.is_authenticated:
+        nome_do_utilizador = request.user.username
+    else:
+        nome_do_utilizador = ""
+
+
+    context = {"username": nome_do_utilizador}
+    return render(request, "starter_page.html", context)
 
 
 
@@ -239,6 +248,38 @@ def show_despesas(request):
 
 
 
+def edit_despesasFixas(request, despesaFixa_id):
+    despesaFixa = get_object_or_404(DespesaFixa, pk=despesaFixa_id)
+    if request.method == "POST":
+        form = DespesaFixaForm(request.POST, instance=despesaFixa)
+        if form.is_valid():
+            form.save()
+            return redirect('show_despesas')
+        else:
+            print(form.errors)
+    else:
+        form = DespesaFixaForm(instance=despesaFixa)
+        return render(request, 'insert_despesa.html', {'form': form})
+
+
+
+
+def edit_despesasVariaveis(request, despesaVariavel_id):
+    despesaVariavel = get_object_or_404(DespesasVariavel, pk=despesaVariavel_id)
+    if request.method == "POST":
+        form = DespesasVariavelForm(request.POST, instance=despesaVariavel)
+        if form.is_valid():
+            form.save()
+            return redirect('show_despesas')
+        else:
+            print(form.errors)
+    else:
+        form = DespesasVariavelForm(instance=despesaVariavel)
+        return render(request, 'insert_despesa.html', {'form': form})
+
+
+
+
 def insert_despesa_view(request, tipo_despesa):
     if tipo_despesa == 'fixa':
         form_class = DespesaFixaForm
@@ -447,6 +488,7 @@ def edit_financas(request, financa_id):
 
 
 
+
 def show_saude_fianceira(request):
     # Valores para os filtros na pagina
     anos = range(2000, timezone.now().year+1)
@@ -602,3 +644,18 @@ def show_saude_fianceira(request):
     }
 
     return render(request, 'show_saude_financeira.html', contexto)
+
+
+
+def insert_user(request):
+    if request.method == "POST":
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            return redirect('show_despesas')
+    else:
+        form = UserForm()
+        return render(request, 'insert_user.html', {'form': form})

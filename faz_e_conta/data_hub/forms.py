@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+
 from .models import *
 from .widgets import *
 
@@ -59,3 +61,8 @@ class DespesasVariavelForm(forms.ModelForm):
         model = DespesasVariavel
         fields = ["produto", "valor", "data", "fatura","pagamento","notas","fornecedor"]
         widgets = Despesa_widget()
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email", "password"]

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="form-container">
+    <h1>Inserir Sala</h1>
+    <form method='post' id="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </form>
+    <div class="actions">
+        <button type='submit' form="form" onclick="validateForm()">Inserir</button>
+        <a href="{% url 'show_salas' %}">Voltar</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/forms.js' %}"></script>
+{% endblock %}

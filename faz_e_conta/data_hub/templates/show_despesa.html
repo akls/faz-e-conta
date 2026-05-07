@@ -2,11 +2,12 @@
 {% load custom_filters %}
 
 {% block content %}
-
     <h1>Despesas</h1>
 
-    <h2>Total Despesas</h2>
 
+
+
+    <h2>Total Despesas</h2>
     <table>
 
         <thead>
@@ -35,14 +36,17 @@
 
     </table>
 
-    <h2>Lista de Despesas Fixas</h2>
 
+
+
+
+
+
+
+    <h2>Lista de Despesas Fixas</h2>
     <div>
         <a href="{% url 'insert_despesa_view' tipo_despesa='fixa' %}">Adicionar Despesa Fixa</a>
     </div>
-
-    <h1></h1>
-
     <table>
 
         <thead>
@@ -63,6 +67,8 @@
             <th>Notas</th>
 
             <th>Fornecedor</th>
+
+            <th>Editar</th>
 
         </tr>
         </thead>
@@ -88,6 +94,8 @@
 
             <td>{{ despesafix.fornecedor }}</td>
 
+            <td><a href="{% url 'edit_despesasFixas' despesaFixa_id=despesafix.despfix_id %}">Editar</a></td>
+
         </tr>
         {% endfor %}
         </tbody>
@@ -95,12 +103,16 @@
     </table>
 
 
-    <h2>Lista de Despesas Variaveis</h2>
 
+
+
+
+
+
+    <h2>Lista de Despesas Variaveis</h2>
     <div>
         <a href="{% url 'insert_despesa_view' tipo_despesa='variavel' %}">Adicionar Despesa Variável</a>
     </div>
-
     <h1></h1>
 
     <table>
@@ -123,6 +135,8 @@
             <th>Notas</th>
 
             <th>Fornecedor</th>
+
+            <th>Editar</th>
 
         </tr>
 
@@ -149,6 +163,8 @@
             <td>{{ despesavar.notas }}</td>
 
             <td>{{ despesavar.fornecedor }}</td>
+
+            <td><a href="{% url 'edit_despesasVariaveis' despesaVariavel_id=despesavar.despvar_id %}">Editar</a></td>
 
         </tr>
         {% endfor %}

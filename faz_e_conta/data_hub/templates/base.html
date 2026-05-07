@@ -14,6 +14,9 @@
 <body>
 
     <div class="navbar">
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'insert_user' %}">Criar conta</a>
         <a href="{% url 'starter_page' %}">FazeConta</a>
         <a href="{% url 'show_students' %}">Alunos</a>
         <a href="{% url 'show_contactos' %}">Encarregados de educação</a>

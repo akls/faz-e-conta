@@ -2,10 +2,19 @@ from django.urls import path
 from . import views
 from .auto_gen_form_url import *
 from .auto_gen_show_id_url import *
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Landing page
     path('', views.starter_page, name="starter_page"),
+
+
+
+
+    #Login/criar conta
+    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path('insert_user/', views.insert_user, name='insert_user'),
 
 
 
@@ -36,6 +45,8 @@ urlpatterns = [
     path('responsavel/<int:responsavel_id>/editar/', views.edit_responsavel_educativo, name='edit_responsavel_educativo'),
     path("salas/<int:sala_id>/edit", views.edit_sala, name="edit_sala"),
     path('alunos_financas/<int:financa_id>', views.edit_financas, name='edit_financas'),
+    path('despesas/fixas/<int:despesaFixa_id>', views.edit_despesasFixas, name='edit_despesasFixas'),
+    path('despesas/variaveis/<int:despesaVariavel_id>', views.edit_despesasVariaveis, name='edit_despesasVariaveis'),
 ]
 
 urlpatterns = add_form_urlpatterns(urlpatterns)
