@@ -2,6 +2,7 @@ from django.db import models
 from datetime import date
 import django.utils as du
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.db.models.fields import AutoField
 
 
@@ -305,14 +306,13 @@ class MensalidadeAluno(models.Model):
     ma_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
 
-    ano = models.IntegerField(null=True, blank=True)
-    mes = models.IntegerField(null=True, blank=True)
+    data_inicio = models.DateTimeField(default=timezone.now)
+    data_fim = models.DateField(null=True, blank=True)
 
     mensalidade_calc = models.FloatField(null=True, blank=True)
     mensalidade_retific = models.IntegerField(null=True, blank=True)
     mensalidade_paga = models.FloatField(null=True, blank=True)
 
-    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
 
@@ -320,7 +320,7 @@ class MensalidadeAluno(models.Model):
     escalao = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.aluno_id} {self.ano} {self.mes}, Ma Id: {self.ma_id}"
+        return f"{self.aluno_id} {self.data_inicio}, Ma Id: {self.ma_id}"
 
 
 
@@ -347,12 +347,8 @@ class ComparticaoMensalSS(models.Model):
     aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', related_name="comparticao", unique=True)
     ano_letivo = models.DateField(null=True, blank=True)
 
-    periodo_inicio_ano = models.IntegerField(null=True, blank=True)
-    periodo_inicio_mes = models.IntegerField(null=True, blank=True)
-    periodo_fim_ano = models.IntegerField(null=True, blank=True)
-    periodo_fim_mes = models.IntegerField(null=True, blank=True)
-
-
+    data_inicio = models.DateTimeField(default=timezone.now)
+    data_fim = models.DateTimeField(null=True, blank=True)
     mensalidade_valor = models.FloatField(null=True, blank=True)
     mensalidade_paga = models.FloatField(null=True, blank=True)
 

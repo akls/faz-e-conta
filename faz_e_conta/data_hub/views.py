@@ -330,19 +330,15 @@ def show_financas(request):
 
 
             # Vereficar se exista ja o registo
-            if MensalidadeAluno.objects.filter(Q(ano=now.year) & Q(mes=now.month) & Q(aluno_id=financa.aluno_id)).exists():
-                mensalidade = MensalidadeAluno.objects.get(Q(ano=now.year) & Q(mes=now.month) & Q(aluno_id=financa.aluno_id))
+            if MensalidadeAluno.objects.filter(Q(data_inicio__year=now.year) & Q(data_inicio__month=now.month) & Q(aluno_id=financa.aluno_id)).exists():
+                mensalidade = MensalidadeAluno.objects.get(Q(data_inicio__year=now.year) & Q(data_inicio__month=now.month) & Q(aluno_id=financa.aluno_id))
                 mensalidade.aluno_id = financa.aluno_id
-                mensalidade.mes = now.month
-                mensalidade.ano = now.year
                 mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
                 mensalidade.escalao = escalaoDoAluno
                 mensalidade.save()
             else:
                 mensalidade = MensalidadeAluno()
                 mensalidade.aluno_id = financa.aluno_id
-                mensalidade.mes = now.month
-                mensalidade.ano = now.year
                 mensalidade.mensalidade_calc = Decimal(f"{valorFinal:.2f}")
                 mensalidade.mensalidade_paga = 0
                 mensalidade.escalao = escalaoDoAluno
@@ -361,8 +357,6 @@ def show_financas(request):
             if ComparticaoMensalSS.objects.filter(aluno_mensalidade_id=mensalidade.ma_id).exists():
                 comparticao = ComparticaoMensalSS.objects.get(aluno_mensalidade_id=mensalidade.ma_id)
                 comparticao.ano_letivo = now.date()
-                comparticao.periodo_inicio_mes = mensalidade.mes
-                comparticao.periodo_inicio_ano = mensalidade.ano
                 comparticao.aluno_id = mensalidade.aluno_id
 
                 if(comparticao.aluno_id.comparticao_ss_custom is None):
@@ -376,8 +370,6 @@ def show_financas(request):
             else:
                 comparticao = ComparticaoMensalSS()
                 comparticao.ano_letivo = now.date()
-                comparticao.periodo_inicio_mes = mensalidade.mes
-                comparticao.periodo_inicio_ano = mensalidade.ano
                 comparticao.aluno_id = mensalidade.aluno_id
 
                 if(comparticao.aluno_id.comparticao_ss_custom is None):
@@ -403,7 +395,7 @@ def show_financas(request):
 
     # Vai buscar dados
     financas = AlunoFinancas.objects.all()
-    mensalidades = MensalidadeAluno.objects.select_related("comparticao").order_by('-ano','mes')
+    mensalidades = MensalidadeAluno.objects.all()
     comparticoesSS = ComparticaoMensalSS.objects.all()
 
 
@@ -419,12 +411,12 @@ def show_financas(request):
         comparticoesSS = comparticoesSS.filter(aluno_id__sala_id__sala_nome__icontains=filtros["sala"])
 
     if filtros["mes"]:
-        mensalidades = mensalidades.filter(mes=filtros["mes"])
-        comparticoesSS = comparticoesSS.filter(periodo_inicio_mes=filtros["mes"])
+        mensalidades = mensalidades.filter(data_inicio__month=filtros["mes"])
+        comparticoesSS = comparticoesSS.filter(data_inicio__month=filtros["mes"])
 
     if filtros["ano"]:
-        mensalidades = mensalidades.filter(ano=filtros["ano"])
-        comparticoesSS = comparticoesSS.filter(periodo_inicio_ano=filtros["ano"])
+        mensalidades = mensalidades.filter(data_inicio__year=filtros["ano"])
+        comparticoesSS = comparticoesSS.filter(data_inicio__year=filtros["ano"])
 
 
 
@@ -570,7 +562,7 @@ def show_saude_fianceira(request):
 
 
         # Calcular o total custo das mensalidades
-        mensalidades = MensalidadeAluno.objects.filter(ano = ano, mes = mes)
+        mensalidades = MensalidadeAluno.objects.filter(data_inicio__year = int(ano), data_inicio__month = int(mes), data_inicio__day__lte = int(dia))
         valor_total_mensalidades_pagas = 0
         valor_total_mensalidades_nao_pagas = 0
         valor_total_mensalidades = 0
@@ -583,7 +575,7 @@ def show_saude_fianceira(request):
 
 
         # Calcular o total custo das comparticoes
-        comparticoes = ComparticaoMensalSS.objects.filter(periodo_inicio_ano=ano, periodo_inicio_mes=mes)
+        comparticoes = ComparticaoMensalSS.objects.filter(data_inicio__year = int(ano), data_inicio__month = int(mes), data_inicio__day__lte = int(dia))
         valor_total_comparticoes_pagas = 0
         valor_total_comparticoes_nao_pagas = 0
         valor_total_comparticoes = 0
