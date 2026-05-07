@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 import django.utils as du
+from django.contrib.auth.models import User
 from django.db.models.fields import AutoField
 
 
@@ -396,3 +397,31 @@ class SaudeFinanceira(models.Model):
     comparticoes_pagas_total = models.IntegerField(default=0)
     comparticoes_nao_pagas_total = models.IntegerField(default=0)
     data = models.DateField(default=date.today)
+
+
+
+
+class PedidoDeMudanca(models.Model):
+    class Meta:
+        db_table = "Pedido_de_mudanca"
+
+    Modelos = [
+        ("Aluno", "Aluno"),
+        ("Despesa", "Despesa"),
+        ("Sala", "Sala"),
+    ]
+    Acoes = [
+        ("Criar", "Criar"),
+        ("Editar", "Editar"),
+    ]
+
+    mu_id = models.AutoField(primary_key=True)
+
+    Nome_modelo = models.CharField(max_length=50, choices=Modelos)
+    acao = models.CharField(max_length=20, choices=Acoes)
+    id_modelo = models.IntegerField(null=True, blank=True)
+    data = models.JSONField()
+
+    criado_por = models.ForeignKey(User, on_delete=models.CASCADE)
+    aprovado_por = models.BooleanField(default=False)
+    criado_em = models.DateTimeField(auto_now_add=True)

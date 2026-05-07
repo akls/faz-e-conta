@@ -1,6 +1,7 @@
 from _datetime import datetime as dt, timezone
 from decimal import Decimal
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from .auto_gen_id_views import *
 from django.db.models import Q, Sum
@@ -9,7 +10,7 @@ from datetime import date
 
 
 
-#Starter Page
+#Pagina inicial
 def starter_page(request):
 
     nome_do_utilizador = ""
@@ -24,7 +25,13 @@ def starter_page(request):
 
 
 
-#Starter Page
+
+
+
+
+
+# Estudantes
+@login_required
 def show_students(request):
     # URL query parameters
     query = request.GET.get("q", "")
@@ -48,17 +55,23 @@ def show_students(request):
     context = {"alunos": alunos.values(*alunoFields), "salas": Sala.objects.all(), "alunoCount": alunos.count(), "filtersValue": {"sala": sala_filter, "name": query}}
     return render(request, "show_students.html", context)
 
-
-
-
 def show_student_details(request, aluno_id):
     aluno = Aluno.objects.select_related("sala_id").prefetch_related("responsaveis_educativos_ids").get(aluno_id=aluno_id)
 
     context = {"aluno": aluno}
     return render(request, "show_student_details.html", context)
 
-
-
+def insert_aluno_view(request):
+    if request.method == "POST":
+        form = AlunoForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the form data to the database
+            return redirect('show_students')  # Redirect to the students list page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = AlunoForm()
+    return render(request, 'insert_aluno.html', {'form': form})
 
 def edit_student(request, aluno_id):
     aluno = get_object_or_404(Aluno, pk=aluno_id)
@@ -74,52 +87,12 @@ def edit_student(request, aluno_id):
 
 
 
-def insert_aluno_view(request):
-    if request.method == "POST":
-        form = AlunoForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the form data to the database
-            return redirect('show_students')  # Redirect to the students list page
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = AlunoForm()
-    return render(request, 'insert_aluno.html', {'form': form})
 
 
 
 
-def edit_responsavel_educativo(request, responsavel_id):
-    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
-    if request.method == "POST":
-        form = Responsavel_educativoForm(request.POST, instance=responsavel)  # Use the correct form name
-        if form.is_valid():
-            form.save()
-            return redirect('show_contactos')
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = Responsavel_educativoForm(instance=responsavel)  # Use the correct form name
-    return render(request, 'edit_responsavel_educativo.html', {'form': form})
-
-
-
-
-def insert_responsavel_educativo_view(request):
-    if request.method == "POST":
-        form = Responsavel_educativoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('show_contactos')  # Redirect to the contactos list page
-        else:
-            print(form.errors)  # Debugging: Print form errors
-    else:
-        form = Responsavel_educativoForm()
-    return render(request, 'insert_responsavel_educativo.html', {'form': form})
-
-
-
-
+# Resposaveis educativos
+@login_required
 def show_contactos(request):
     # URL query parameters
     query = request.GET.get("q", "")
@@ -140,18 +113,46 @@ def show_contactos(request):
     context = {"guardians": encarregadosEducacao, "salas": Sala.objects.all(), "guardiansCount": encarregadosEducacao.count(), "filtersValue": {"name": query}}
     return render(request, "show_contactos.html", context)
 
-
-
-
 def show_contactos_details(request, responsavel_id):
     guardian = ResponsavelEducativo.objects.prefetch_related("alunos").get(responsavel_educativo_id=responsavel_id)
 
     context = {"guardian": guardian}
     return render(request, "show_contactos_details.html", context)
 
+def insert_responsavel_educativo_view(request):
+    if request.method == "POST":
+        form = Responsavel_educativoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_contactos')  # Redirect to the contactos list page
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = Responsavel_educativoForm()
+    return render(request, 'insert_responsavel_educativo.html', {'form': form})
+
+def edit_responsavel_educativo(request, responsavel_id):
+    responsavel = get_object_or_404(ResponsavelEducativo, pk=responsavel_id)
+    if request.method == "POST":
+        form = Responsavel_educativoForm(request.POST, instance=responsavel)  # Use the correct form name
+        if form.is_valid():
+            form.save()
+            return redirect('show_contactos')
+        else:
+            print(form.errors)  # Debugging: Print form errors
+    else:
+        form = Responsavel_educativoForm(instance=responsavel)  # Use the correct form name
+    return render(request, 'edit_responsavel_educativo.html', {'form': form})
 
 
 
+
+
+
+
+
+# Salas
+@login_required
 def show_salas(request):
     query_valencia = request.GET.get("valencia", "")
     query_room = request.GET.get("room", "")
@@ -174,9 +175,6 @@ def show_salas(request):
     }
     return render(request, "show_sala.html", context)
 
-
-
-
 def insert_sala_view(request):
     if request.method == "POST":
         form = SalaForm(request.POST)
@@ -188,9 +186,6 @@ def insert_sala_view(request):
     else:
         form = SalaForm()
         return render(request, 'insert_sala.html', {'form': form})
-
-
-
 
 def edit_sala(request, sala_id):
     sala = get_object_or_404(Sala, pk=sala_id)
@@ -206,6 +201,12 @@ def edit_sala(request, sala_id):
 
 
 
+
+
+
+
+# Despesas
+@login_required
 def show_despesas(request):
     start_date = request.GET.get("start_date", "")
     end_date = request.GET.get("end_date", "")
@@ -245,41 +246,6 @@ def show_despesas(request):
     }
     return render(request, "show_despesa.html", context)
 
-
-
-
-def edit_despesasFixas(request, despesaFixa_id):
-    despesaFixa = get_object_or_404(DespesaFixa, pk=despesaFixa_id)
-    if request.method == "POST":
-        form = DespesaFixaForm(request.POST, instance=despesaFixa)
-        if form.is_valid():
-            form.save()
-            return redirect('show_despesas')
-        else:
-            print(form.errors)
-    else:
-        form = DespesaFixaForm(instance=despesaFixa)
-        return render(request, 'insert_despesa.html', {'form': form})
-
-
-
-
-def edit_despesasVariaveis(request, despesaVariavel_id):
-    despesaVariavel = get_object_or_404(DespesasVariavel, pk=despesaVariavel_id)
-    if request.method == "POST":
-        form = DespesasVariavelForm(request.POST, instance=despesaVariavel)
-        if form.is_valid():
-            form.save()
-            return redirect('show_despesas')
-        else:
-            print(form.errors)
-    else:
-        form = DespesasVariavelForm(instance=despesaVariavel)
-        return render(request, 'insert_despesa.html', {'form': form})
-
-
-
-
 def insert_despesa_view(request, tipo_despesa):
     if tipo_despesa == 'fixa':
         form_class = DespesaFixaForm
@@ -298,9 +264,41 @@ def insert_despesa_view(request, tipo_despesa):
 
     return render(request, 'insert_despesa.html', {'form': form, 'titulo': titulo})
 
+def edit_despesasFixas(request, despesaFixa_id):
+    despesaFixa = get_object_or_404(DespesaFixa, pk=despesaFixa_id)
+    if request.method == "POST":
+        form = DespesaFixaForm(request.POST, instance=despesaFixa)
+        if form.is_valid():
+            form.save()
+            return redirect('show_despesas')
+        else:
+            print(form.errors)
+    else:
+        form = DespesaFixaForm(instance=despesaFixa)
+        return render(request, 'insert_despesa.html', {'form': form})
+
+def edit_despesasVariaveis(request, despesaVariavel_id):
+    despesaVariavel = get_object_or_404(DespesasVariavel, pk=despesaVariavel_id)
+    if request.method == "POST":
+        form = DespesasVariavelForm(request.POST, instance=despesaVariavel)
+        if form.is_valid():
+            form.save()
+            return redirect('show_despesas')
+        else:
+            print(form.errors)
+    else:
+        form = DespesasVariavelForm(instance=despesaVariavel)
+        return render(request, 'insert_despesa.html', {'form': form})
 
 
 
+
+
+
+
+
+# Financas
+@login_required
 def show_financas(request):
 
     # Verefica se o request é um post
@@ -455,9 +453,6 @@ def show_financas(request):
 
     return render(request, "show_aluno_financas.html", context)
 
-
-
-
 def insert_financas(request):
     if request.method == "POST":
         form = FinancasForm(request.POST)
@@ -469,9 +464,6 @@ def insert_financas(request):
     else:
         form = FinancasForm()
         return render(request, 'insert_financas.html', {'form': form})
-
-
-
 
 def edit_financas(request, financa_id):
     alunoFinanca = get_object_or_404(AlunoFinancas, pk=financa_id)
@@ -489,6 +481,12 @@ def edit_financas(request, financa_id):
 
 
 
+
+
+
+
+# Saude financeira
+@login_required
 def show_saude_fianceira(request):
     # Valores para os filtros na pagina
     anos = range(2000, timezone.now().year+1)
@@ -550,9 +548,9 @@ def show_saude_fianceira(request):
         # Calcular o total custo das despesas
         despesas_fixas = DespesaFixa.objects.all()
         despesas_variaveis = DespesasVariavel.objects.filter(
-            data__year=ano,
-            data__month=mes,
-            data__day__lte=dia
+            data__year=int(ano),
+            data__month=int(mes),
+            data__day__lte=int(dia)
         )
 
         custo_total_despesas_fixas = 0
@@ -563,6 +561,10 @@ def show_saude_fianceira(request):
         for d in despesas_variaveis:
             custo_total_despesas_variaveis += d.valor
         custo_total_despesas = custo_total_despesas_fixas + custo_total_despesas_variaveis
+
+        print(f"Custo das variaveis: {custo_total_despesas_variaveis}")
+        print("Datas:")
+        print(DespesasVariavel.objects.all().values('data')[:5])
 
 
 
@@ -581,7 +583,7 @@ def show_saude_fianceira(request):
 
 
         # Calcular o total custo das comparticoes
-        comparticoes = ComparticaoMensalSS.objects.all()
+        comparticoes = ComparticaoMensalSS.objects.filter(periodo_inicio_ano=ano, periodo_inicio_mes=mes)
         valor_total_comparticoes_pagas = 0
         valor_total_comparticoes_nao_pagas = 0
         valor_total_comparticoes = 0
@@ -647,11 +649,18 @@ def show_saude_fianceira(request):
 
 
 
+
+
+
+
+
+# Autentificacao
 def insert_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password"])
             user.is_active = False
             user.save()
 
