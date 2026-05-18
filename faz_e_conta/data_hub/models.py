@@ -379,7 +379,7 @@ class ConfigIpss(models.Model):
 
 
 
-class SaudeFinanceira(models.Model):
+class SaudeFinanceiraBalancoGlobal(models.Model):
     class Meta:
         db_table = "saude_financeira"
 
@@ -392,7 +392,8 @@ class SaudeFinanceira(models.Model):
 
     comparticoes_pagas_total = models.IntegerField(default=0)
     comparticoes_nao_pagas_total = models.IntegerField(default=0)
-    data = models.DateField(default=date.today)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
 
 
 
