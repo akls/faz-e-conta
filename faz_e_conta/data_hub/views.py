@@ -478,7 +478,6 @@ def edit_financas(request, financa_id):
 
 # Funçoes dos calculos da saude financeira
 def balancoGlobal(request, valoresSelecionadosPostFiltros):
-    form_type = request.POST.get("form_type")
     data_inicio = request.POST.get("data_inicio")
     data_fim = request.POST.get("data_fim")
 
@@ -496,44 +495,109 @@ def balancoGlobal(request, valoresSelecionadosPostFiltros):
     valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
     valoresSelecionadosPostFiltros["data_fim"] = data_fim
 
+    # Calcular despesas
+    despesas_fixas = DespesaFixa.objects.all()
+    despesas_variaveis = DespesasVariavel.objects.filter(
+        data__range=(data_inicio, data_fim)
+    )
 
-    if form_type == "balanco_global":
-        # Calcular despesas
-        despesas_fixas = DespesaFixa.objects.all()
-        despesas_variaveis = DespesasVariavel.objects.filter(
-            data__range=(data_inicio, data_fim)
-        )
+    custo_total_despesas = sum(d.valor for d in despesas_fixas) + sum(d.valor for d in despesas_variaveis)
 
-        custo_total_despesas = sum(d.valor for d in despesas_fixas) + sum(d.valor for d in despesas_variaveis)
+    # Calcular mensalidades
+    mensalidades = MensalidadeAluno.objects.filter(
+        data_inicio__range=(data_inicio, data_fim)
+    )
+    valor_total_mensalidades_pagas = sum(m.mensalidade_paga for m in mensalidades)
+    valor_total_mensalidades = sum(m.mensalidade_calc for m in mensalidades)
+    valor_total_mensalidades_nao_pagas = valor_total_mensalidades - valor_total_mensalidades_pagas
 
-        # Calcular mensalidades
-        mensalidades = MensalidadeAluno.objects.filter(
-            data_inicio__range=(data_inicio, data_fim)
-        )
-        valor_total_mensalidades_pagas = sum(m.mensalidade_paga for m in mensalidades)
-        valor_total_mensalidades = sum(m.mensalidade_calc for m in mensalidades)
-        valor_total_mensalidades_nao_pagas = valor_total_mensalidades - valor_total_mensalidades_pagas
+    # Calcular comparticipações
+    comparticoes = ComparticaoMensalSS.objects.filter(
+        data_inicio__range=(data_inicio, data_fim)
+    )
+    valor_total_comparticoes_pagas = sum(c.mensalidade_paga for c in comparticoes)
+    valor_total_comparticoes = sum(c.mensalidade_valor for c in comparticoes)
+    valor_total_comparticoes_nao_pagas = valor_total_comparticoes - valor_total_comparticoes_pagas
 
-        # Calcular comparticipações
-        comparticoes = ComparticaoMensalSS.objects.filter(
-            data_inicio__range=(data_inicio, data_fim)
-        )
-        valor_total_comparticoes_pagas = sum(c.mensalidade_paga for c in comparticoes)
-        valor_total_comparticoes = sum(c.mensalidade_valor for c in comparticoes)
-        valor_total_comparticoes_nao_pagas = valor_total_comparticoes - valor_total_comparticoes_pagas
+    # Gravar
+    SaudeFinanceiraBalancoGlobal.objects.create(
+        custo_despesas_totais=custo_total_despesas,
+        mensalidades_pagas_total=valor_total_mensalidades_pagas,
+        mensalidades_nao_pagas_total=valor_total_mensalidades_nao_pagas,
+        comparticoes_pagas_total=valor_total_comparticoes_pagas,
+        comparticoes_nao_pagas_total=valor_total_comparticoes_nao_pagas,
+        data_inicio = data_inicio,
+        data_fim = data_fim,
+        receita=(valor_total_mensalidades_pagas + valor_total_comparticoes_pagas) - custo_total_despesas
+    )
 
-        # Gravar
-        SaudeFinanceiraBalancoGlobal.objects.create(
-            custo_despesas_totais=custo_total_despesas,
-            mensalidades_pagas_total=valor_total_mensalidades_pagas,
-            mensalidades_nao_pagas_total=valor_total_mensalidades_nao_pagas,
-            comparticoes_pagas_total=valor_total_comparticoes_pagas,
-            comparticoes_nao_pagas_total=valor_total_comparticoes_nao_pagas,
-            data_inicio = data_inicio,
-            data_fim = data_fim,
-            receita=(valor_total_mensalidades_pagas + valor_total_comparticoes_pagas) - custo_total_despesas
-        )
+def calcularCustoPorCrianca(data_inicio, data_fim):
+    despesas_fixas = DespesaFixa.objects.all()
+    despesas_variaveis = DespesasVariavel.objects.filter(data__range=(data_inicio, data_fim))
+    custo_total_despesas = sum(d.valor for d in despesas_fixas) + sum(d.valor for d in despesas_variaveis)
 
+    num_criancas = Aluno.objects.filter(archive_flag=False).count()
+
+    if num_criancas == 0:
+        return 0
+
+    return custo_total_despesas / num_criancas
+
+def balancoValencia(request, valoresSelecionadosPostFiltros):
+    data_inicio = request.POST.get("data_inicio")
+    data_fim = request.POST.get("data_fim")
+    valencia = request.POST.get("valencia")
+
+    if not data_inicio:
+        data_inicio = date(timezone.now().year, timezone.now().month, 1)
+    else:
+        data_inicio = date.fromisoformat(data_inicio)
+
+    if not data_fim:
+        data_fim = timezone.now().date()
+    else:
+        data_fim = date.fromisoformat(data_fim)
+
+    valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
+    valoresSelecionadosPostFiltros["data_fim"] = data_fim
+    valoresSelecionadosPostFiltros["valencia"] = valencia
+
+    custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
+
+    # Alunos nesta valência
+    alunos = Aluno.objects.filter(sala_id__sala_valencia=valencia, archive_flag=False)
+    num_alunos = alunos.count()
+
+    if num_alunos == 0:
+        return
+
+    # Mensalidades dos alunos desta valência no período
+    mensalidades = MensalidadeAluno.objects.filter(
+        aluno_id__in=alunos,
+        data_inicio__range=(data_inicio, data_fim)
+    )
+    mensalidades_pagas = sum(m.mensalidade_paga for m in mensalidades)
+
+    # Comparticipações dos alunos desta valência no período
+    comparticoes = ComparticaoMensalSS.objects.filter(
+        aluno_id__in=alunos,
+        data_inicio__range=(data_inicio, data_fim)
+    )
+    comparticoes_pagas = sum(c.mensalidade_paga for c in comparticoes)
+
+    # Balanço por valência
+    balanco = (mensalidades_pagas + comparticoes_pagas) / num_alunos - custo_por_crianca
+
+    SaudeFinanceiraBalancoValencia.objects.create(
+        valencia=valencia,
+        mensalidades_pagas_total=mensalidades_pagas,
+        comparticoes_pagas_total=comparticoes_pagas,
+        num_alunos=num_alunos,
+        custo_por_crianca=custo_por_crianca,
+        balanco=balanco,
+        data_inicio=data_inicio,
+        data_fim=data_fim
+    )
 
 # Saude financeira
 @login_required
@@ -545,17 +609,23 @@ def show_saude_fianceira(request):
         "data_fim": None
     }
 
+    form_type = request.POST.get("form_type")
+
     if request.method == "POST":
-        balancoGlobal(request, valoresSelecionadosPostFiltros)
+        if form_type == "balanco_global":
+            balancoGlobal(request, valoresSelecionadosPostFiltros)
+        elif form_type == "balanco_valencia":
+            balancoValencia(request, valoresSelecionadosPostFiltros)
+        # elif form_type == "balanco_escalao":
+        #     pass
+        # elif form_type == "balanco_aluno":
+        #     pass
 
 
-    # elif form_type == "balanco_valencia":
-    #     pass
-    # elif form_type == "balanco_escalao":
-    #     pass
-    # elif form_type == "balanco_aluno":
-    #     pass
-
+    # Valores para aparecer na seleçao dos filtros
+    valoresSelecaoFiltros = {
+        "valencias": Sala.objects.values_list('sala_valencia', flat=True).distinct()
+    }
 
     # Get
     valoresSelecionadosGetFiltros = {
@@ -567,6 +637,7 @@ def show_saude_fianceira(request):
     data_fim_get = request.GET.get("data_fim")
 
     saudes_financeiras_balanco_global = SaudeFinanceiraBalancoGlobal.objects.all()
+    saudes_financeiras_balanco_valencia = SaudeFinanceiraBalancoValencia.objects.all()
 
     if data_inicio_get:
         saudes_financeiras_balanco_global = saudes_financeiras_balanco_global.filter(data_inicio__gte=data_inicio_get)
@@ -579,8 +650,10 @@ def show_saude_fianceira(request):
 
     contexto = {
         "saudesFinanceirasBalancoGlobal": saudes_financeiras_balanco_global,
+        "saudes_financeiras_balanco_valencia": saudes_financeiras_balanco_valencia,
         "valoresSelecionadosGetFiltros": valoresSelecionadosGetFiltros,
-        "valoresSelecionadosPostFiltros": valoresSelecionadosPostFiltros
+        "valoresSelecionadosPostFiltros": valoresSelecionadosPostFiltros,
+        "valoresSelecaoFiltros": valoresSelecaoFiltros
     }
 
     return render(request, 'show_saude_financeira.html', contexto)
