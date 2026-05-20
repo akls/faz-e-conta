@@ -415,6 +415,23 @@ class SaudeFinanceiraBalancoValencia(models.Model):
 
 
 
+class SaudeFinanceiraBalancoEscalao(models.Model):
+    class Meta:
+        db_table = "saude_financeira_balanco_escalao"
+
+    sfe_id = models.AutoField(primary_key=True)
+    escalao = models.CharField(max_length=255)
+    mensalidades_pagas_total = models.FloatField(default=0)
+    comparticoes_pagas_total = models.FloatField(default=0)
+    num_alunos = models.IntegerField(default=0)
+    custo_por_crianca = models.FloatField(default=0)
+    balanco = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
 class PedidoDeMudanca(models.Model):
     class Meta:
         db_table = "Pedido_de_mudanca"

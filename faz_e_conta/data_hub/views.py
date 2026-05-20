@@ -599,6 +599,59 @@ def balancoValencia(request, valoresSelecionadosPostFiltros):
         data_fim=data_fim
     )
 
+def balancoEscalao(request, valoresSelecionadosPostFiltros):
+    data_inicio = request.POST.get("data_inicio")
+    data_fim = request.POST.get("data_fim")
+    escalao = request.POST.get("escalao")
+
+    if not data_inicio:
+        data_inicio = date(timezone.now().year, timezone.now().month, 1)
+    else:
+        data_inicio = date.fromisoformat(data_inicio)
+
+    if not data_fim:
+        data_fim = timezone.now().date()
+    else:
+        data_fim = date.fromisoformat(data_fim)
+
+    valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
+    valoresSelecionadosPostFiltros["data_fim"] = data_fim
+    valoresSelecionadosPostFiltros["escalao"] = escalao
+
+    custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
+
+    # Mensalidades com este escalão no período
+    mensalidades = MensalidadeAluno.objects.filter(
+        escalao=escalao,
+        data_inicio__date__range=(data_inicio, data_fim)
+    )
+    mensalidades_pagas = sum(m.mensalidade_paga for m in mensalidades)
+
+
+    num_alunos = mensalidades.values('aluno_id').distinct().count()
+    if num_alunos == 0:
+        return
+
+
+    # Comparticipações dos alunos neste escalão no período
+    comparticoes = ComparticaoMensalSS.objects.filter(
+        aluno_id__in=mensalidades.values('aluno_id'),
+        data_inicio__date__range=(data_inicio, data_fim)
+    )
+    comparticoes_pagas = sum(c.mensalidade_paga for c in comparticoes)
+    balanco = (mensalidades_pagas + comparticoes_pagas) / num_alunos - custo_por_crianca
+
+    SaudeFinanceiraBalancoEscalao.objects.create(
+        escalao=escalao,
+        mensalidades_pagas_total=mensalidades_pagas,
+        comparticoes_pagas_total=comparticoes_pagas,
+        num_alunos=num_alunos,
+        custo_por_crianca=custo_por_crianca,
+        balanco=balanco,
+        data_inicio=data_inicio,
+        data_fim=data_fim
+    )
+
 # Saude financeira
 @login_required
 def show_saude_fianceira(request):
@@ -610,21 +663,23 @@ def show_saude_fianceira(request):
     }
 
     form_type = request.POST.get("form_type")
-
     if request.method == "POST":
         if form_type == "balanco_global":
             balancoGlobal(request, valoresSelecionadosPostFiltros)
         elif form_type == "balanco_valencia":
             balancoValencia(request, valoresSelecionadosPostFiltros)
-        # elif form_type == "balanco_escalao":
-        #     pass
-        # elif form_type == "balanco_aluno":
-        #     pass
+        elif form_type == "balanco_escalao":
+            balancoEscalao(request, valoresSelecionadosPostFiltros)
+        elif form_type == "balanco_aluno":
+            pass
+        else:
+            print("Post incompativel")
 
 
     # Valores para aparecer na seleçao dos filtros
     valoresSelecaoFiltros = {
-        "valencias": Sala.objects.values_list('sala_valencia', flat=True).distinct()
+        "valencias": Sala.objects.values_list('sala_valencia', flat=True).distinct(),
+        "escaloes": EscaloesRendimento.objects.values_list("escalao", flat = True).distinct()
     }
 
     # Get
@@ -638,6 +693,7 @@ def show_saude_fianceira(request):
 
     saudes_financeiras_balanco_global = SaudeFinanceiraBalancoGlobal.objects.all()
     saudes_financeiras_balanco_valencia = SaudeFinanceiraBalancoValencia.objects.all()
+    saudes_financeiras_balanco_escalao = SaudeFinanceiraBalancoEscalao.objects.all()
 
     if data_inicio_get:
         saudes_financeiras_balanco_global = saudes_financeiras_balanco_global.filter(data_inicio__gte=data_inicio_get)
@@ -651,6 +707,7 @@ def show_saude_fianceira(request):
     contexto = {
         "saudesFinanceirasBalancoGlobal": saudes_financeiras_balanco_global,
         "saudes_financeiras_balanco_valencia": saudes_financeiras_balanco_valencia,
+        "saudes_financeiras_balanco_escalao": saudes_financeiras_balanco_escalao,
         "valoresSelecionadosGetFiltros": valoresSelecionadosGetFiltros,
         "valoresSelecionadosPostFiltros": valoresSelecionadosPostFiltros,
         "valoresSelecaoFiltros": valoresSelecaoFiltros
