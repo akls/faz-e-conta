@@ -1,0 +1,533 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- Balanço Global -->
+<h1> Balanço Global </h1>
+<!-- Post -->
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="balanco_global">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim">
+
+    <button type="submit">Calcular Balanço Global</button>
+</form>
+
+<!-- Pesquisa -->
+<form method="get">
+
+    <input type="hidden" name="form_type" value="balanco_global">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio" value="{{ valoresSelecionadosGetFiltros.balanco_global.data_inicio }}">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim" value="{{ valoresSelecionadosGetFiltros.balanco_global.data_fim }}">
+
+    <button type="submit">Pesquisar</button>
+</form>
+
+
+
+
+<!-- Saude Financeira -->
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>
+                ID
+            </th>
+            <th>
+                Data
+            </th>
+            <th>
+                Custo despesas totais
+            </th>
+            <th>
+                Valor total das mensalidades pagas
+            </th>
+            <th>
+                Valor total das mensalidades não pagas
+            </th>
+            <th>
+                Valor total das comparticoes pagas
+            </th>
+            <th>
+                Valor total das comparticoes não pagas
+            </th>
+            <th>
+                Receita
+            </th>
+
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+    {% for saudeFinanceiraBalancoGlobal in saudesFinanceirasBalancoGlobal %}
+    <tr>
+
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.sf_id }}
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.data_inicio }} - {{ saudeFinanceiraBalancoGlobal.data_fim }}
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.custo_despesas_totais }}€
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.mensalidades_pagas_total }}€
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.mensalidades_nao_pagas_total }}€
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.comparticoes_pagas_total }}€
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.comparticoes_nao_pagas_total }}€
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.receita }}€
+        </td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Balanco valencia -->
+<h1> Balanço Valencia </h1>
+<!-- Post -->
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="balanco_valencia">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim">
+
+    <label>Valência</label>
+    <select name="valencia">
+        {% for valencia in valoresSelecaoFiltros.valencias %}
+        <option value="{{ valencia }}">{{ valencia }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Calcular Balanço Valencia</button>
+</form>
+
+<!-- Pesquisa -->
+<form method="get">
+
+    <input type="hidden" name="form_type" value="balanco_valencia">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio" value="{{ valoresSelecionadosGetFiltros.balanco_valencia.data_inicio }}">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim" value="{{ valoresSelecionadosGetFiltros.balanco_valencia.data_fim }}">
+
+    <label>Valência</label>
+    <select name="valencia">
+        {% for valencia in valoresSelecaoFiltros.valencias %}
+        <option value="{{ valencia }}" {% if valencia == valoresSelecionadosGetFiltros.balanco_valencia.valencia %}selected{% endif %}>
+            {{ valencia }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Pesquisar</button>
+</form>
+
+<!-- Tabela Balanço por Valência -->
+<table>
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+
+        <th>
+            Valência
+        </th>
+
+        <th>
+            Data Início
+        </th>
+
+        <th>
+            Data Fim
+        </th>
+
+        <th>
+            Nº Alunos
+        </th>
+
+        <th>
+            Mensalidades Pagas
+        </th>
+
+        <th>
+            Comparticipações Pagas
+        </th>
+
+        <th>
+            Custo por Criança
+        </th>
+
+        <th>
+            Balanço
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for sfv in saudes_financeiras_balanco_valencia %}
+    <tr>
+        <td>
+            {{ sfv.sfv_id }}
+        </td>
+
+        <td>
+            {{ sfv.valencia }}
+        </td>
+
+        <td>
+            {{ sfv.data_inicio }}
+        </td>
+
+        <td>
+            {{ sfv.data_fim }}
+        </td>
+
+        <td>
+            {{ sfv.num_alunos }}
+        </td>
+
+        <td>
+            {{ sfv.mensalidades_pagas_total }}€
+        </td>
+
+        <td>
+            {{ sfv.comparticoes_pagas_total }}€
+        </td>
+
+        <td>
+            {{ sfv.custo_por_crianca }}€
+        </td>
+
+        <td>
+            {{ sfv.balanco }}€
+        </td>
+
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="9">Sem registos</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Balanco escalao -->
+<h1> Balanço Escalões </h1>
+<!-- Post -->
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="balanco_escalao">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim">
+
+    <label>Escalão</label>
+    <select name="escalao">
+        {% for escalao in valoresSelecaoFiltros.escaloes %}
+        <option value="{{ escalao }}">{{ escalao }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Calcular Balanço Valencia</button>
+</form>
+
+<!-- Pesquisa -->
+<form method="get">
+
+    <input type="hidden" name="form_type" value="balanco_escalao">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio" value="{{ valoresSelecionadosGetFiltros.balanco_escalao.data_inicio }}">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim" value="{{ valoresSelecionadosGetFiltros.balanco_escalao.data_fim }}">
+
+    <label>Escalão</label>
+    <select name="escalao">
+        {% for escalao in valoresSelecaoFiltros.escaloes %}
+        <option value="{{ escalao }}" {% if escalao == valoresSelecionadosGetFiltros.balanco_escalao.escalao %}selected{% endif %}>
+            {{ escalao }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Pesquisar</button>
+</form>
+
+<!-- Tabela Balanço por Escalão -->
+<table>
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+
+        <th>
+            Escalão
+        </th>
+
+        <th>
+            Data Início
+        </th>
+
+        <th>
+            Data Fim
+        </th>
+
+        <th>
+            Nº Alunos
+        </th>
+
+        <th>
+            Mensalidades Pagas
+        </th>
+
+        <th>
+            Comparticipações Pagas
+        </th>
+
+        <th>
+            Custo por Criança
+        </th>
+
+        <th>
+            Balanço
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for sfe in saudes_financeiras_balanco_escalao %}
+    <tr>
+        <td>
+            {{ sfe.sfe_id }}
+        </td>
+
+        <td>
+            {{ sfe.escalao }}
+        </td>
+
+        <td>
+            {{ sfe.data_inicio }}
+        </td>
+
+        <td>
+            {{ sfe.data_fim }}
+        </td>
+
+        <td>
+            {{ sfe.num_alunos }}
+        </td>
+
+        <td>
+            {{ sfe.mensalidades_pagas_total }}€
+        </td>
+
+        <td>
+            {{ sfe.comparticoes_pagas_total }}€
+        </td>
+
+        <td>
+            {{ sfe.custo_por_crianca }}€
+        </td>
+
+        <td>
+            {{ sfe.balanco }}€
+        </td>
+
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="9">Sem registos</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Balanco aluno -->
+<h1> Balanço Aluno </h1>
+<!-- Post -->
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="balanco_aluno">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim">
+
+    <button type="submit">Calcular Balanço Valencia</button>
+</form>
+
+<!-- Pesquisa -->
+<form method="get">
+
+    <input type="hidden" name="form_type" value="balanco_aluno">
+
+    <label>Data de Início</label>
+    <input type="date" name="data_inicio" value="{{ valoresSelecionadosGetFiltros.balanco_aluno.data_inicio }}">
+
+    <label>Data de Fim</label>
+    <input type="date" name="data_fim" value="{{ valoresSelecionadosGetFiltros.balanco_aluno.data_fim }}">
+
+    <button type="submit">Pesquisar</button>
+</form>
+
+<!-- Tabela Balanço por Aluno -->
+<table>
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+
+        <th>
+            Data Início
+        </th>
+
+        <th>
+            Data Fim
+        </th>
+
+        <th>
+            Mensalidades Pagas
+        </th>
+
+        <th>
+            Comparticipações Pagas
+        </th>
+
+        <th>
+            Custo por Criança
+        </th>
+
+        <th>
+            Balanço
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for sfba in saudes_financeiras_balanco_aluno %}
+    <tr>
+
+        <td>
+            {{ sfba.sfba_id }}
+        </td>
+
+        <td>
+            {{ sfba.data_inicio }}
+        </td>
+
+        <td>
+            {{ sfba.data_fim }}
+        </td>
+
+        <td>
+            {{ sfba.mensalidades_pagas_total }}€
+        </td>
+
+        <td>
+            {{ sfba.comparticoes_pagas_total }}€
+        </td>
+
+        <td>
+            {{ sfba.custo_por_crianca }}€
+        </td>
+
+        <td>
+            {{ sfba.balanco }}€
+        </td>
+
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="7">
+            Sem registos
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

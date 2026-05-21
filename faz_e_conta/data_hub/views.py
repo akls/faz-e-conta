@@ -547,7 +547,7 @@ def balancoGlobal(request):
     )
     return valoresSelecionadosPostFiltros
 
-def balancoValencia(request, valoresSelecionadosPostFiltros):
+def balancoValencia(request):
     data_inicio = request.POST.get("data_inicio")
     data_fim = request.POST.get("data_fim")
     valencia = request.POST.get("valencia")
@@ -561,10 +561,6 @@ def balancoValencia(request, valoresSelecionadosPostFiltros):
         data_fim = timezone.now().date()
     else:
         data_fim = date.fromisoformat(data_fim)
-
-    valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
-    valoresSelecionadosPostFiltros["data_fim"] = data_fim
-    valoresSelecionadosPostFiltros["valencia"] = valencia
 
     custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
 
@@ -602,9 +598,8 @@ def balancoValencia(request, valoresSelecionadosPostFiltros):
         data_inicio=data_inicio,
         data_fim=data_fim
     )
-    return valoresSelecionadosPostFiltros
 
-def balancoEscalao(request, valoresSelecionadosPostFiltros):
+def balancoEscalao(request):
     data_inicio = request.POST.get("data_inicio")
     data_fim = request.POST.get("data_fim")
     escalao = request.POST.get("escalao")
@@ -618,10 +613,6 @@ def balancoEscalao(request, valoresSelecionadosPostFiltros):
         data_fim = timezone.now().date()
     else:
         data_fim = date.fromisoformat(data_fim)
-
-    valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
-    valoresSelecionadosPostFiltros["data_fim"] = data_fim
-    valoresSelecionadosPostFiltros["escalao"] = escalao
 
     custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
 
@@ -656,9 +647,8 @@ def balancoEscalao(request, valoresSelecionadosPostFiltros):
         data_inicio=data_inicio,
         data_fim=data_fim
     )
-    return valoresSelecionadosPostFiltros
 
-def balancoAluno(request, valoresSelecionadosPostFiltros):
+def balancoAluno(request):
     data_inicio = request.POST.get("data_inicio")
     data_fim = request.POST.get("data_fim")
 
@@ -672,8 +662,6 @@ def balancoAluno(request, valoresSelecionadosPostFiltros):
     else:
         data_fim = date.fromisoformat(data_fim)
 
-    valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
-    valoresSelecionadosPostFiltros["data_fim"] = data_fim
 
     custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
 
@@ -698,7 +686,6 @@ def balancoAluno(request, valoresSelecionadosPostFiltros):
         data_inicio=data_inicio,
         data_fim=data_fim
     )
-    return  valoresSelecionadosPostFiltros
 
 
 # Funçoes para os filtros da saude financeira
@@ -793,30 +780,17 @@ def filtrosBalancoAluno(request, saudes_financeiras_balanco_aluno):
 @login_required
 def show_saude_fianceira(request):
 
-    # Post
-    valoresSelecionadosPostFiltros = {
-        "balanco_global": {
-            "data_inicio": None,
-            "data_fim": None
-        },
-        "balanco_valencia": {
-            "data_inicio": None,
-            "data_fim": None,
-            "valencia": None
-        }
-    }
-
     form_type = request.POST.get("form_type")
     if request.method == "POST":
         match form_type:
             case "balanco_global":
-                valoresSelecionadosPostFiltros["balanco_global"] = balancoGlobal(request)
+                balancoGlobal(request)
             case "balanco_valencia":
-                valoresSelecionadosPostFiltros = balancoValencia(request, valoresSelecionadosPostFiltros)
+                balancoValencia(request)
             case "balanco_escalao":
-                valoresSelecionadosPostFiltros = balancoEscalao(request, valoresSelecionadosPostFiltros)
+                balancoEscalao(request)
             case "balanco_aluno":
-                valoresSelecionadosPostFiltros = balancoAluno(request, valoresSelecionadosPostFiltros)
+                balancoAluno(request)
             case _:
                 print("Post incompativel")
 
@@ -882,7 +856,6 @@ def show_saude_fianceira(request):
         "saudes_financeiras_balanco_escalao": saudes_financeiras_balanco_escalao,
         "saudes_financeiras_balanco_aluno": saudes_financeiras_balanco_aluno,
         "valoresSelecionadosGetFiltros": valoresSelecionadosGetFiltros,
-        "valoresSelecionadosPostFiltros": valoresSelecionadosPostFiltros,
         "valoresSelecaoFiltros": valoresSelecaoFiltros
     }
 
