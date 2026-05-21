@@ -432,6 +432,30 @@ class SaudeFinanceiraBalancoEscalao(models.Model):
 
 
 
+
+class SaudeFinanceiraBalancoAluno(models.Model):
+    class Meta:
+        db_table = 'saude_financeira_balanco_aluno'
+
+    sfba_id = models.AutoField(primary_key=True)
+
+    mensalidades_pagas_total = models.FloatField(null=True, blank=True)
+    comparticoes_pagas_total = models.FloatField(null=True, blank=True)
+    custo_por_crianca = models.FloatField(null=True, blank=True)
+    balanco = models.FloatField(null=True, blank=True)
+
+    data_inicio = models.DateField(default=timezone.now)
+    data_fim = models.DateField(null=True, blank=True)
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Balanço {self.sfba_id} - {self.data_inicio} até {self.data_fim}"
+
+
+
+
 class PedidoDeMudanca(models.Model):
     class Meta:
         db_table = "Pedido_de_mudanca"

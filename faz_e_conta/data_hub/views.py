@@ -477,7 +477,22 @@ def edit_financas(request, financa_id):
 
 
 # Funçoes dos calculos da saude financeira
-def balancoGlobal(request, valoresSelecionadosPostFiltros):
+def calcularCustoPorCrianca(data_inicio, data_fim):
+    despesas_fixas = DespesaFixa.objects.all()
+    despesas_variaveis = DespesasVariavel.objects.filter(data__range=(data_inicio, data_fim))
+    custo_total_despesas = sum(d.valor for d in despesas_fixas) + sum(d.valor for d in despesas_variaveis)
+
+    num_criancas = Aluno.objects.filter(archive_flag=False).count()
+
+    if num_criancas == 0:
+        return 0
+
+    return custo_total_despesas / num_criancas
+
+def balancoGlobal(request):
+
+    valoresSelecionadosPostFiltros = {}
+
     data_inicio = request.POST.get("data_inicio")
     data_fim = request.POST.get("data_fim")
 
@@ -530,18 +545,7 @@ def balancoGlobal(request, valoresSelecionadosPostFiltros):
         data_fim = data_fim,
         receita=(valor_total_mensalidades_pagas + valor_total_comparticoes_pagas) - custo_total_despesas
     )
-
-def calcularCustoPorCrianca(data_inicio, data_fim):
-    despesas_fixas = DespesaFixa.objects.all()
-    despesas_variaveis = DespesasVariavel.objects.filter(data__range=(data_inicio, data_fim))
-    custo_total_despesas = sum(d.valor for d in despesas_fixas) + sum(d.valor for d in despesas_variaveis)
-
-    num_criancas = Aluno.objects.filter(archive_flag=False).count()
-
-    if num_criancas == 0:
-        return 0
-
-    return custo_total_despesas / num_criancas
+    return valoresSelecionadosPostFiltros
 
 def balancoValencia(request, valoresSelecionadosPostFiltros):
     data_inicio = request.POST.get("data_inicio")
@@ -598,6 +602,7 @@ def balancoValencia(request, valoresSelecionadosPostFiltros):
         data_inicio=data_inicio,
         data_fim=data_fim
     )
+    return valoresSelecionadosPostFiltros
 
 def balancoEscalao(request, valoresSelecionadosPostFiltros):
     data_inicio = request.POST.get("data_inicio")
@@ -651,6 +656,138 @@ def balancoEscalao(request, valoresSelecionadosPostFiltros):
         data_inicio=data_inicio,
         data_fim=data_fim
     )
+    return valoresSelecionadosPostFiltros
+
+def balancoAluno(request, valoresSelecionadosPostFiltros):
+    data_inicio = request.POST.get("data_inicio")
+    data_fim = request.POST.get("data_fim")
+
+    if not data_inicio:
+        data_inicio = date(timezone.now().year, timezone.now().month, 1)
+    else:
+        data_inicio = date.fromisoformat(data_inicio)
+
+    if not data_fim:
+        data_fim = timezone.now().date()
+    else:
+        data_fim = date.fromisoformat(data_fim)
+
+    valoresSelecionadosPostFiltros["data_inicio"] = data_inicio
+    valoresSelecionadosPostFiltros["data_fim"] = data_fim
+
+    custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
+
+    # Mensalidades
+    mensalidades = MensalidadeAluno.objects.filter(
+        data_inicio__date__range=(data_inicio, data_fim)
+    )
+    mensalidades_pagas = sum(m.mensalidade_paga for m in mensalidades)
+
+    # Comparticipações
+    comparticoes = ComparticaoMensalSS.objects.filter(
+        data_inicio__date__range=(data_inicio, data_fim)
+    )
+    comparticoes_pagas = sum(c.mensalidade_paga for c in comparticoes)
+    balanco = mensalidades_pagas + comparticoes_pagas - custo_por_crianca
+
+    SaudeFinanceiraBalancoAluno.objects.create(
+        mensalidades_pagas_total=mensalidades_pagas,
+        comparticoes_pagas_total=comparticoes_pagas,
+        custo_por_crianca=custo_por_crianca,
+        balanco=balanco,
+        data_inicio=data_inicio,
+        data_fim=data_fim
+    )
+    return  valoresSelecionadosPostFiltros
+
+
+# Funçoes para os filtros da saude financeira
+def filtrosBalancoGlobal(request, saudes_financeiras_balanco_global):
+
+    valoresSelecionadosGetFiltros = {}
+    data_inicio_get = request.GET.get("data_inicio")
+    data_fim_get = request.GET.get("data_fim")
+
+    if data_inicio_get:
+        saudes_financeiras_balanco_global = saudes_financeiras_balanco_global.filter(data_inicio__gte=data_inicio_get)
+        valoresSelecionadosGetFiltros["data_inicio"] = data_inicio_get
+
+    if data_fim_get:
+        saudes_financeiras_balanco_global = saudes_financeiras_balanco_global.filter(data_fim__lte=data_fim_get)
+        valoresSelecionadosGetFiltros["data_fim"] = data_fim_get
+
+    return saudes_financeiras_balanco_global, valoresSelecionadosGetFiltros
+
+def filtrosBalancoValencia(request, saudes_financeiras_balanco_valencia):
+
+    valoresSelecionadosGetFiltros = {}
+    data_inicio_get = request.GET.get("data_inicio")
+    data_fim_get = request.GET.get("data_fim")
+    valencia_get = request.GET.get("valencia")
+
+    if data_inicio_get:
+        saudes_financeiras_balanco_valencia = saudes_financeiras_balanco_valencia.filter(data_inicio__gte=data_inicio_get)
+        valoresSelecionadosGetFiltros["data_inicio"] = data_inicio_get
+
+    if data_fim_get:
+        saudes_financeiras_balanco_valencia = saudes_financeiras_balanco_valencia.filter(data_fim__lte=data_fim_get)
+        valoresSelecionadosGetFiltros["data_fim"] = data_fim_get
+
+    if valencia_get:
+        saudes_financeiras_balanco_valencia = saudes_financeiras_balanco_valencia.filter(valencia=valencia_get)
+        valoresSelecionadosGetFiltros["valencia"] = valencia_get
+
+    return saudes_financeiras_balanco_valencia, valoresSelecionadosGetFiltros
+
+def filtrosBalancoEscalao(request, saudes_financeiras_balanco_escalao):
+
+    valoresSelecionadosGetFiltros = {
+        "data_inicio": None,
+        "data_fim": None,
+        "escalao": None
+    }
+
+    data_inicio_get = request.GET.get("data_inicio")
+    data_fim_get = request.GET.get("data_fim")
+    escalao_get = request.GET.get("escalao")
+
+    if data_inicio_get:
+        saudes_financeiras_balanco_escalao = saudes_financeiras_balanco_escalao.filter(data_inicio__gte=data_inicio_get)
+        valoresSelecionadosGetFiltros["data_inicio"] = data_inicio_get
+
+    if data_fim_get:
+        saudes_financeiras_balanco_escalao = saudes_financeiras_balanco_escalao.filter(data_fim__lte=data_fim_get)
+        valoresSelecionadosGetFiltros["data_fim"] = data_fim_get
+
+    if escalao_get:
+        saudes_financeiras_balanco_escalao = saudes_financeiras_balanco_escalao.filter(escalao=escalao_get)
+        valoresSelecionadosGetFiltros["escalao"] = escalao_get
+
+    return saudes_financeiras_balanco_escalao, valoresSelecionadosGetFiltros
+
+def filtrosBalancoAluno(request, saudes_financeiras_balanco_aluno):
+
+    valoresSelecionadosGetFiltros = {
+        "data_inicio": None,
+        "data_fim": None,
+    }
+
+    data_inicio_get = request.GET.get("data_inicio")
+    data_fim_get = request.GET.get("data_fim")
+
+    if data_inicio_get:
+        saudes_financeiras_balanco_aluno = saudes_financeiras_balanco_aluno.filter(data_inicio__gte=data_inicio_get)
+        valoresSelecionadosGetFiltros["data_inicio"] = data_inicio_get
+
+    if data_fim_get:
+        saudes_financeiras_balanco_aluno = saudes_financeiras_balanco_aluno.filter(data_fim__lte=data_fim_get)
+        valoresSelecionadosGetFiltros["data_fim"] = data_fim_get
+
+    return saudes_financeiras_balanco_aluno, valoresSelecionadosGetFiltros
+
+
+
+
 
 # Saude financeira
 @login_required
@@ -658,22 +795,30 @@ def show_saude_fianceira(request):
 
     # Post
     valoresSelecionadosPostFiltros = {
-        "data_inicio": None,
-        "data_fim": None
+        "balanco_global": {
+            "data_inicio": None,
+            "data_fim": None
+        },
+        "balanco_valencia": {
+            "data_inicio": None,
+            "data_fim": None,
+            "valencia": None
+        }
     }
 
     form_type = request.POST.get("form_type")
     if request.method == "POST":
-        if form_type == "balanco_global":
-            balancoGlobal(request, valoresSelecionadosPostFiltros)
-        elif form_type == "balanco_valencia":
-            balancoValencia(request, valoresSelecionadosPostFiltros)
-        elif form_type == "balanco_escalao":
-            balancoEscalao(request, valoresSelecionadosPostFiltros)
-        elif form_type == "balanco_aluno":
-            pass
-        else:
-            print("Post incompativel")
+        match form_type:
+            case "balanco_global":
+                valoresSelecionadosPostFiltros["balanco_global"] = balancoGlobal(request)
+            case "balanco_valencia":
+                valoresSelecionadosPostFiltros = balancoValencia(request, valoresSelecionadosPostFiltros)
+            case "balanco_escalao":
+                valoresSelecionadosPostFiltros = balancoEscalao(request, valoresSelecionadosPostFiltros)
+            case "balanco_aluno":
+                valoresSelecionadosPostFiltros = balancoAluno(request, valoresSelecionadosPostFiltros)
+            case _:
+                print("Post incompativel")
 
 
     # Valores para aparecer na seleçao dos filtros
@@ -684,30 +829,58 @@ def show_saude_fianceira(request):
 
     # Get
     valoresSelecionadosGetFiltros = {
-        "data_inicio": None,
-        "data_fim": None
+        "balanco_global": {
+            "data_inicio": None,
+            "data_fim": None
+        },
+        "balanco_valencia": {
+            "data_inicio": None,
+            "data_fim": None,
+            "valencia": None
+        },
+        "balanco_escalao": {
+            "data_inicio": None,
+            "data_fim": None,
+            "escalao": None
+        },
+        "balanco_aluno": {
+            "data_inicio": None,
+            "data_fim": None,
+        }
+
     }
 
-    data_inicio_get = request.GET.get("data_inicio")
-    data_fim_get = request.GET.get("data_fim")
 
     saudes_financeiras_balanco_global = SaudeFinanceiraBalancoGlobal.objects.all()
     saudes_financeiras_balanco_valencia = SaudeFinanceiraBalancoValencia.objects.all()
     saudes_financeiras_balanco_escalao = SaudeFinanceiraBalancoEscalao.objects.all()
+    saudes_financeiras_balanco_aluno = SaudeFinanceiraBalancoAluno.objects.all()
 
-    if data_inicio_get:
-        saudes_financeiras_balanco_global = saudes_financeiras_balanco_global.filter(data_inicio__gte=data_inicio_get)
-        valoresSelecionadosGetFiltros["data_inicio"] = data_inicio_get
+    # Quem fez get
+    form_type = request.GET.get("form_type")
+    match form_type:
+        case "balanco_global":
+            saudes_financeiras_balanco_global, valoresSelecionadosGetFiltros["balanco_global"] = filtrosBalancoGlobal(request, saudes_financeiras_balanco_global)
+        case "balanco_valencia":
+            saudes_financeiras_balanco_valencia, valoresSelecionadosGetFiltros["balanco_valencia"] = filtrosBalancoValencia(request, saudes_financeiras_balanco_valencia)
+            pass
+        case "balanco_escalao":
+            saudes_financeiras_balanco_escalao, valoresSelecionadosGetFiltros["balanco_escalao"] = filtrosBalancoEscalao(request, saudes_financeiras_balanco_escalao)
+            pass
+        case "balanco_aluno":
+            saudes_financeiras_balanco_aluno, valoresSelecionadosGetFiltros["balanco_aluno"] = filtrosBalancoAluno(request, saudes_financeiras_balanco_aluno)
+            pass
+        case _:
+            print("Get incompativel")
 
-    if data_fim_get:
-        saudes_financeiras_balanco_global = saudes_financeiras_balanco_global.filter(data_fim__lte=data_fim_get)
-        valoresSelecionadosGetFiltros["data_fim"] = data_fim_get
+
 
 
     contexto = {
         "saudesFinanceirasBalancoGlobal": saudes_financeiras_balanco_global,
         "saudes_financeiras_balanco_valencia": saudes_financeiras_balanco_valencia,
         "saudes_financeiras_balanco_escalao": saudes_financeiras_balanco_escalao,
+        "saudes_financeiras_balanco_aluno": saudes_financeiras_balanco_aluno,
         "valoresSelecionadosGetFiltros": valoresSelecionadosGetFiltros,
         "valoresSelecionadosPostFiltros": valoresSelecionadosPostFiltros,
         "valoresSelecaoFiltros": valoresSelecaoFiltros
