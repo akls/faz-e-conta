@@ -385,13 +385,13 @@ class SaudeFinanceiraBalancoGlobal(models.Model):
 
     sf_id = models.AutoField(primary_key=True)
 
-    custo_despesas_totais = models.IntegerField()
-    mensalidades_pagas_total = models.IntegerField()
-    mensalidades_nao_pagas_total = models.IntegerField()
-    receita = models.IntegerField()
+    custo_despesas_totais = models.FloatField()
+    mensalidades_pagas_total = models.FloatField()
+    mensalidades_nao_pagas_total = models.FloatField()
+    receita = models.FloatField()
 
-    comparticoes_pagas_total = models.IntegerField(default=0)
-    comparticoes_nao_pagas_total = models.IntegerField(default=0)
+    comparticoes_pagas_total = models.FloatField(default=0)
+    comparticoes_nao_pagas_total = models.FloatField(default=0)
     data_inicio = models.DateField(default=date.today)
     data_fim = models.DateField(default=date.today)
 

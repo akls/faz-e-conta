@@ -47,7 +47,10 @@
                 ID
             </th>
             <th>
-                Data
+                Data início
+            </th>
+            <th>
+                Data fim
             </th>
             <th>
                 Custo despesas totais
@@ -81,25 +84,28 @@
             {{ saudeFinanceiraBalancoGlobal.sf_id }}
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.data_inicio }} - {{ saudeFinanceiraBalancoGlobal.data_fim }}
+            {{ saudeFinanceiraBalancoGlobal.data_inicio }}
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.custo_despesas_totais }}€
+            {{ saudeFinanceiraBalancoGlobal.data_fim }}
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.mensalidades_pagas_total }}€
+            {{ saudeFinanceiraBalancoGlobal.custo_despesas_totais|floatformat:2 }}€
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.mensalidades_nao_pagas_total }}€
+            {{ saudeFinanceiraBalancoGlobal.mensalidades_pagas_total|floatformat:2 }}€
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.comparticoes_pagas_total }}€
+            {{ saudeFinanceiraBalancoGlobal.mensalidades_nao_pagas_total|floatformat:2 }}€
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.comparticoes_nao_pagas_total }}€
+            {{ saudeFinanceiraBalancoGlobal.comparticoes_pagas_total|floatformat:2 }}€
         </td>
         <td>
-            {{ saudeFinanceiraBalancoGlobal.receita }}€
+            {{ saudeFinanceiraBalancoGlobal.comparticoes_nao_pagas_total|floatformat:2 }}€
+        </td>
+        <td>
+            {{ saudeFinanceiraBalancoGlobal.receita|floatformat:2 }}€
         </td>
 
     </tr>
@@ -159,6 +165,8 @@
 
     <label>Valência</label>
     <select name="valencia">
+
+        <option value="" {% if valencia == valoresSelecionadosGetFiltros.balanco_valencia.valencia %}selected{% endif %}> Nenhuma valencia </option>
         {% for valencia in valoresSelecaoFiltros.valencias %}
         <option value="{{ valencia }}" {% if valencia == valoresSelecionadosGetFiltros.balanco_valencia.valencia %}selected{% endif %}>
             {{ valencia }}
@@ -242,11 +250,11 @@
         </td>
 
         <td>
-            {{ sfv.custo_por_crianca }}€
+            {{ sfv.custo_por_crianca|floatformat:2 }}€
         </td>
 
         <td>
-            {{ sfv.balanco }}€
+            {{ sfv.balanco|floatformat:2 }}€
         </td>
 
     </tr>
@@ -309,6 +317,8 @@
 
     <label>Escalão</label>
     <select name="escalao">
+
+        <option value="" {% if escalao == valoresSelecionadosGetFiltros.balanco_escalao.escalao %}selected{% endif %}> Nenhum escalão </option>
         {% for escalao in valoresSelecaoFiltros.escaloes %}
         <option value="{{ escalao }}" {% if escalao == valoresSelecionadosGetFiltros.balanco_escalao.escalao %}selected{% endif %}>
             {{ escalao }}
@@ -392,11 +402,11 @@
         </td>
 
         <td>
-            {{ sfe.custo_por_crianca }}€
+            {{ sfe.custo_por_crianca|floatformat:2 }}€
         </td>
 
         <td>
-            {{ sfe.balanco }}€
+            {{ sfe.balanco|floatformat:2 }}€
         </td>
 
     </tr>
@@ -511,11 +521,11 @@
         </td>
 
         <td>
-            {{ sfba.custo_por_crianca }}€
+            {{ sfba.custo_por_crianca|floatformat:2 }}€
         </td>
 
         <td>
-            {{ sfba.balanco }}€
+            {{ sfba.balanco|floatformat:2 }}€
         </td>
 
     </tr>
