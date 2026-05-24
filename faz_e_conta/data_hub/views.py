@@ -36,6 +36,7 @@ def show_students(request):
     # URL query parameters
     query = request.GET.get("q", "")
     sala_filter = request.GET.get("sala", "")
+    alumni = request.GET.get("alumni", "")
 
 
 
@@ -46,6 +47,11 @@ def show_students(request):
         alunos = alunos.filter(Q(nome_proprio__icontains=query) | Q(apelido__icontains=query))
     if sala_filter:
         alunos = alunos.filter(Q(sala_id__sala_valencia__icontains=sala_filter) | Q(sala_id__sala_nome__icontains=sala_filter))
+    if alumni:
+        alumni = True
+        alunos = alunos.filter(archive_flag=alumni)
+    else:
+        alunos = alunos.filter(archive_flag=False)
 
 
 
