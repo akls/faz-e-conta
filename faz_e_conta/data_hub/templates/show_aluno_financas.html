@@ -98,6 +98,7 @@
     <h1>Tabela Mensalidade Alunos</h1>
     <section id="mensalidadesFilt">
 
+        <a href="{% url 'edit_pagamentos' %}">Pagamentos</a>
         <!-- Form para pesquisar mensalidades -->
         <form method="get" id="filter-form">
             <label>Nome:</label>
@@ -139,7 +140,6 @@
 
             <button type="submit">Filtrar</button>
         </form>
-        <a href="{% url 'edit_pagamentos' %}">Pagamentos</a>
 
 
 

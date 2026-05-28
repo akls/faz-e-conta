@@ -478,28 +478,47 @@ def edit_financas(request, financa_id):
 
 def edit_pagamentos(request):
 
-    # Post
     mensagem = ""
     item = {}
+    valoresDosFiltros = {}
+
     if request.method == "POST":
-        mensagem = "Erro: Field do valor do pagamento é obrigatorio"
-        if all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes")]):
+
+        if not all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes"), request.POST.get("ano")]):
+            mensagem = "Erro: Preencha todos os campos"
+
+        else:
             opcao = request.POST.get("pagamentoOpcao")
             alunoId = request.POST.get("aluno")
-            mes = request.POST.get("mes")
+            mes = int(request.POST.get("mes"))
+            ano = int(request.POST.get("ano"))
             valorPagamento = float(request.POST.get("valorPagamento"))
+
+            valoresDosFiltros = {
+                "aluno": int(request.POST.get("aluno")),
+                "pagamentoOpcao": request.POST.get("pagamentoOpcao"),
+                "mes": int(request.POST.get("mes")),
+                "ano": int(request.POST.get("ano")),
+                "valorPagamento": request.POST.get("valorPagamento")
+            }
 
             if valorPagamento <= 0:
                 mensagem = "Erro: O valor do pagamento deve ser positivo e maior que 0"
 
-            if opcao == "mensalidade" and valorPagamento > 0:
-                mensalidade = MensalidadeAluno.objects.filter(aluno_id=alunoId, data_inicio__month=int(mes)).first()
-                if mensalidade.mensalidade_paga + valorPagamento <= mensalidade.mensalidade_calc:
+            elif opcao == "mensalidade":
+                mensalidade = MensalidadeAluno.objects.filter(
+                    aluno_id=alunoId,
+                    data_inicio__month=mes,
+                    data_inicio__year=ano
+                ).first()
+
+                if mensalidade is None:
+                    mensagem = "Erro: Mensalidade não encontrada"
+                elif mensalidade.mensalidade_paga + valorPagamento <= mensalidade.mensalidade_calc:
                     mensalidade.mensalidade_paga += valorPagamento
                     mensalidade.data_fim = date.today()
                     mensalidade.save()
                     mensagem = "Pagamento registado"
-
 
                     item["nome"] = f"{mensalidade.aluno_id.nome_proprio} {mensalidade.aluno_id.apelido}"
                     item["tipo"] = "Mensalidade"
@@ -512,38 +531,45 @@ def edit_pagamentos(request):
                     item["tipo"] = "Mensalidade"
                     item["valorAPagar"] = mensalidade.mensalidade_calc
                     item["valorPago"] = mensalidade.mensalidade_paga + valorPagamento
-            elif opcao == "comparticao" and valorPagamento > 0:
-                comparticao = ComparticaoMensalSS.objects.filter(aluno_id=alunoId, data_inicio__month=int(mes)).first()
-                if comparticao.mensalidade_paga + valorPagamento <= comparticao.mensalidade_valor:
+
+            elif opcao == "comparticao":
+                comparticao = ComparticaoMensalSS.objects.filter(
+                    aluno_id=alunoId,
+                    data_inicio__month=mes,
+                    data_inicio__year=ano
+                ).first()
+
+                if comparticao is None:
+                    mensagem = "Erro: Comparticão não encontrada"
+                elif comparticao.mensalidade_paga + valorPagamento <= comparticao.mensalidade_valor:
                     comparticao.mensalidade_paga += valorPagamento
                     comparticao.data_fim = date.today()
                     comparticao.save()
                     mensagem = "Pagamento registado"
-
 
                     item["nome"] = f"{comparticao.aluno_id.nome_proprio} {comparticao.aluno_id.apelido}"
                     item["tipo"] = "Comparticação"
                     item["valorAPagar"] = comparticao.mensalidade_valor
                     item["valorPago"] = comparticao.mensalidade_paga
                 else:
-                    mensagem = "Erro: O valor do pagamento ultrapassa o valor da compartição"
+                    mensagem = "Erro: O valor do pagamento ultrapassa o valor da comparticão"
 
                     item["nome"] = f"{comparticao.aluno_id.nome_proprio} {comparticao.aluno_id.apelido}"
                     item["tipo"] = "Comparticação"
                     item["valorAPagar"] = comparticao.mensalidade_valor
-                    item["valorPago"] = comparticao.mensalidade_paga + + valorPagamento
-
-
-
+                    item["valorPago"] = comparticao.mensalidade_paga + valorPagamento
 
     alunos = Aluno.objects.filter(archive_flag=False).distinct()
     meses = range(1, 13)
+    anos = range(2000, date.today().year + 1)
 
     contexto = {
         "alunos": alunos,
         "meses": meses,
+        "anos": anos,
         "mensagem": mensagem,
-        "item": item
+        "item": item,
+        "valoresDosFiltros": valoresDosFiltros
     }
     return render(request, 'edit_payments.html', contexto)
 
