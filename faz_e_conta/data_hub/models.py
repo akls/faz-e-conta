@@ -313,8 +313,8 @@ class MensalidadeAluno(models.Model):
     mensalidade_retific = models.IntegerField(null=True, blank=True)
     mensalidade_paga = models.FloatField(null=True, blank=True)
 
-    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
+    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
 
     acordo = models.CharField(max_length=255, null=True, blank=True)
     escalao = models.CharField(max_length=255, null=True, blank=True)
@@ -352,7 +352,6 @@ class ComparticaoMensalSS(models.Model):
     mensalidade_valor = models.FloatField(null=True, blank=True)
     mensalidade_paga = models.FloatField(null=True, blank=True)
 
-    data_pagamento = models.DateField(null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
     acordo = models.CharField(max_length=255, null=True, blank=True)

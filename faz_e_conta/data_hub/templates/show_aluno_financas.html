@@ -139,6 +139,7 @@
 
             <button type="submit">Filtrar</button>
         </form>
+        <a href="{% url 'edit_pagamentos' %}">Pagamentos</a>
 
 
 
@@ -167,6 +168,8 @@
             </div>
             {% endif %}
         </form>
+
+
 
     </section>
 
@@ -251,7 +254,7 @@
                         </td>
 
                         <td>
-                            {{ mensalidade.data_pagamento }}
+                            {{ mensalidade.data_fim }}
                         </td>
 
                         <td>
@@ -330,7 +333,7 @@
                         </td>
 
                         <td>
-                            {{ comparticao.data_pagamento }}
+                            {{ comparticao.data_fim }}
                         </td>
                     </tr>
                 </tbody>

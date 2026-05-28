@@ -476,6 +476,77 @@ def edit_financas(request, financa_id):
         form = FinancasForm(instance=alunoFinanca)
         return render(request, 'insert_financas.html', {'form': form})
 
+def edit_pagamentos(request):
+
+    # Post
+    mensagem = ""
+    item = {}
+    if request.method == "POST":
+        mensagem = "Erro: Field do valor do pagamento é obrigatorio"
+        if all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes")]):
+            opcao = request.POST.get("pagamentoOpcao")
+            alunoId = request.POST.get("aluno")
+            mes = request.POST.get("mes")
+            valorPagamento = float(request.POST.get("valorPagamento"))
+
+            if valorPagamento <= 0:
+                mensagem = "Erro: O valor do pagamento deve ser positivo e maior que 0"
+
+            if opcao == "mensalidade" and valorPagamento > 0:
+                mensalidade = MensalidadeAluno.objects.filter(aluno_id=alunoId, data_inicio__month=int(mes)).first()
+                if mensalidade.mensalidade_paga + valorPagamento <= mensalidade.mensalidade_calc:
+                    mensalidade.mensalidade_paga += valorPagamento
+                    mensalidade.data_fim = date.today()
+                    mensalidade.save()
+                    mensagem = "Pagamento registado"
+
+
+                    item["nome"] = f"{mensalidade.aluno_id.nome_proprio} {mensalidade.aluno_id.apelido}"
+                    item["tipo"] = "Mensalidade"
+                    item["valorAPagar"] = mensalidade.mensalidade_calc
+                    item["valorPago"] = mensalidade.mensalidade_paga
+                else:
+                    mensagem = "Erro: O valor do pagamento ultrapassa o valor da mensalidade"
+
+                    item["nome"] = f"{mensalidade.aluno_id.nome_proprio} {mensalidade.aluno_id.apelido}"
+                    item["tipo"] = "Mensalidade"
+                    item["valorAPagar"] = mensalidade.mensalidade_calc
+                    item["valorPago"] = mensalidade.mensalidade_paga + valorPagamento
+            elif opcao == "comparticao" and valorPagamento > 0:
+                comparticao = ComparticaoMensalSS.objects.filter(aluno_id=alunoId, data_inicio__month=int(mes)).first()
+                if comparticao.mensalidade_paga + valorPagamento <= comparticao.mensalidade_valor:
+                    comparticao.mensalidade_paga += valorPagamento
+                    comparticao.data_fim = date.today()
+                    comparticao.save()
+                    mensagem = "Pagamento registado"
+
+
+                    item["nome"] = f"{comparticao.aluno_id.nome_proprio} {comparticao.aluno_id.apelido}"
+                    item["tipo"] = "Comparticação"
+                    item["valorAPagar"] = comparticao.mensalidade_valor
+                    item["valorPago"] = comparticao.mensalidade_paga
+                else:
+                    mensagem = "Erro: O valor do pagamento ultrapassa o valor da compartição"
+
+                    item["nome"] = f"{comparticao.aluno_id.nome_proprio} {comparticao.aluno_id.apelido}"
+                    item["tipo"] = "Comparticação"
+                    item["valorAPagar"] = comparticao.mensalidade_valor
+                    item["valorPago"] = comparticao.mensalidade_paga + + valorPagamento
+
+
+
+
+    alunos = Aluno.objects.filter(archive_flag=False).distinct()
+    meses = range(1, 13)
+
+    contexto = {
+        "alunos": alunos,
+        "meses": meses,
+        "mensagem": mensagem,
+        "item": item
+    }
+    return render(request, 'edit_payments.html', contexto)
+
 
 
 

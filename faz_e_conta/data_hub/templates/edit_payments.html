@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/financas.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <h1>Pagamentos</h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+
+        <select name="aluno" id="select_aluno">
+            {% for aluno in alunos %}
+            <option value="{{ aluno.aluno_id }}"> {{ aluno.nome_proprio }} {{ aluno.apelido }} </option>
+            {% endfor %}
+        </select>
+
+        <select name="pagamentoOpcao" id="select_mensalidade_comparticao">
+            <option value="mensalidade"> Mensalidade </option>
+            <option value="comparticao"> Comparticão </option>
+        </select>
+
+        <select name="mes" id="select_mes">
+            {% for mes in meses %}
+            <option value="{{ mes }}"> {{ mes }} </option>
+            {% endfor %}
+        </select>
+
+        <input type="number" step="0.01" name="valorPagamento" id="valorPagamento">
+
+        <button type="submit">Registar pagamento</button>
+
+    </form>
+    {% if mensagem %}
+    <h1>{{ mensagem }}</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Valor a Pagar</th>
+            <th>Valor Pago</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ item.nome }}</td>
+            <td>{{ item.tipo }}</td>
+            <td>{{ item.valorAPagar }}</td>
+            <td>{{ item.valorPago }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/financas.js' %}"></script>
+{% endblock %}

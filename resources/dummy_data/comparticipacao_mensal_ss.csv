@@ -1,4 +1,4 @@
-mss_id,aluno_id,aluno_mensalidade_id,data_inicio,data_fim,mensalidade_valor,mensalidade_paga,data_pagamento,modo_pagamento,programa_ss,acordo
+mss_id,aluno_id,aluno_mensalidade_id,data_inicio,data_fim,mensalidade_valor,mensalidade_paga,data_fim,modo_pagamento,programa_ss,acordo
 1,1,1,2026-01-01 00:00:00,,120.50,120.00,2026-01-05,Transferência,Sim,Acordo A
 2,2,2,2026-01-01 00:00:00,,95.00,90.00,2026-01-10,MB Way,Não,Acordo B
 3,3,3,2026-01-01 00:00:00,,110.00,110.00,2026-01-08,Dinheiro,Sim,Acordo A
