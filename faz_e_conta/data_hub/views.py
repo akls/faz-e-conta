@@ -484,7 +484,7 @@ def edit_pagamentos(request):
 
     if request.method == "POST":
 
-        if not all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes"), request.POST.get("ano")]):
+        if not all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes"), request.POST.get("ano"), request.POST.get("metodoPagamento")]):
             mensagem = "Erro: Preencha todos os campos"
 
         else:
@@ -493,13 +493,15 @@ def edit_pagamentos(request):
             mes = int(request.POST.get("mes"))
             ano = int(request.POST.get("ano"))
             valorPagamento = float(request.POST.get("valorPagamento"))
+            metodoPagamento = MetodoPagamento.objects.filter(pk=request.POST.get("metodoPagamento")).first()
 
             valoresDosFiltros = {
                 "aluno": int(request.POST.get("aluno")),
                 "pagamentoOpcao": request.POST.get("pagamentoOpcao"),
                 "mes": int(request.POST.get("mes")),
                 "ano": int(request.POST.get("ano")),
-                "valorPagamento": request.POST.get("valorPagamento")
+                "valorPagamento": request.POST.get("valorPagamento"),
+                "metodoPagamento": int(request.POST.get("metodoPagamento")),
             }
 
             if valorPagamento <= 0:
@@ -515,7 +517,12 @@ def edit_pagamentos(request):
                 if mensalidade is None:
                     mensagem = "Erro: Mensalidade não encontrada"
                 elif mensalidade.mensalidade_paga + valorPagamento <= mensalidade.mensalidade_calc:
-                    mensalidade.mensalidade_paga += valorPagamento
+                    PagamentoMensalidade.objects.create(
+                        mensalidade_id=mensalidade,
+                        metodo_pagamento_id=metodoPagamento,
+                        valor=valorPagamento
+                    )
+                    mensalidade.mensalidade_paga = mensalidade.pagamentos.aggregate(Sum("valor"))["valor__sum"] or 0
                     mensalidade.data_fim = date.today()
                     mensalidade.save()
                     mensagem = "Pagamento registado"
@@ -542,7 +549,12 @@ def edit_pagamentos(request):
                 if comparticao is None:
                     mensagem = "Erro: Comparticão não encontrada"
                 elif comparticao.mensalidade_paga + valorPagamento <= comparticao.mensalidade_valor:
-                    comparticao.mensalidade_paga += valorPagamento
+                    PagamentoComparticao.objects.create(
+                        comparticao_id=comparticao,
+                        metodo_pagamento_id=metodoPagamento,
+                        valor=valorPagamento
+                    )
+                    comparticao.mensalidade_paga = comparticao.pagamentos.aggregate(Sum("valor"))["valor__sum"] or 0
                     comparticao.data_fim = date.today()
                     comparticao.save()
                     mensagem = "Pagamento registado"
@@ -562,16 +574,56 @@ def edit_pagamentos(request):
     alunos = Aluno.objects.filter(archive_flag=False).distinct()
     meses = range(1, 13)
     anos = range(2000, date.today().year + 1)
+    metodosPagamento = MetodoPagamento.objects.all()
 
     contexto = {
         "alunos": alunos,
         "meses": meses,
+        "metodosPagamento": metodosPagamento,
         "anos": anos,
         "mensagem": mensagem,
         "item": item,
         "valoresDosFiltros": valoresDosFiltros
     }
     return render(request, 'edit_payments.html', contexto)
+
+def show_pagamentos_mensalidade(request, mensalidade_id):
+    mensalidade = get_object_or_404(MensalidadeAluno, pk=mensalidade_id)
+
+    contexto = {
+        "titulo": "Pagamentos da Mensalidade",
+        "aluno": mensalidade.aluno_id,
+        "data": mensalidade.data_inicio,
+        "valorAPagar": mensalidade.mensalidade_calc,
+        "valorPago": mensalidade.mensalidade_paga,
+        "pagamentos": mensalidade.pagamentos.all()
+    }
+    return render(request, 'show_pagamentos.html', contexto)
+
+def show_pagamentos_comparticao(request, comparticao_id):
+    comparticao = get_object_or_404(ComparticaoMensalSS, pk=comparticao_id)
+
+    contexto = {
+        "titulo": "Pagamentos da Comparticipação",
+        "aluno": comparticao.aluno_id,
+        "data": comparticao.data_inicio,
+        "valorAPagar": comparticao.mensalidade_valor,
+        "valorPago": comparticao.mensalidade_paga,
+        "pagamentos": comparticao.pagamentos.all()
+    }
+    return render(request, 'show_pagamentos.html', contexto)
+
+def insert_metodo_pagamento_view(request):
+    if request.method == "POST":
+        form = MetodoPagamentoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('edit_pagamentos')
+        else:
+            print(form.errors)
+    else:
+        form = MetodoPagamentoForm()
+    return render(request, 'insert_metodo_pagamento.html', {'form': form})
 
 
 

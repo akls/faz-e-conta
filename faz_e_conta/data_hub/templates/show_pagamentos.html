@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/financas.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <h1>{{ titulo }}</h1>
+    <a href="{% url 'show_aluno_financas' %}">Voltar</a>
+
+    <div>
+        <p><strong>Aluno:</strong> {{ aluno.nome_proprio }} {{ aluno.apelido }}</p>
+        <p><strong>Data:</strong> {{ data }}</p>
+        <p><strong>Valor a pagar:</strong> {{ valorAPagar }}</p>
+        <p><strong>Valor pago:</strong> {{ valorPago }}</p>
+    </div>
+
+    <div>
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Método de pagamento</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for pagamento in pagamentos %}
+                    <tr>
+                        <td>{{ pagamento.valor }}</td>
+                        <td>{{ pagamento.data }}</td>
+                        <td>{{ pagamento.metodo_pagamento_id.metodo }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">Sem pagamentos registados</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+{% endblock %}

@@ -66,3 +66,8 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["username", "email", "password"]
+
+class MetodoPagamentoForm(forms.ModelForm):
+    class Meta:
+        model = MetodoPagamento
+        fields = ["metodo"]

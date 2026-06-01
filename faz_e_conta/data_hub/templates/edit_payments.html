@@ -37,11 +37,21 @@
             {% endfor %}
         </select>
 
+        <select name="metodoPagamento" id="select_metodo_pagamento">
+            {% for metodoPagamento in metodosPagamento %}
+            <option value="{{ metodoPagamento.metodo_pagamento_id }}" {% if valoresDosFiltros.metodoPagamento == metodoPagamento.metodo_pagamento_id %}selected{% endif %}>
+                {{ metodoPagamento.metodo }}
+            </option>
+            {% endfor %}
+        </select>
+
         <input type="number" step="0.01" name="valorPagamento" id="valorPagamento", value="{{ valoresDosFiltros.valorPagamento }}">
 
         <button type="submit">Registar pagamento</button>
 
     </form>
+
+    <a href="{% url 'insert_metodo_pagamento_view' %}">Registar novo método de pagamento</a>
     {% if mensagem %}
     <h1>{{ mensagem }}</h1>
 

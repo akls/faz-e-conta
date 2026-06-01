@@ -455,27 +455,44 @@ class SaudeFinanceiraBalancoAluno(models.Model):
 
 
 
-class PedidoDeMudanca(models.Model):
+class MetodoPagamento(models.Model):
     class Meta:
-        db_table = "Pedido_de_mudanca"
+        db_table = "metodo_pagamento"
 
-    Modelos = [
-        ("Aluno", "Aluno"),
-        ("Despesa", "Despesa"),
-        ("Sala", "Sala"),
-    ]
-    Acoes = [
-        ("Criar", "Criar"),
-        ("Editar", "Editar"),
-    ]
+    metodo_pagamento_id = models.AutoField(primary_key=True)
+    metodo = models.CharField(max_length=255, blank=False)
 
-    mu_id = models.AutoField(primary_key=True)
+    def __str__(self):
+        return f"{self.metodo}"
 
-    Nome_modelo = models.CharField(max_length=50, choices=Modelos)
-    acao = models.CharField(max_length=20, choices=Acoes)
-    id_modelo = models.IntegerField(null=True, blank=True)
-    data = models.JSONField()
 
-    criado_por = models.ForeignKey(User, on_delete=models.CASCADE)
-    aprovado_por = models.BooleanField(default=False)
-    criado_em = models.DateTimeField(auto_now_add=True)
+
+
+class PagamentoMensalidade(models.Model):
+    class Meta:
+        db_table = "pagamento_mensalidade"
+
+    pagamento_mensalidade_id = models.AutoField(primary_key=True)
+    mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, related_name="pagamentos", db_column='mensalidade_id')
+    metodo_pagamento_id = models.ForeignKey(to='MetodoPagamento', on_delete=models.PROTECT, db_column='metodo_pagamento_id')
+    valor = models.FloatField()
+    data = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Mensalidade {self.mensalidade_id_id}: {self.valor}€, Pagamento Id: {self.pagamento_mensalidade_id}"
+
+
+
+
+class PagamentoComparticao(models.Model):
+    class Meta:
+        db_table = "pagamento_comparticao"
+
+    pagamento_comparticao_id = models.AutoField(primary_key=True)
+    comparticao_id = models.ForeignKey(to='ComparticaoMensalSS', on_delete=models.CASCADE, related_name="pagamentos", db_column='comparticao_id')
+    metodo_pagamento_id = models.ForeignKey(to='MetodoPagamento', on_delete=models.PROTECT, db_column='metodo_pagamento_id')
+    valor = models.FloatField()
+    data = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Comparticao {self.comparticao_id_id}: {self.valor}€, Pagamento Id: {self.pagamento_comparticao_id}"

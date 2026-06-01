@@ -28,6 +28,8 @@ urlpatterns = [
     path('aluno/<int:aluno_id>/', views.show_student_details, name='show_student_details'),
     path('responsavel/<int:responsavel_id>/', views.show_contactos_details, name='show_contactos_details'),
     path('saude_financeira', views.show_saude_fianceira, name='show_saude_financeira'),
+    path('mensalidade/<int:mensalidade_id>/pagamentos', views.show_pagamentos_mensalidade, name='show_pagamentos_mensalidade'),
+    path('comparticao/<int:comparticao_id>/pagamentos', views.show_pagamentos_comparticao, name='show_pagamentos_comparticao'),
 
 
 
@@ -36,6 +38,7 @@ urlpatterns = [
     path('insert_despesas/<str:tipo_despesa>/', views.insert_despesa_view, name='insert_despesa_view'),
     path('insert_sala/', views.insert_sala_view, name='insert_sala_view'),
     path('insert_financas/', views.insert_financas, name='insert_financas'),
+    path('insert_metodo_pagamento/', views.insert_metodo_pagamento_view, name='insert_metodo_pagamento_view'),
 
 
 

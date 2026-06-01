@@ -220,6 +220,10 @@
                         Total da divida
                     </th>
 
+                    <th>
+                        Detalhes
+                    </th>
+
                 </tr>
 
             </thead>
@@ -265,6 +269,10 @@
                             {{ dividas|get_item:mensalidade.aluno_id.aluno_id }}
                         </td>
 
+                        <td>
+                            <a href="{% url 'show_pagamentos_mensalidade' mensalidade_id=mensalidade.ma_id %}">Ver pagamentos</a>
+                        </td>
+
                     </tr>
                 {% endfor %}
 
@@ -306,6 +314,10 @@
                     <th>
                         Data do pagamento
                     </th>
+
+                    <th>
+                        Detalhes
+                    </th>
                 </tr>
             </thead>
 
@@ -334,6 +346,10 @@
 
                         <td>
                             {{ comparticao.data_fim }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'show_pagamentos_comparticao' comparticao_id=comparticao.mss_id %}">Ver pagamentos</a>
                         </td>
                     </tr>
                 </tbody>
