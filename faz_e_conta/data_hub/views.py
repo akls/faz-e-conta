@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
+from django.urls import reverse
 from .auto_gen_id_views import *
 from django.db.models import Q, Sum
 from django.utils import timezone
@@ -476,7 +477,7 @@ def edit_financas(request, financa_id):
         form = FinancasForm(instance=alunoFinanca)
         return render(request, 'insert_financas.html', {'form': form})
 
-def edit_pagamentos(request):
+def insert_pagamentos(request):
 
     mensagem = ""
     item = {}
@@ -484,7 +485,7 @@ def edit_pagamentos(request):
 
     if request.method == "POST":
 
-        if not all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes"), request.POST.get("ano"), request.POST.get("metodoPagamento")]):
+        if not all([request.POST.get("pagamentoOpcao"), request.POST.get("aluno"), request.POST.get("valorPagamento"), request.POST.get("mes"), request.POST.get("ano"), request.POST.get("metodoPagamento"), request.POST.get("dataPagamento")]):
             mensagem = "Erro: Preencha todos os campos"
 
         else:
@@ -494,6 +495,7 @@ def edit_pagamentos(request):
             ano = int(request.POST.get("ano"))
             valorPagamento = float(request.POST.get("valorPagamento"))
             metodoPagamento = MetodoPagamento.objects.filter(pk=request.POST.get("metodoPagamento")).first()
+            dataPagamento = request.POST.get("dataPagamento")
 
             valoresDosFiltros = {
                 "aluno": int(request.POST.get("aluno")),
@@ -502,6 +504,7 @@ def edit_pagamentos(request):
                 "ano": int(request.POST.get("ano")),
                 "valorPagamento": request.POST.get("valorPagamento"),
                 "metodoPagamento": int(request.POST.get("metodoPagamento")),
+                "dataPagamento": request.POST.get("dataPagamento"),
             }
 
             if valorPagamento <= 0:
@@ -516,28 +519,26 @@ def edit_pagamentos(request):
 
                 if mensalidade is None:
                     mensagem = "Erro: Mensalidade não encontrada"
-                elif mensalidade.mensalidade_paga + valorPagamento <= mensalidade.mensalidade_calc:
+                else:
                     PagamentoMensalidade.objects.create(
                         mensalidade_id=mensalidade,
                         metodo_pagamento_id=metodoPagamento,
-                        valor=valorPagamento
+                        valor=valorPagamento,
+                        data=dataPagamento
                     )
                     mensalidade.mensalidade_paga = mensalidade.pagamentos.aggregate(Sum("valor"))["valor__sum"] or 0
-                    mensalidade.data_fim = date.today()
+                    mensalidade.data_fim = dataPagamento
                     mensalidade.save()
-                    mensagem = "Pagamento registado"
+
+                    if mensalidade.mensalidade_paga > mensalidade.mensalidade_calc:
+                        mensagem = "Aviso: O valor pago ultrapassa o valor da mensalidade"
+                    else:
+                        mensagem = "Pagamento registado"
 
                     item["nome"] = f"{mensalidade.aluno_id.nome_proprio} {mensalidade.aluno_id.apelido}"
                     item["tipo"] = "Mensalidade"
                     item["valorAPagar"] = mensalidade.mensalidade_calc
                     item["valorPago"] = mensalidade.mensalidade_paga
-                else:
-                    mensagem = "Erro: O valor do pagamento ultrapassa o valor da mensalidade"
-
-                    item["nome"] = f"{mensalidade.aluno_id.nome_proprio} {mensalidade.aluno_id.apelido}"
-                    item["tipo"] = "Mensalidade"
-                    item["valorAPagar"] = mensalidade.mensalidade_calc
-                    item["valorPago"] = mensalidade.mensalidade_paga + valorPagamento
 
             elif opcao == "comparticao":
                 comparticao = ComparticaoMensalSS.objects.filter(
@@ -548,28 +549,26 @@ def edit_pagamentos(request):
 
                 if comparticao is None:
                     mensagem = "Erro: Comparticão não encontrada"
-                elif comparticao.mensalidade_paga + valorPagamento <= comparticao.mensalidade_valor:
+                else:
                     PagamentoComparticao.objects.create(
                         comparticao_id=comparticao,
                         metodo_pagamento_id=metodoPagamento,
-                        valor=valorPagamento
+                        valor=valorPagamento,
+                        data=dataPagamento
                     )
                     comparticao.mensalidade_paga = comparticao.pagamentos.aggregate(Sum("valor"))["valor__sum"] or 0
-                    comparticao.data_fim = date.today()
+                    comparticao.data_fim = dataPagamento
                     comparticao.save()
-                    mensagem = "Pagamento registado"
+
+                    if comparticao.mensalidade_paga > comparticao.mensalidade_valor:
+                        mensagem = "Aviso: O valor pago ultrapassa o valor da comparticão"
+                    else:
+                        mensagem = "Pagamento registado"
 
                     item["nome"] = f"{comparticao.aluno_id.nome_proprio} {comparticao.aluno_id.apelido}"
                     item["tipo"] = "Comparticação"
                     item["valorAPagar"] = comparticao.mensalidade_valor
                     item["valorPago"] = comparticao.mensalidade_paga
-                else:
-                    mensagem = "Erro: O valor do pagamento ultrapassa o valor da comparticão"
-
-                    item["nome"] = f"{comparticao.aluno_id.nome_proprio} {comparticao.aluno_id.apelido}"
-                    item["tipo"] = "Comparticação"
-                    item["valorAPagar"] = comparticao.mensalidade_valor
-                    item["valorPago"] = comparticao.mensalidade_paga + valorPagamento
 
     alunos = Aluno.objects.filter(archive_flag=False).distinct()
     meses = range(1, 13)
@@ -596,7 +595,8 @@ def show_pagamentos_mensalidade(request, mensalidade_id):
         "data": mensalidade.data_inicio,
         "valorAPagar": mensalidade.mensalidade_calc,
         "valorPago": mensalidade.mensalidade_paga,
-        "pagamentos": mensalidade.pagamentos.all()
+        "pagamentos": mensalidade.pagamentos.all(),
+        "editarUrl": "edit_pagamento_mensalidade"
     }
     return render(request, 'show_pagamentos.html', contexto)
 
@@ -609,9 +609,54 @@ def show_pagamentos_comparticao(request, comparticao_id):
         "data": comparticao.data_inicio,
         "valorAPagar": comparticao.mensalidade_valor,
         "valorPago": comparticao.mensalidade_paga,
-        "pagamentos": comparticao.pagamentos.all()
+        "pagamentos": comparticao.pagamentos.all(),
+        "editarUrl": "edit_pagamento_comparticao"
     }
     return render(request, 'show_pagamentos.html', contexto)
+
+def edit_pagamento_mensalidade(request, pagamento_id):
+    pagamento = get_object_or_404(PagamentoMensalidade, pk=pagamento_id)
+    mensalidade = pagamento.mensalidade_id
+
+    if request.method == "POST":
+        form = PagamentoMensalidadeForm(request.POST, instance=pagamento)
+        if form.is_valid():
+            form.save()
+            mensalidade.mensalidade_paga = mensalidade.pagamentos.aggregate(Sum("valor"))["valor__sum"] or 0
+            mensalidade.save()
+            return redirect('show_pagamentos_mensalidade', mensalidade_id=mensalidade.ma_id)
+        else:
+            print(form.errors)
+    else:
+        form = PagamentoMensalidadeForm(instance=pagamento)
+
+    contexto = {
+        "form": form,
+        "voltarUrl": reverse('show_pagamentos_mensalidade', kwargs={"mensalidade_id": mensalidade.ma_id})
+    }
+    return render(request, 'edit_pagamento.html', contexto)
+
+def edit_pagamento_comparticao(request, pagamento_id):
+    pagamento = get_object_or_404(PagamentoComparticao, pk=pagamento_id)
+    comparticao = pagamento.comparticao_id
+
+    if request.method == "POST":
+        form = PagamentoComparticaoForm(request.POST, instance=pagamento)
+        if form.is_valid():
+            form.save()
+            comparticao.mensalidade_paga = comparticao.pagamentos.aggregate(Sum("valor"))["valor__sum"] or 0
+            comparticao.save()
+            return redirect('show_pagamentos_comparticao', comparticao_id=comparticao.mss_id)
+        else:
+            print(form.errors)
+    else:
+        form = PagamentoComparticaoForm(instance=pagamento)
+
+    contexto = {
+        "form": form,
+        "voltarUrl": reverse('show_pagamentos_comparticao', kwargs={"comparticao_id": comparticao.mss_id})
+    }
+    return render(request, 'edit_pagamento.html', contexto)
 
 def insert_metodo_pagamento_view(request):
     if request.method == "POST":

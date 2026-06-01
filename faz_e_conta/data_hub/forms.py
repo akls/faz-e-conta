@@ -71,3 +71,19 @@ class MetodoPagamentoForm(forms.ModelForm):
     class Meta:
         model = MetodoPagamento
         fields = ["metodo"]
+
+class PagamentoMensalidadeForm(forms.ModelForm):
+    class Meta:
+        model = PagamentoMensalidade
+        fields = ["valor", "data", "metodo_pagamento_id"]
+        widgets = {
+            "data": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
+        }
+
+class PagamentoComparticaoForm(forms.ModelForm):
+    class Meta:
+        model = PagamentoComparticao
+        fields = ["valor", "data", "metodo_pagamento_id"]
+        widgets = {
+            "data": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
+        }

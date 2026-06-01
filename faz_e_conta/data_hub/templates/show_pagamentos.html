@@ -25,19 +25,23 @@
                     <th>Valor</th>
                     <th>Data</th>
                     <th>Método de pagamento</th>
+                    <th>Editar</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for pagamento in pagamentos %}
                     <tr>
-                        <td>{{ pagamento.valor }}</td>
+                        <td>{{ pagamento.valor|floatformat:2 }}</td>
                         <td>{{ pagamento.data }}</td>
                         <td>{{ pagamento.metodo_pagamento_id.metodo }}</td>
+                        <td>
+                            <a href="{% url editarUrl pagamento_id=pagamento.pk %}">Editar</a>
+                        </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="3">Sem pagamentos registados</td>
+                        <td colspan="4">Sem pagamentos registados</td>
                     </tr>
                 {% endfor %}
             </tbody>

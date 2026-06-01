@@ -66,11 +66,11 @@
                         </td>
 
                         <td>
-                            {{ financa.rendim_líquido }}
+                            {{ financa.rendim_líquido|floatformat:2 }}
                         </td>
 
                         <td>
-                            {{ financa.despesa_anual }}
+                            {{ financa.despesa_anual|floatformat:2 }}
                         </td>
 
                         <td>
@@ -98,7 +98,7 @@
     <h1>Tabela Mensalidade Alunos</h1>
     <section id="mensalidadesFilt">
 
-        <a href="{% url 'edit_pagamentos' %}">Pagamentos</a>
+        <a href="{% url 'insert_pagamentos' %}">Pagamentos</a>
         <!-- Form para pesquisar mensalidades -->
         <form method="get" id="filter-form">
             <label>Nome:</label>
@@ -250,11 +250,11 @@
                         </td>
 
                         <td>
-                            {{ mensalidade.mensalidade_calc }}
+                            {{ mensalidade.mensalidade_calc|floatformat:2 }}
                         </td>
 
                         <td>
-                            {{ mensalidade.mensalidade_paga }}
+                            {{ mensalidade.mensalidade_paga|floatformat:2 }}
                         </td>
 
                         <td>
@@ -266,7 +266,7 @@
                         </td>
 
                         <td>
-                            {{ dividas|get_item:mensalidade.aluno_id.aluno_id }}
+                            {{ dividas|get_item:mensalidade.aluno_id.aluno_id|floatformat:2 }}
                         </td>
 
                         <td>
@@ -337,11 +337,11 @@
                         </td>
 
                         <td>
-                            {{ comparticao.mensalidade_valor }}
+                            {{ comparticao.mensalidade_valor|floatformat:2 }}
                         </td>
 
                         <td>
-                            {{ comparticao.mensalidade_paga }}
+                            {{ comparticao.mensalidade_paga|floatformat:2 }}
                         </td>
 
                         <td>

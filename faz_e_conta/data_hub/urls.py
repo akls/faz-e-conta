@@ -48,9 +48,11 @@ urlpatterns = [
     path('responsavel/<int:responsavel_id>/editar/', views.edit_responsavel_educativo, name='edit_responsavel_educativo'),
     path("salas/<int:sala_id>/edit", views.edit_sala, name="edit_sala"),
     path('alunos_financas/<int:financa_id>', views.edit_financas, name='edit_financas'),
-    path('alunos_financas/pagamentos', views.edit_pagamentos, name='edit_pagamentos'),
+    path('alunos_financas/pagamentos', views.insert_pagamentos, name='insert_pagamentos'),
     path('despesas/fixas/<int:despesaFixa_id>', views.edit_despesasFixas, name='edit_despesasFixas'),
     path('despesas/variaveis/<int:despesaVariavel_id>', views.edit_despesasVariaveis, name='edit_despesasVariaveis'),
+    path('pagamento/mensalidade/<int:pagamento_id>/editar', views.edit_pagamento_mensalidade, name='edit_pagamento_mensalidade'),
+    path('pagamento/comparticao/<int:pagamento_id>/editar', views.edit_pagamento_comparticao, name='edit_pagamento_comparticao'),
 ]
 
 urlpatterns = add_form_urlpatterns(urlpatterns)
