@@ -584,7 +584,7 @@ def insert_pagamentos(request):
         "item": item,
         "valoresDosFiltros": valoresDosFiltros
     }
-    return render(request, 'edit_payments.html', contexto)
+    return render(request, 'insert_pagamentos.html', contexto)
 
 def show_pagamentos_mensalidade(request, mensalidade_id):
     mensalidade = get_object_or_404(MensalidadeAluno, pk=mensalidade_id)
@@ -663,7 +663,7 @@ def insert_metodo_pagamento_view(request):
         form = MetodoPagamentoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('edit_pagamentos')
+            return redirect('insert_pagamentos')
         else:
             print(form.errors)
     else:
