@@ -4,6 +4,9 @@ from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 from .auto_gen_id_views import *
 from django.db.models import Q, Sum
 from django.utils import timezone
@@ -1060,6 +1063,60 @@ def show_saude_fianceira(request):
     }
 
     return render(request, 'show_saude_financeira.html', contexto)
+
+def relatorio_pdf(request):
+
+    form_type = request.GET.get("form_type")
+
+    contexto = {
+        "form_type": form_type,
+        "gerado_em": timezone.now(),
+        "filtros": {},
+        "dados": []
+    }
+
+    # Aplica os mesmos filtros da pagina da saude financeira
+    match form_type:
+        case "balanco_global":
+            contexto["titulo"] = "Relatório - Balanço Global"
+            dados, filtros = filtrosBalancoGlobal(request, SaudeFinanceiraBalancoGlobal.objects.all())
+        case "balanco_valencia":
+            contexto["titulo"] = "Relatório - Balanço por Valência"
+            dados, filtros = filtrosBalancoValencia(request, SaudeFinanceiraBalancoValencia.objects.all())
+        case "balanco_escalao":
+            contexto["titulo"] = "Relatório - Balanço por Escalão"
+            dados, filtros = filtrosBalancoEscalao(request, SaudeFinanceiraBalancoEscalao.objects.all())
+        case "balanco_aluno":
+            contexto["titulo"] = "Relatório - Balanço por Aluno"
+            dados, filtros = filtrosBalancoAluno(request, SaudeFinanceiraBalancoAluno.objects.all())
+        case _:
+            return HttpResponse("Tipo de relatório inválido", status=400)
+
+    contexto["dados"] = dados
+    contexto["filtros"] = filtros
+
+    # Renderiza o template HTML e converte para PDF
+    html = get_template('relatorio_pdf.html').render(contexto)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_financeiro.pdf"'
+    pisa.CreatePDF(html, dest=response)
+    return response
+
+def delete_saude_financeira(request, tipo, balanco_id):
+    modelos = {
+        "global": SaudeFinanceiraBalancoGlobal,
+        "valencia": SaudeFinanceiraBalancoValencia,
+        "escalao": SaudeFinanceiraBalancoEscalao,
+        "aluno": SaudeFinanceiraBalancoAluno,
+    }
+
+    modelo = modelos.get(tipo)
+    if modelo is None:
+        return HttpResponse("Tipo de balanço inválido", status=400)
+
+    registo = get_object_or_404(modelo, pk=balanco_id)
+    registo.delete()
+    return redirect('show_saude_financeira')
 
 
 

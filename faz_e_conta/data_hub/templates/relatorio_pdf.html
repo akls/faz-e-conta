@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page { size: A4 landscape; margin: 1.5cm; }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #222; }
+        h1 { font-size: 18px; margin-bottom: 2px; }
+        .meta { color: #666; font-size: 9px; margin-bottom: 12px; }
+        .filtros { margin-bottom: 12px; font-size: 10px; }
+        .filtros span { margin-right: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #999; padding: 5px 6px; text-align: left; }
+        thead { background-color: #eee; }
+    </style>
+</head>
+<body>
+
+    <h1>{{ titulo }}</h1>
+    <div class="meta">Gerado em {{ gerado_em|date:"d/m/Y H:i" }}</div>
+
+    <div class="filtros">
+        <strong>Filtros aplicados:</strong>
+        <span>Início: {{ filtros.data_inicio|default:"—" }}</span>
+        <span>Fim: {{ filtros.data_fim|default:"—" }}</span>
+        {% if filtros.valencia %}<span>Valência: {{ filtros.valencia }}</span>{% endif %}
+        {% if filtros.escalao %}<span>Escalão: {{ filtros.escalao }}</span>{% endif %}
+    </div>
+
+    {% if form_type == "balanco_global" %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data início</th>
+                <th>Data fim</th>
+                <th>Custo despesas totais</th>
+                <th>Mensalidades pagas</th>
+                <th>Mensalidades não pagas</th>
+                <th>Comparticipações pagas</th>
+                <th>Comparticipações não pagas</th>
+                <th>Receita</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in dados %}
+            <tr>
+                <td>{{ d.sf_id }}</td>
+                <td>{{ d.data_inicio }}</td>
+                <td>{{ d.data_fim }}</td>
+                <td>{{ d.custo_despesas_totais|floatformat:2 }}€</td>
+                <td>{{ d.mensalidades_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.mensalidades_nao_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.comparticoes_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.comparticoes_nao_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.receita|floatformat:2 }}€</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9">Sem registos</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% elif form_type == "balanco_valencia" %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Valência</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Nº Alunos</th>
+                <th>Mensalidades Pagas</th>
+                <th>Comparticipações Pagas</th>
+                <th>Custo por Criança</th>
+                <th>Balanço</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in dados %}
+            <tr>
+                <td>{{ d.sfv_id }}</td>
+                <td>{{ d.valencia }}</td>
+                <td>{{ d.data_inicio }}</td>
+                <td>{{ d.data_fim }}</td>
+                <td>{{ d.num_alunos }}</td>
+                <td>{{ d.mensalidades_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.comparticoes_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.custo_por_crianca|floatformat:2 }}€</td>
+                <td>{{ d.balanco|floatformat:2 }}€</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9">Sem registos</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% elif form_type == "balanco_escalao" %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Escalão</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Nº Alunos</th>
+                <th>Mensalidades Pagas</th>
+                <th>Comparticipações Pagas</th>
+                <th>Custo por Criança</th>
+                <th>Balanço</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in dados %}
+            <tr>
+                <td>{{ d.sfe_id }}</td>
+                <td>{{ d.escalao }}</td>
+                <td>{{ d.data_inicio }}</td>
+                <td>{{ d.data_fim }}</td>
+                <td>{{ d.num_alunos }}</td>
+                <td>{{ d.mensalidades_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.comparticoes_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.custo_por_crianca|floatformat:2 }}€</td>
+                <td>{{ d.balanco|floatformat:2 }}€</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9">Sem registos</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% elif form_type == "balanco_aluno" %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Mensalidades Pagas</th>
+                <th>Comparticipações Pagas</th>
+                <th>Custo por Criança</th>
+                <th>Balanço</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in dados %}
+            <tr>
+                <td>{{ d.sfba_id }}</td>
+                <td>{{ d.data_inicio }}</td>
+                <td>{{ d.data_fim }}</td>
+                <td>{{ d.mensalidades_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.comparticoes_pagas_total|floatformat:2 }}€</td>
+                <td>{{ d.custo_por_crianca|floatformat:2 }}€</td>
+                <td>{{ d.balanco|floatformat:2 }}€</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">Sem registos</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</body>
+</html>

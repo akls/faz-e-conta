@@ -28,6 +28,8 @@ urlpatterns = [
     path('aluno/<int:aluno_id>/', views.show_student_details, name='show_student_details'),
     path('responsavel/<int:responsavel_id>/', views.show_contactos_details, name='show_contactos_details'),
     path('saude_financeira', views.show_saude_fianceira, name='show_saude_financeira'),
+    path('saude_financeira/relatorio_pdf', views.relatorio_pdf, name='relatorio_pdf'),
+    path('saude_financeira/<str:tipo>/<int:balanco_id>/eliminar', views.delete_saude_financeira, name='delete_saude_financeira'),
     path('mensalidade/<int:mensalidade_id>/pagamentos', views.show_pagamentos_mensalidade, name='show_pagamentos_mensalidade'),
     path('comparticao/<int:comparticao_id>/pagamentos', views.show_pagamentos_comparticao, name='show_pagamentos_comparticao'),
 

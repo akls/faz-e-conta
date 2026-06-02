@@ -1,9 +1,7 @@
 from django.db import models
 from datetime import date
 import django.utils as du
-from django.contrib.auth.models import User
 from django.utils import timezone
-from django.db.models.fields import AutoField
 
 
 class Aluno(models.Model):
