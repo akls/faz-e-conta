@@ -1064,6 +1064,22 @@ def show_saude_fianceira(request):
 
     return render(request, 'show_saude_financeira.html', contexto)
 
+def delete_saude_financeira(request, tipo, balanco_id):
+    modelos = {
+        "global": SaudeFinanceiraBalancoGlobal,
+        "valencia": SaudeFinanceiraBalancoValencia,
+        "escalao": SaudeFinanceiraBalancoEscalao,
+        "aluno": SaudeFinanceiraBalancoAluno,
+    }
+
+    modelo = modelos.get(tipo)
+    if modelo is None:
+        return HttpResponse("Tipo de balanço inválido", status=400)
+
+    registo = get_object_or_404(modelo, pk=balanco_id)
+    registo.delete()
+    return redirect('show_saude_financeira')
+
 def relatorio_pdf(request):
 
     form_type = request.GET.get("form_type")
@@ -1102,21 +1118,6 @@ def relatorio_pdf(request):
     pisa.CreatePDF(html, dest=response)
     return response
 
-def delete_saude_financeira(request, tipo, balanco_id):
-    modelos = {
-        "global": SaudeFinanceiraBalancoGlobal,
-        "valencia": SaudeFinanceiraBalancoValencia,
-        "escalao": SaudeFinanceiraBalancoEscalao,
-        "aluno": SaudeFinanceiraBalancoAluno,
-    }
-
-    modelo = modelos.get(tipo)
-    if modelo is None:
-        return HttpResponse("Tipo de balanço inválido", status=400)
-
-    registo = get_object_or_404(modelo, pk=balanco_id)
-    registo.delete()
-    return redirect('show_saude_financeira')
 
 
 

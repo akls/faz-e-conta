@@ -1,0 +1,62 @@
+/* CSS para a pagina de login */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.login-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 380px;
+}
+
+.login-card h2 {
+    text-align: center;
+}
+
+
+.login-card form {
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.login-card label {
+    font-weight: 600;
+    color: #1f3c88;
+}
+
+.login-card input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    margin: 6px 0 16px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card input:focus {
+    border-color: #1f3c88;
+    box-shadow: 0 0 5px rgba(31,60,136,0.3);
+    outline: none;
+}
+
+.login-card button {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+}

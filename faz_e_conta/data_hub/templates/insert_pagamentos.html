@@ -8,6 +8,7 @@
 
 {% block content %}
 
+    <div class="form-container">
     <h1>Pagamentos</h1>
     <form method="POST" action="">
         {% csrf_token %}
@@ -52,8 +53,11 @@
         <button type="submit">Registar pagamento</button>
 
     </form>
+        <div class="actions">
+            <a href="{% url 'insert_metodo_pagamento_view' %}">Registar novo método de pagamento</a>
+        </div>
+    </div>
 
-    <a href="{% url 'insert_metodo_pagamento_view' %}">Registar novo método de pagamento</a>
     {% if mensagem %}
     <h1>{{ mensagem }}</h1>
 
