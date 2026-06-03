@@ -1136,7 +1136,9 @@ def insert_user(request):
             user.is_active = False
             user.save()
 
-            return redirect('show_despesas')
+            return redirect('starter_page')
+        else:
+            print(form.errors)
     else:
         form = UserForm()
-        return render(request, 'insert_user.html', {'form': form})
+    return render(request, 'insert_user.html', {'form': form})

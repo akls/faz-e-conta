@@ -13,6 +13,11 @@ class AlunoForm(forms.ModelForm):
         # Adiciona atributos aos campos do formulário
         widgets = Aluno_widget()
 
+        # Labels mais legíveis
+        labels = {
+            "archive_flag": "Alumni (antigo aluno)",
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['responsaveis_educativos_ids'].queryset = ResponsavelEducativo.objects.order_by('nome_proprio', 'apelido')
