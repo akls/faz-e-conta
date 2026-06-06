@@ -10,12 +10,80 @@
         <td>{{ aluno.nome_proprio }} {{ aluno.apelido }}</td>
     </tr>
     <tr>
+        <th>Estado:</th>
+        <td>{% if aluno.archive_flag %}Alumni (antigo aluno){% else %}Ativo{% endif %}</td>
+    </tr>
+    <tr>
         <th>Processo:</th>
-        <td>{% if aluno.processo %}{{ aluno.processo }}{% else %}Nenhum dado{% endif %}</td>
+        <td>{{ aluno.processo|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Programa:</th>
+        <td>{{ aluno.programa_id.nome|default:"Nenhuma informação" }}</td>
     </tr>
     <tr>
         <th>Data de Admissão:</th>
-        <td>{{ aluno.data_admissao }}</td>
+        <td>{{ aluno.data_admissao|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Data de Última Renovação:</th>
+        <td>{{ aluno.data_ultima_renovacao|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Data de Nascimento:</th>
+        <td>{{ aluno.data_nascimento|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Documento:</th>
+        <td>{{ aluno.documento|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Número do Documento:</th>
+        <td>{{ aluno.numero_documento|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Data de Validade:</th>
+        <td>{{ aluno.data_validade|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>NISS:</th>
+        <td>{{ aluno.niss|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>NIF:</th>
+        <td>{{ aluno.nif|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Morada:</th>
+        <td>{{ aluno.morada|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Código Postal:</th>
+        <td>{{ aluno.codigo_postal|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Concelho:</th>
+        <td>{{ aluno.concelho|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Freguesia:</th>
+        <td>{{ aluno.fregesia|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Escolaridade Anterior:</th>
+        <td>{{ aluno.escolaridade_anterior|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Motivo de Admissão:</th>
+        <td>{{ aluno.motivo_admissao|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Cuidados Especiais:</th>
+        <td>{{ aluno.cuidados_especias|default:"Nenhuma informação" }}</td>
+    </tr>
+    <tr>
+        <th>Comparticipação SS (personalizada):</th>
+        <td>{{ aluno.comparticao_ss_custom|default:"Nenhuma informação" }}</td>
     </tr>
 </table>
 <a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>

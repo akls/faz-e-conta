@@ -55,6 +55,20 @@ class FinancasForm(forms.ModelForm):
             "outros",
         ]
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        rendimento = cleaned_data.get("rendim_líquido")
+        despesa = cleaned_data.get("despesa_anual")
+
+        if rendimento is not None and despesa is not None:
+            if rendimento < despesa:
+                raise forms.ValidationError(
+                    "O rendimento líquido não pode ser inferior à despesa anual."
+                )
+
+        return cleaned_data
+
 class DespesaFixaForm(forms.ModelForm):
     class Meta:
         model = DespesaFixa

@@ -4,14 +4,14 @@
 {% block content %}
 
 <div class="form-container">
-    <h1>Inserir Sala</h1>
+    <h1>Criar conta</h1>
     <form method='post' id="form">
         {% csrf_token %}
         {{ form.as_p }}
     </form>
     <div class="actions">
         <button type='submit' form="form" onclick="validateForm()">Inserir</button>
-        <a href="{% url 'show_salas' %}">Voltar</a>
+        <a href="{% url 'starter_page' %}">Voltar</a>
     </div>
 </div>
 

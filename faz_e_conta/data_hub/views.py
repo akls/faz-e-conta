@@ -75,10 +75,10 @@ def insert_aluno_view(request):
     if request.method == "POST":
         form = AlunoForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the form data to the database
-            return redirect('show_students')  # Redirect to the students list page
+            form.save()
+            return redirect('show_students')
         else:
-            print(form.errors)  # Debugging: Print form errors
+            print(form.errors)
     else:
         form = AlunoForm()
     return render(request, 'insert_aluno.html', {'form': form})
@@ -324,15 +324,23 @@ def show_financas(request):
             percParaEscaloes = (RMM / RMMG) * 100
 
             # Saber o escalao e a percentagem para aplicar a capital
-            escaloes = EscaloesRendimento.objects.all()
+            escaloes = EscaloesRendimento.objects.all().order_by("perc_rend_per_capita_min")
             escalaoDoAluno = ""
             percParaAplicarCapital = 0.0
             for escalao in escaloes:
-                if escalao.perc_rend_per_capita_max is None and percParaEscaloes >= escalao.perc_rend_per_capita_min:
+                minimo = float(escalao.perc_rend_per_capita_min)
+
+                maximo = escalao.perc_rend_per_capita_max
+                if maximo is None or maximo == "":
+                    maximo = None
+                else:
+                    maximo = float(maximo)
+
+                if maximo is None and percParaEscaloes >= minimo:
                     escalaoDoAluno = escalao.escalao
                     percParaAplicarCapital = escalao.comparticipacao_da_familia
                     break
-                elif percParaEscaloes >= escalao.perc_rend_per_capita_min and percParaEscaloes < escalao.perc_rend_per_capita_max:
+                elif maximo is not None and minimo <= percParaEscaloes < maximo:
                     escalaoDoAluno = escalao.escalao
                     percParaAplicarCapital = escalao.comparticipacao_da_familia
                     break
@@ -459,13 +467,18 @@ def insert_financas(request):
     if request.method == "POST":
         form = FinancasForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('show_aluno_financas')
+            aluno = form.cleaned_data["aluno_id"]
+
+            if AlunoFinancas.objects.filter(aluno_id=aluno).exists():
+                form.add_error("aluno_id", "Este aluno já tem finanças registadas.")
+            else:
+                form.save()
+                return redirect('show_aluno_financas')
         else:
             print(form.errors)
     else:
         form = FinancasForm()
-        return render(request, 'insert_financas.html', {'form': form})
+    return render(request, 'insert_financas.html', {'form': form})
 
 def edit_financas(request, financa_id):
     alunoFinanca = get_object_or_404(AlunoFinancas, pk=financa_id)
