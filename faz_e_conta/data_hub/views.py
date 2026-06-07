@@ -867,6 +867,7 @@ def balancoEscalao(request):
 def balancoAluno(request):
     data_inicio = request.POST.get("data_inicio")
     data_fim = request.POST.get("data_fim")
+    aluno_id = request.POST.get("aluno")
 
     if not data_inicio:
         data_inicio = date(timezone.now().year, timezone.now().month, 1)
@@ -878,23 +879,31 @@ def balancoAluno(request):
     else:
         data_fim = date.fromisoformat(data_fim)
 
+    # Precisa de um aluno selecionado
+    aluno = Aluno.objects.filter(pk=aluno_id).first()
+    if aluno is None:
+        return
 
     custo_por_crianca = calcularCustoPorCrianca(data_inicio, data_fim)
 
-    # Mensalidades
+    # Mensalidades deste aluno no periodo
     mensalidades = MensalidadeAluno.objects.filter(
+        aluno_id=aluno,
         data_inicio__date__range=(data_inicio, data_fim)
     )
-    mensalidades_pagas = sum(m.mensalidade_paga for m in mensalidades)
+    mensalidades_pagas = sum((m.mensalidade_paga or 0) for m in mensalidades)
 
-    # Comparticipações
+    # Comparticipações deste aluno no periodo
     comparticoes = ComparticaoMensalSS.objects.filter(
+        aluno_id=aluno,
         data_inicio__date__range=(data_inicio, data_fim)
     )
-    comparticoes_pagas = sum(c.mensalidade_paga for c in comparticoes)
+    comparticoes_pagas = sum((c.mensalidade_paga or 0) for c in comparticoes)
+
     balanco = mensalidades_pagas + comparticoes_pagas - custo_por_crianca
 
     SaudeFinanceiraBalancoAluno.objects.create(
+        aluno_id=aluno,
         mensalidades_pagas_total=mensalidades_pagas,
         comparticoes_pagas_total=comparticoes_pagas,
         custo_por_crianca=custo_por_crianca,
@@ -1014,7 +1023,8 @@ def show_saude_fianceira(request):
     # Valores para aparecer na seleçao dos filtros
     valoresSelecaoFiltros = {
         "valencias": Sala.objects.values_list('sala_valencia', flat=True).distinct(),
-        "escaloes": EscaloesRendimento.objects.values_list("escalao", flat = True).distinct()
+        "escaloes": EscaloesRendimento.objects.values_list("escalao", flat = True).distinct(),
+        "alunos": Aluno.objects.filter(archive_flag=False)
     }
 
     # Get

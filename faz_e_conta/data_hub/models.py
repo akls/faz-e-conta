@@ -435,6 +435,7 @@ class SaudeFinanceiraBalancoAluno(models.Model):
         db_table = 'saude_financeira_balanco_aluno'
 
     sfba_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, null=True, blank=True, db_column='aluno_id')
 
     mensalidades_pagas_total = models.FloatField(null=True, blank=True)
     comparticoes_pagas_total = models.FloatField(null=True, blank=True)

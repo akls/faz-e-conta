@@ -466,7 +466,14 @@
     <label>Data de Fim</label>
     <input type="date" name="data_fim">
 
-    <button type="submit">Calcular Balanço Valencia</button>
+    <label>Aluno</label>
+    <select name="aluno">
+        {% for aluno in valoresSelecaoFiltros.alunos %}
+        <option value="{{ aluno.aluno_id }}">{{ aluno.nome_proprio }} {{ aluno.apelido }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Calcular Balanço Aluno</button>
 </form>
 
 <!-- Pesquisa -->
@@ -490,6 +497,10 @@
     <tr>
         <th>
             ID
+        </th>
+
+        <th>
+            Aluno
         </th>
 
         <th>
@@ -530,6 +541,10 @@
         </td>
 
         <td>
+            {{ sfba.aluno_id.nome_proprio }} {{ sfba.aluno_id.apelido }}
+        </td>
+
+        <td>
             {{ sfba.data_inicio }}
         </td>
 
@@ -560,7 +575,7 @@
 
     {% empty %}
     <tr>
-        <td colspan="8">
+        <td colspan="9">
             Sem registos
         </td>
     </tr>

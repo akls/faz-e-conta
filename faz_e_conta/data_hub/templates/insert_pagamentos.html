@@ -13,7 +13,8 @@
     <form method="POST" action="">
         {% csrf_token %}
 
-        <select name="aluno" id="select_aluno">
+        <label for="select_aluno">Aluno</label>
+        <select name="aluno" id="select_aluno" required>
             {% for aluno in alunos %}
             <option value="{{ aluno.aluno_id }}" {% if valoresDosFiltros.aluno == aluno.aluno_id %}selected{% endif %}>
                 {{ aluno.nome_proprio }} {{ aluno.apelido }}
@@ -21,24 +22,28 @@
             {% endfor %}
         </select>
 
-        <select name="pagamentoOpcao" id="select_mensalidade_comparticao">
+        <label for="select_mensalidade_comparticao">Tipo de pagamento</label>
+        <select name="pagamentoOpcao" id="select_mensalidade_comparticao" required>
             <option value="mensalidade" {% if valoresDosFiltros.pagamentoOpcao == "mensalidade" %}selected{% endif %}> Mensalidade </option>
             <option value="comparticao" {% if valoresDosFiltros.pagamentoOpcao == "comparticao" %}selected{% endif %}> Comparticão </option>
         </select>
 
-        <select name="mes" id="select_mes">
+        <label for="select_mes">Mês</label>
+        <select name="mes" id="select_mes" required>
             {% for mes in meses %}
             <option value="{{ mes }}" {% if valoresDosFiltros.mes == mes %}selected{% endif %}> {{ mes }} </option>
             {% endfor %}
         </select>
 
-        <select name="ano" id="select_ano">
+        <label for="select_ano">Ano</label>
+        <select name="ano" id="select_ano" required>
             {% for ano in anos %}
             <option value="{{ ano }}" {% if valoresDosFiltros.ano == ano %}selected{% endif %}> {{ ano }} </option>
             {% endfor %}
         </select>
 
-        <select name="metodoPagamento" id="select_metodo_pagamento">
+        <label for="select_metodo_pagamento">Método de pagamento</label>
+        <select name="metodoPagamento" id="select_metodo_pagamento" required>
             {% for metodoPagamento in metodosPagamento %}
             <option value="{{ metodoPagamento.metodo_pagamento_id }}" {% if valoresDosFiltros.metodoPagamento == metodoPagamento.metodo_pagamento_id %}selected{% endif %}>
                 {{ metodoPagamento.metodo }}
@@ -46,9 +51,11 @@
             {% endfor %}
         </select>
 
-        <input type="number" step="0.01" name="valorPagamento" id="valorPagamento", value="{{ valoresDosFiltros.valorPagamento }}">
+        <label for="valorPagamento">Valor a pagar</label>
+        <input type="number" step="0.01" name="valorPagamento" id="valorPagamento" value="{{ valoresDosFiltros.valorPagamento }}" required>
 
-        <input type="date" name="dataPagamento" id="dataPagamento" value="{{ valoresDosFiltros.dataPagamento }}">
+        <label for="dataPagamento">Data do pagamento</label>
+        <input type="date" name="dataPagamento" id="dataPagamento" value="{{ valoresDosFiltros.dataPagamento }}" required>
 
         <button type="submit">Registar pagamento</button>
 

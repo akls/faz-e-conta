@@ -134,6 +134,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Aluno</th>
                 <th>Data Início</th>
                 <th>Data Fim</th>
                 <th>Mensalidades Pagas</th>
@@ -146,6 +147,7 @@
             {% for d in dados %}
             <tr>
                 <td>{{ d.sfba_id }}</td>
+                <td>{{ d.aluno_id.nome_proprio }} {{ d.aluno_id.apelido }}</td>
                 <td>{{ d.data_inicio }}</td>
                 <td>{{ d.data_fim }}</td>
                 <td>{{ d.mensalidades_pagas_total|floatformat:2 }}€</td>
@@ -154,7 +156,7 @@
                 <td>{{ d.balanco|floatformat:2 }}€</td>
             </tr>
             {% empty %}
-            <tr><td colspan="7">Sem registos</td></tr>
+            <tr><td colspan="8">Sem registos</td></tr>
             {% endfor %}
         </tbody>
     </table>

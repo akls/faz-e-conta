@@ -16,6 +16,7 @@ class AlunoForm(forms.ModelForm):
         # Labels mais legíveis
         labels = {
             "archive_flag": "Alumni (antigo aluno)",
+            "comparticao_ss_custom": "Valor custom para a compartição da segurança social"
         }
 
     def __init__(self, *args, **kwargs):
@@ -54,6 +55,21 @@ class FinancasForm(forms.ModelForm):
             "medicacao",
             "outros",
         ]
+        labels = {
+            "ano_letivo": "Ano Letivo",
+            "aluno_id": "Aluno",
+            "data": "Data",
+            "agregado": "Numero do agregado Familiar",
+            "rendim_líquido": "Rendimento Líquido",
+            "despesa_anual": "Despesa Anual",
+            "irs": "IRS",
+            "tax_soc": "Taxa Social",
+            "tax_impos": "Taxa de Imposto",
+            "renda": "Renda",
+            "med_transp": "Medicina e Transportes",
+            "medicacao": "Medicação",
+            "outros": "Outros",
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -72,14 +88,27 @@ class FinancasForm(forms.ModelForm):
 class DespesaFixaForm(forms.ModelForm):
     class Meta:
         model = DespesaFixa
-        fields = ["produto", "valor", "data", "fatura","pagamento","notas","fornecedor"]
+        fields = ["produto", "valor", "data", "fatura", "pagamento", "notas", "fornecedor"]
         widgets = Despesa_widget()
+
+    def clean_valor(self):
+        valor = self.cleaned_data.get("valor")
+        if valor is not None and valor < 0:
+            raise forms.ValidationError("O valor da despesa não pode ser negativo.")
+        return valor
+
 
 class DespesasVariavelForm(forms.ModelForm):
     class Meta:
         model = DespesasVariavel
-        fields = ["produto", "valor", "data", "fatura","pagamento","notas","fornecedor"]
+        fields = ["produto", "valor", "data", "fatura", "pagamento", "notas", "fornecedor"]
         widgets = Despesa_widget()
+
+    def clean_valor(self):
+        valor = self.cleaned_data.get("valor")
+        if valor is not None and valor < 0:
+            raise forms.ValidationError("O valor da despesa não pode ser negativo.")
+        return valor
 
 class UserForm(forms.ModelForm):
     class Meta:

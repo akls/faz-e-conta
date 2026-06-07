@@ -269,3 +269,12 @@ p {
 .actions a {
     font-weight: 600;
 }
+
+
+.form-container label:has(+ input:required)::after,
+.form-container label:has(+ select:required)::after,
+.form-container label:has(+ textarea:required)::after {
+    content: " *";
+    color: #c33b3b;
+    font-weight: 700;
+}
