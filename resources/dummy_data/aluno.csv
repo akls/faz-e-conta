@@ -19,3 +19,8 @@
 18,Samuel,Teixeira,False,2023018,2023-10-22,2024-10-22,2012-12-22,Passaporte,89012367,2027-12-22,890210987,890210987,Rua Nova,1800-018,Funchal,Câmara de Lobos,Secundário,Bolsa,None,8,3
 19,Tatiana,Ribeiro,False,2023019,2023-10-25,2024-10-25,2016-09-05,CC,12345698,2031-09-05,901098765,901098765,Largo das Fontes,1900-019,Lisboa,Benfica,Pré-Escolar,Residência,Alergias,9,3
 20,Ulisses,Machado,False,2023020,2023-10-28,2024-10-28,2015-07-07,CC,23456789,2030-07-07,912345678,912345678,Rua da Liberdade,2000-020,Porto,Boavista,1º Ciclo,Transferência,None,10,3
+21,Vânia,Sousa,True,2022001,2022-09-01,2023-09-01,2014-03-12,CC,11223344,2029-03-12,321654987,321654987,Rua do Pinhal,2100-021,Lisboa,Olivais,1º Ciclo,Transferência,None,1,1
+22,Xavier,Ferreira,True,2022002,2022-09-05,2023-09-05,2013-07-19,Passaporte,44332211,2028-07-19,654987321,654987321,Avenida das Acácias,2200-022,Porto,Cedofeita,2º Ciclo,Bolsa,Asma,2,1
+23,Yara,Rodrigues,True,2022003,2022-09-10,2023-09-10,2015-01-25,CC,55667788,2030-01-25,987321654,987321654,Travessa do Moinho,2300-023,Coimbra,Sé Nova,3º Ciclo,Residência,None,3,2
+24,Zé,Antunes,True,2022004,2022-09-15,2023-09-15,2012-05-08,CC,88776655,2027-05-08,147258369,147258369,Rua das Palmeiras,2400-024,Braga,São Victor,Secundário,Transferência,Deficiência Motora,4,2
+25,Amélia,Fonseca,True,2022005,2022-09-20,2023-09-20,2016-11-14,Passaporte,99887766,2031-11-14,258369147,258369147,Largo do Rossio,2500-025,Évora,Malagueira,Pré-Escolar,Bolsa,Alergias,5,3

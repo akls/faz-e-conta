@@ -4,14 +4,14 @@
 {% block content %}
 
     <div class="form-container">
-        <h1>Editar Responsável Educativo</h1>
-        <form method="post" id="form">
+        <h1>Inserir Método de Pagamento</h1>
+        <form method='post' id="form">
             {% csrf_token %}
             {{ form.as_p }}
         </form>
         <div class="actions">
-            <button type="submit" form="form">Salvar</button>
-            <a href="{% url 'show_contactos' %}">Cancelar</a>
+            <button type='submit' form="form" onclick="validateForm()">Inserir</button>
+            <a href="{% url 'insert_pagamentos' %}">Voltar</a>
         </div>
     </div>
 

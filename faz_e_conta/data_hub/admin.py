@@ -1,8 +1,6 @@
 from django.contrib import admin
 from .models import *
 
-# Register your models here.
-
 admin.site.register(Aluno)
 admin.site.register(ResponsavelEducativo)
 admin.site.register(AlunoSaida)
@@ -16,3 +14,10 @@ admin.site.register(MensalidadeAluno)
 admin.site.register(AlunoFinancas)
 admin.site.register(AlunoFinacasCalc)
 admin.site.register(Funcionario)
+admin.site.register(SaudeFinanceiraBalancoGlobal)
+admin.site.register(EscaloesRendimento)
+admin.site.register(ComparticaoMensalSS)
+admin.site.register(ConfigIpss)
+admin.site.register(programa)
+admin.site.register(SaudeFinanceiraBalancoEscalao)
+admin.site.register(MetodoPagamento)

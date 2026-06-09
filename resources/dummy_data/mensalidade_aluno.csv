@@ -1,21 +1,21 @@
-ma_id,aluno_id,ano,mes,mensalidade_calc,mensalidade_retific,mensalidade_paga,data_pagamento,modo_pagamento,programa_ss,acordo,escalao
-1,1,2026,3,120.50,0,120,2026-03-05,Transferência,Sim,Acordo A,Escalão 1
-2,2,2026,3,95.00,5,90,2026-03-10,MB Way,Não,Acordo B,Escalão 2
-3,3,2026,3,110.00,0,110,2026-03-08,Dinheiro,Sim,Acordo A,Escalão 1
-4,4,2026,3,130.75,10,120,2026-03-12,Transferência,Não,Acordo C,Escalão 3
-5,5,2026,3,100.00,0,100,2026-03-07,MB Way,Sim,Acordo B,Escalão 2
-6,6,2026,3,90.25,0,90,2026-03-15,Dinheiro,Não,Acordo A,Escalão 1
-7,7,2026,3,115.00,15,100,2026-03-20,Transferência,Sim,Acordo C,Escalão 3
-8,8,2026,3,105.50,0,105,2026-03-18,MB Way,Não,Acordo B,Escalão 2
-9,9,2026,3,98.00,3,95,2026-03-22,Dinheiro,Sim,Acordo A,Escalão 1
-10,10,2026,3,125.00,0,125,2026-03-25,Transferência,Não,Acordo C,Escalão 3
-11,11,2026,3,102.00,0,102,2026-03-06,MB Way,Sim,Acordo A,Escalão 1
-12,12,2026,3,118.50,8,110,2026-03-11,Dinheiro,Não,Acordo B,Escalão 2
-13,13,2026,3,99.75,0,99,2026-03-09,Transferência,Sim,Acordo C,Escalão 3
-14,14,2026,3,121.00,0,121,2026-03-13,MB Way,Não,Acordo A,Escalão 1
-15,15,2026,3,107.25,5,102,2026-03-16,Dinheiro,Sim,Acordo B,Escalão 2
-16,16,2026,3,112.50,0,112,2026-03-17,Transferência,Não,Acordo C,Escalão 3
-17,17,2026,3,96.00,0,96,2026-03-19,MB Way,Sim,Acordo A,Escalão 1
-18,18,2026,3,123.75,10,114,2026-03-21,Dinheiro,Não,Acordo B,Escalão 2
-19,19,2026,3,108.50,0,108,2026-03-23,Transferência,Sim,Acordo C,Escalão 3
-20,20,2026,3,97.25,0,97,2026-03-24,MB Way,Não,Acordo A,Escalão 1
+ma_id,aluno_id,data_inicio,data_fim,mensalidade_calc,mensalidade_retific,mensalidade_paga,modo_pagamento,programa_ss,acordo,escalao
+1,1,2026-01-05 00:00:00,,120.50,0,120,Transferência,Sim,Acordo A,Escalão 1
+2,2,2026-01-10 00:00:00,,95.00,5,90,MB Way,Não,Acordo B,Escalão 2
+3,3,2026-01-08 00:00:00,,110.00,0,110,Dinheiro,Sim,Acordo A,Escalão 1
+4,4,2026-01-12 00:00:00,,130.75,10,120,Transferência,Não,Acordo C,Escalão 3
+5,5,2026-01-07 00:00:00,,100.00,0,100,MB Way,Sim,Acordo B,Escalão 2
+6,6,2026-01-15 00:00:00,,90.25,0,90,Dinheiro,Não,Acordo A,Escalão 1
+7,7,2026-01-20 00:00:00,,115.00,15,100,Transferência,Sim,Acordo C,Escalão 3
+8,8,2026-01-18 00:00:00,,105.50,0,105,MB Way,Não,Acordo B,Escalão 2
+9,9,2026-01-22 00:00:00,,98.00,3,95,Dinheiro,Sim,Acordo A,Escalão 1
+10,10,2026-01-25 00:00:00,,125.00,0,125,Transferência,Não,Acordo C,Escalão 3
+11,11,2026-01-06 00:00:00,,102.00,0,102,MB Way,Sim,Acordo A,Escalão 1
+12,12,2026-01-11 00:00:00,,118.50,8,110,Dinheiro,Não,Acordo B,Escalão 2
+13,13,2026-01-09 00:00:00,,99.75,0,99,Transferência,Sim,Acordo C,Escalão 3
+14,14,2026-01-13 00:00:00,,121.00,0,121,MB Way,Não,Acordo A,Escalão 1
+15,15,2026-01-16 00:00:00,,107.25,5,102,Dinheiro,Sim,Acordo B,Escalão 2
+16,16,2026-01-17 00:00:00,,112.50,0,112,Transferência,Não,Acordo C,Escalão 3
+17,17,2026-01-19 00:00:00,,96.00,0,96,MB Way,Sim,Acordo A,Escalão 1
+18,18,2026-01-21 00:00:00,,123.75,10,114,Dinheiro,Não,Acordo B,Escalão 2
+19,19,2026-01-23 00:00:00,,108.50,0,108,Transferência,Sim,Acordo C,Escalão 3
+20,20,2026-01-24 00:00:00,,97.25,0,97,MB Way,Não,Acordo A,Escalão 1

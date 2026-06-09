@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="form-container">
+        <h1>Editar Pagamento</h1>
+        <form method='post' id="form">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <div class="actions">
+            <button type='submit' form="form">Guardar</button>
+            <a href="{{ voltarUrl }}">Voltar</a>
+        </div>
+    </div>
+
+{% endblock %}

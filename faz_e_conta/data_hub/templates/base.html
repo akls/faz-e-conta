@@ -14,12 +14,14 @@
 <body>
 
     <div class="navbar">
+        <a href="{% url 'login' %}">Login</a>
         <a href="{% url 'starter_page' %}">FazeConta</a>
         <a href="{% url 'show_students' %}">Alunos</a>
         <a href="{% url 'show_contactos' %}">Encarregados de educação</a>
         <a href="{% url 'show_salas' %}">Salas</a>
+        <a href="{% url 'show_despesas' %}">Despesas</a>
         <a href="{% url 'show_aluno_financas' %}">Finanças</a>
-        <a href="#">Mais Opções</a>
+        <a href="{% url 'show_saude_financeira' %}">Saude Financeira</a>
     </div>
 
     <div class="container">

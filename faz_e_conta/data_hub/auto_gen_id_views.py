@@ -74,3 +74,20 @@ def show_aluno_financas_view(request, aluno_financas_id):
 
     return render(request, 'show_aluno_financas.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
 
+def show_despesa_view(request, despfix_id):
+    try:
+        data = DespesaFixa.objects.get(despfix_id=despfix_id)  # Verifique se 'id' é o nome correto do campo
+    except DespesaFixa.DoesNotExist:
+        return HttpResponse(f'<h1>Despesa with id= {despfix_id} not found</h1><a href="/">Voltar para o índice</a>')
+    head = [field.name.replace('_id','_id_id') for field in DespesaFixa._meta.fields]
+
+    for i in range(1, len(head)):
+        if head[i].endswith('_id_id'):
+            related_model_name = head[i].replace('_id_id', '')
+            related_model = globals()[related_model_name.capitalize()]
+            related_instance = related_model.objects.get(pk=data.__dict__.get(head[i]))
+            data.__dict__[head[i]] = related_instance
+    data_dict = {head[i]: data.__dict__.get(head[i], None) for i in range(1, len(head))}
+
+    return render(request, 'show_despesa.html', {'head': head, 'data_dict': data_dict, 'data': data, 'id': head[0]})
+

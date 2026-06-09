@@ -1,7 +1,7 @@
 from django.db import models
-import datetime
+from datetime import date
 import django.utils as du
-from django.db.models.fields import AutoField
+from django.utils import timezone
 
 
 class Aluno(models.Model):
@@ -172,6 +172,8 @@ class DespesasVariavel(models.Model):
 
     fatura = models.IntegerField()
     pagamento = models.CharField(max_length=250, default='')
+    notas = models.CharField(max_length=250, default='')
+    fornecedor = models.CharField(max_length=250, default='')
 
     def __str__(self):
         return f"{self.produto} {self. valor}, Despvar Id: {self.despvar_id}"
@@ -190,6 +192,8 @@ class DespesaFixa(models.Model):
 
     fatura = models.IntegerField()
     pagamento = models.CharField(max_length=250, default='')
+    notas = models.CharField(max_length=250, default='')
+    fornecedor = models.CharField(max_length=250, default='')
 
     def __str__(self):
         return f"{self.produto} {self. valor}, Despfix Id: {self.despfix_id}"
@@ -300,22 +304,21 @@ class MensalidadeAluno(models.Model):
     ma_id = models.AutoField(primary_key=True)
     aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
 
-    ano = models.IntegerField(null=True, blank=True)
-    mes = models.IntegerField(null=True, blank=True)
+    data_inicio = models.DateTimeField(default=timezone.now)
+    data_fim = models.DateField(null=True, blank=True)
 
     mensalidade_calc = models.FloatField(null=True, blank=True)
     mensalidade_retific = models.IntegerField(null=True, blank=True)
     mensalidade_paga = models.FloatField(null=True, blank=True)
 
-    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
-    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
+    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
 
     acordo = models.CharField(max_length=255, null=True, blank=True)
     escalao = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.aluno_id} {self.ano} {self.mes}, Ma Id: {self.ma_id}"
+        return f"{self.aluno_id} {self.data_inicio}, Ma Id: {self.ma_id}"
 
 
 
@@ -342,16 +345,11 @@ class ComparticaoMensalSS(models.Model):
     aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', related_name="comparticao", unique=True)
     ano_letivo = models.DateField(null=True, blank=True)
 
-    periodo_inicio_ano = models.IntegerField(null=True, blank=True)
-    periodo_inicio_mes = models.IntegerField(null=True, blank=True)
-    periodo_fim_ano = models.IntegerField(null=True, blank=True)
-    periodo_fim_mes = models.IntegerField(null=True, blank=True)
-
-
+    data_inicio = models.DateTimeField(default=timezone.now)
+    data_fim = models.DateTimeField(null=True, blank=True)
     mensalidade_valor = models.FloatField(null=True, blank=True)
     mensalidade_paga = models.FloatField(null=True, blank=True)
 
-    data_pagamento = models.DateField(null=True, blank=True)
     modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
     programa_ss = models.CharField(max_length=255, null=True, blank=True)
     acordo = models.CharField(max_length=255, null=True, blank=True)
@@ -374,3 +372,126 @@ class ConfigIpss(models.Model):
 
     def __str__(self):
         return f"{self.key}: {self.value}"
+
+
+
+
+class SaudeFinanceiraBalancoGlobal(models.Model):
+    class Meta:
+        db_table = "saude_financeira"
+
+    sf_id = models.AutoField(primary_key=True)
+
+    custo_despesas_totais = models.FloatField()
+    mensalidades_pagas_total = models.FloatField()
+    mensalidades_nao_pagas_total = models.FloatField()
+    receita = models.FloatField()
+
+    comparticoes_pagas_total = models.FloatField(default=0)
+    comparticoes_nao_pagas_total = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
+class SaudeFinanceiraBalancoValencia(models.Model):
+    class Meta:
+        db_table = "saude_financeira_balanco_valencia"
+
+    sfv_id = models.AutoField(primary_key=True)
+    valencia = models.CharField(max_length=255)
+    mensalidades_pagas_total = models.FloatField(default=0)
+    comparticoes_pagas_total = models.FloatField(default=0)
+    num_alunos = models.IntegerField(default=0)
+    custo_por_crianca = models.FloatField(default=0)
+    balanco = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
+class SaudeFinanceiraBalancoEscalao(models.Model):
+    class Meta:
+        db_table = "saude_financeira_balanco_escalao"
+
+    sfe_id = models.AutoField(primary_key=True)
+    escalao = models.CharField(max_length=255)
+    mensalidades_pagas_total = models.FloatField(default=0)
+    comparticoes_pagas_total = models.FloatField(default=0)
+    num_alunos = models.IntegerField(default=0)
+    custo_por_crianca = models.FloatField(default=0)
+    balanco = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
+
+class SaudeFinanceiraBalancoAluno(models.Model):
+    class Meta:
+        db_table = 'saude_financeira_balanco_aluno'
+
+    sfba_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, null=True, blank=True, db_column='aluno_id')
+
+    mensalidades_pagas_total = models.FloatField(null=True, blank=True)
+    comparticoes_pagas_total = models.FloatField(null=True, blank=True)
+    custo_por_crianca = models.FloatField(null=True, blank=True)
+    balanco = models.FloatField(null=True, blank=True)
+
+    data_inicio = models.DateField(default=timezone.now)
+    data_fim = models.DateField(null=True, blank=True)
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Balanço {self.sfba_id} - {self.data_inicio} até {self.data_fim}"
+
+
+
+
+class MetodoPagamento(models.Model):
+    class Meta:
+        db_table = "metodo_pagamento"
+
+    metodo_pagamento_id = models.AutoField(primary_key=True)
+    metodo = models.CharField(max_length=255, blank=False)
+
+    def __str__(self):
+        return f"{self.metodo}"
+
+
+
+
+class PagamentoMensalidade(models.Model):
+    class Meta:
+        db_table = "pagamento_mensalidade"
+
+    pagamento_mensalidade_id = models.AutoField(primary_key=True)
+    mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, related_name="pagamentos", db_column='mensalidade_id')
+    metodo_pagamento_id = models.ForeignKey(to='MetodoPagamento', on_delete=models.PROTECT, db_column='metodo_pagamento_id')
+    valor = models.FloatField()
+    data = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Mensalidade {self.mensalidade_id_id}: {self.valor}€, Pagamento Id: {self.pagamento_mensalidade_id}"
+
+
+
+
+class PagamentoComparticao(models.Model):
+    class Meta:
+        db_table = "pagamento_comparticao"
+
+    pagamento_comparticao_id = models.AutoField(primary_key=True)
+    comparticao_id = models.ForeignKey(to='ComparticaoMensalSS', on_delete=models.CASCADE, related_name="pagamentos", db_column='comparticao_id')
+    metodo_pagamento_id = models.ForeignKey(to='MetodoPagamento', on_delete=models.PROTECT, db_column='metodo_pagamento_id')
+    valor = models.FloatField()
+    data = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Comparticao {self.comparticao_id_id}: {self.valor}€, Pagamento Id: {self.pagamento_comparticao_id}"
