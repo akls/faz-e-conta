@@ -6,4 +6,5 @@ services:
       - "8000:8000"
     volumes:
       - ./data/fazeconta.sqlite3:/app/data/fazeconta.sqlite3
+      - .:/app
     command: sh entrypoint.sh

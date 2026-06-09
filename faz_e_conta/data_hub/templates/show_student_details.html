@@ -4,6 +4,7 @@
 
 <h1>Detalhes do Aluno</h1>
 <h2>Informações do Aluno</h2>
+<a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
 <table>
     <tr>
         <th>Nome:</th>
@@ -86,7 +87,6 @@
         <td>{{ aluno.comparticao_ss_custom|default:"Nenhuma informação" }}</td>
     </tr>
 </table>
-<a href="{% url 'edit_student' aluno_id=aluno.aluno_id %}">Editar Aluno</a>
 
 
 
@@ -94,6 +94,7 @@
 {% if aluno.responsaveis_educativos_ids %}
 <h2>Responsáveis Educativos</h2>
 {% for guardian in aluno.responsaveis_educativos_ids.all %}
+<a href="{% url 'edit_responsavel_educativo' responsavel_id=guardian.responsavel_educativo_id %}">Editar Responsável</a>
 <table>
     <tr>
         <th>Nome:</th>
@@ -108,7 +109,6 @@
         <td>{% if guardian.email %}{{ guardian.email }}{% else %}Nenhum dado{% endif %}</td>
     </tr>
 </table>
-<a href="{% url 'edit_responsavel_educativo' responsavel_id=guardian.responsavel_educativo_id %}">Editar Responsável</a>
 {% endfor %}
 {% else %}
 <p>Sem responsável educativo associado.</p>
