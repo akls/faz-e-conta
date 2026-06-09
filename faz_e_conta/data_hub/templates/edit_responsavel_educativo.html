@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Responsável Educativo</title>
-</head>
+{% block content %}
 
-<body>
-    <h1>Editar Responsável Educativo</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
-    <a href="{% url 'show_contactos' %}">Cancelar</a>
-</body>
+    <div class="form-container">
+        <h1>Editar Responsável Educativo</h1>
+        <form method="post" id="form">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <div class="actions">
+            <button type="submit" form="form">Salvar</button>
+            <a href="{% url 'show_contactos' %}">Cancelar</a>
+        </div>
+    </div>
 
-</html>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/forms.js' %}"></script>
+{% endblock %}

@@ -1,223 +1,88 @@
 from django.db import models
-import datetime
+from datetime import date
 import django.utils as du
+from django.utils import timezone
+
 
 class Aluno(models.Model):
     class Meta:
         db_table = 'aluno'
+
     aluno_id = models.AutoField(primary_key=True)
-    nome_proprio = models.CharField(max_length=100, default='')
-    apelido = models.CharField(max_length=250, default='')
+    nome_proprio = models.CharField(max_length=100, blank=False)
+    apelido = models.CharField(max_length=250, blank=False)
     archive_flag = models.BooleanField(default=False)
+
     processo = models.CharField(max_length=150, null=True, blank=True)
-    data_admissao = models.DateTimeField()
+    data_admissao = models.DateTimeField(blank=False)
     data_ultima_renovacao = models.DateTimeField(null=True, blank=True)
-    data_nascimento = models.DateTimeField()
-    documento = models.CharField(max_length=250, default='')
-    numero_documento = models.CharField(max_length=100, default='')
-    data_validade = models.DateTimeField()
+    data_nascimento = models.DateTimeField(blank=False)
+
+    documento = models.CharField(max_length=250, blank=False)
+    numero_documento = models.CharField(max_length=100, blank=False)
+    data_validade = models.DateTimeField(blank=False)
     niss = models.IntegerField(null=True, blank=True)
+
     nif = models.IntegerField(null=True, blank=True)
-    morada = models.CharField(max_length=150, default='')
-    codigo_postal = models.CharField(max_length=150, default='')
-    concelho = models.CharField(max_length=150, default='')
+    morada = models.CharField(max_length=150, blank=False)
+    codigo_postal = models.CharField(max_length=150, blank=False)
+    concelho = models.CharField(max_length=150, blank=False)
+
     fregesia = models.CharField(max_length=150, null=True, blank=True)
     escolaridade_anterior = models.CharField(max_length=150, null=True, blank=True)
     motivo_admissao = models.CharField(max_length=150, null=True, blank=True)
     cuidados_especias = models.CharField(max_length=150, null=True, blank=True)
+
+    comparticao_ss_custom = models.FloatField(blank=True, null=True)
+
+    responsaveis_educativos_ids = models.ManyToManyField(to='ResponsavelEducativo', related_name='alunos')
     sala_id = models.ForeignKey(to='Sala', on_delete=models.CASCADE, db_column='sala_id')
+    programa_id = models.ForeignKey(to="programa", related_name="aluno", on_delete=models.CASCADE, db_column='programa_id')
 
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Aluno Id: {self.aluno_id}"
 
-class ResponsavelEducativo(models.Model):
+
+
+
+class programa(models.Model):
     class Meta:
-        db_table = 'responsavel_educativo'
-    responsavel_educativo_id = models.AutoField(primary_key=True)
-    nome_proprio = models.CharField(max_length=100, default='')
-    apelido = models.CharField(max_length=250, default='')
-    data_nascimento = models.DateField(default= du.timezone.now)
-    documento = models.CharField(max_length=150, default='')
-    numero_documento = models.IntegerField()
-    data_validade = models.DateField(default= du.timezone.now)
-    niss = models.IntegerField(null=True, blank=True)
-    nif = models.IntegerField(null=True, blank=True)
-    morada = models.CharField(max_length=250, default='')
-    codigo_postal = models.CharField(max_length=100, default='')
-    concelho = models.CharField(max_length=150, default='')
-    fregesia = models.CharField(max_length=150, default='')
-    telefone = models.IntegerField(null=True, blank=True)
-    email = models.CharField(max_length=150, null=True, blank=True)
-    profissao = models.CharField(max_length=150, null=True, blank=True)
-    morada_emprego = models.CharField(max_length=150, null=True, blank=True)
-    horario_trabalho = models.TimeField(null=True, blank=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+        db_table = 'programa'
+
+    programa_id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=150, blank=False)
+    custo = models.FloatField(blank=False)
 
     def __str__(self):
-        return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"
-
-class AlunoSaida(models.Model):
-    class Meta:
-        db_table = 'aluno_saida'
-    saida_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    hora_entrada = models.DateTimeField(null=True, blank=True)
-    hora_saida = models.DateTimeField(null=True, blank=True)
-    autorizacao_sair = models.CharField(max_length=250, null=True, blank=True)
-    valencia = models.ForeignKey(to='AlunoFinacasCalc', on_delete=models.CASCADE, db_column='valencia')
-
-    def __str__(self):
-        return f"{self.aluno_id} {self. hora_entrada}, Saida Id: {self.saida_id}"
-
-class Vacinacao(models.Model):
-    class Meta:
-        db_table = 'vacinacao'
-    vac_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    vacina_name = models.CharField(max_length=250, default='')
-    data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
-    plano_vacina = models.BooleanField(default=False, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.aluno_id} {self. vacina_name}, Vac Id: {self.vac_id}"
-
-class DespesaFixa(models.Model):
-    class Meta:
-        db_table = 'despesa_fixa'
-    despfix_id = models.AutoField(primary_key=True)
-    produto = models.CharField(max_length=250, default='')
-    valor = models.FloatField()
-    data = models.DateTimeField()
-    fatura = models.IntegerField()
-    pagamento = models.CharField(max_length=250, default='')
-
-    def __str__(self):
-        return f"{self.produto} {self. valor}, Despfix Id: {self.despfix_id}"
-
-class DespesasVariavel(models.Model):
-    class Meta:
-        db_table = 'despesas_variavel'
-    despvar_id = models.AutoField(primary_key=True)
-    produto = models.CharField(max_length=250, default='')
-    valor = models.FloatField()
-    data = models.DateTimeField()
-    fatura = models.IntegerField()
-    pagamento = models.CharField(max_length=250, default='')
-
-    def __str__(self):
-        return f"{self.produto} {self. valor}, Despvar Id: {self.despvar_id}"
-
-class Salario(models.Model):
-    class Meta:
-        db_table = 'salario'
-    salario_id = models.AutoField(primary_key=True)
-    valor = models.FloatField()
-    descricao = models.CharField(max_length=250, null=True, blank=True)
-    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
-    subsidio_tipo = models.CharField(max_length=20, default='')
-    subsidio_valor = models.FloatField()
-
-    def __str__(self):
-        return f"{self.valor} {self. descricao}, Salario Id: {self.salario_id}"
+        return f"{self.nome}: {self.custo}€"
 
 
-class LinkFiliacao(models.Model):
-    class Meta:
-        db_table = 'link_filiacao'
-    filiacao_id = models.AutoField(primary_key=True)
-    aluno_id = models.OneToOneField(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    re_id = models.OneToOneField(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='re_id')
-    type = models.CharField(max_length=100, default='')
-    encarr_educacao = models.BooleanField(default=False, null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.re_id} {self. type}, Aluno Id: {self.aluno_id}"
-
-
-class Sala(models.Model):
-    class Meta:
-        db_table = 'sala'
-    sala_id = models.AutoField(primary_key=True)
-    sala_nome = models.CharField(max_length=255, default='')
-    sala_local = models.CharField(max_length=255, null=True, blank=True)
-    sala_valencia = models.CharField(max_length=255, default='')
-    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True, db_column='func_id')
-
-    def __str__(self):
-        return f"{self.sala_nome} {self. sala_local}, Sala Id: {self.sala_id}"
-
-
-class MensalidadeAluno(models.Model):
-    class Meta:
-        db_table = 'mensalidade_aluno'
-    ma_id = models.AutoField(primary_key=True)
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    ano_letivo = models.ForeignKey(to='AlunoFinancas', on_delete=models.CASCADE, db_column='ano_letivo')
-    periodo_inicio = models.DateField(default= du.timezone.now)
-    periodo_fim = models.DateField(default= du.timezone.now, null=True, blank=True)
-    mensalidade_calc = models.IntegerField(null=True, blank=True)
-    mensalidade_retific = models.IntegerField(null=True, blank=True)
-    mensalidade_paga = models.IntegerField(null=True, blank=True)
-    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
-    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
-    acordo = models.CharField(max_length=255, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.aluno_id} {self. ano_letivo}, Ma Id: {self.ma_id}"
-
-
-class AlunoFinancas(models.Model):
-    class Meta:
-        db_table = 'aluno_financas'
-    af_id = models.AutoField(primary_key=True)
-    ano_letivo = models.CharField(max_length=255, default='')
-    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
-    data = models.DateTimeField(null=True, blank=True)
-    agregado = models.IntegerField()
-    rendim_líquido = models.IntegerField()
-    despesa_anual = models.IntegerField()
-    irs = models.CharField(max_length=255, default='')
-    tax_soc = models.CharField(max_length=255, default='')
-    tax_impos = models.CharField(max_length=255, null=True, blank=True)
-    renda = models.IntegerField(null=True, blank=True)
-    med_transp = models.CharField(max_length=255, null=True, blank=True)
-    medicacao = models.CharField(max_length=255, null=True, blank=True)
-    outros = models.CharField(max_length=255, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.ano_letivo} {self. aluno_id}, Af Id: {self.af_id}"
-
-class AlunoFinacasCalc(models.Model):
-    class Meta:
-        db_table = 'aluno_finacas_calc'
-    sala_id = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=255, default='')
-    local = models.CharField(max_length=255, null=True, blank=True)
-    valencia = models.CharField(max_length=255, default='')
-    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True, db_column='func_id')
-
-    def __str__(self):
-        return f"{self.nome} {self. local}, Sala Id: {self.sala_id}"
 
 class Funcionario(models.Model):
     class Meta:
         db_table = 'funcionario'
+
     func_id = models.AutoField(primary_key=True)
     nome_proprio = models.CharField(max_length=100, default='')
     apelido = models.CharField(max_length=100, default='')
     data_nascimento = models.DateField(default= du.timezone.now)
+
     tipo_documento_identificacao = models.CharField(max_length=50, null=True, blank=True)
     numero_documento_identificacao = models.CharField(max_length=50, default='')
     data_validade = models.DateField(default= du.timezone.now, null=True, blank=True)
     niss = models.IntegerField()
+
     nif = models.IntegerField()
     morada = models.CharField(max_length=255, default='')
     codigo_postal = models.CharField(max_length=255, default='')
     concelho = models.CharField(max_length=255, null=True, blank=True)
+
     freguesia_residencia = models.CharField(max_length=255, null=True, blank=True)
     contacto_telefonico = models.CharField(max_length=255, default='')
     email = models.EmailField()
     funcao = models.CharField(max_length=255, default='')
+
     salario = models.ForeignKey(to='Salario', on_delete=models.CASCADE, null=True, blank=True, db_column='salario')
     escalao_profissional = models.CharField(max_length=255, null=True, blank=True)
     ativo = models.BooleanField(default=False, null=True, blank=True)
@@ -225,3 +90,408 @@ class Funcionario(models.Model):
     def __str__(self):
         return f"{self.nome_proprio} {self. apelido}, Func Id: {self.func_id}"
 
+
+
+
+class ResponsavelEducativo(models.Model):
+    class Meta:
+        db_table = 'responsavel_educativo'
+
+    responsavel_educativo_id = models.AutoField(primary_key=True)
+    nome_proprio = models.CharField(max_length=100, blank=False)
+    apelido = models.CharField(max_length=250, blank=False)
+    data_nascimento = models.DateField(blank=False)
+
+    documento = models.CharField(max_length=150, blank=False)
+    numero_documento = models.IntegerField(blank=False)
+    data_validade = models.DateField(blank=False)
+    niss = models.IntegerField(null=True, blank=True)
+
+    nif = models.IntegerField(null=True, blank=True)
+    morada = models.CharField(max_length=250, blank=False)
+    codigo_postal = models.CharField(max_length=100, blank=False)
+    concelho = models.CharField(max_length=150, blank=False)
+
+    fregesia = models.CharField(max_length=150, blank=False)
+    telefone = models.IntegerField(null=True, blank=True)
+    email = models.CharField(max_length=150, null=True, blank=True)
+    profissao = models.CharField(max_length=150, null=True, blank=True)
+
+    morada_emprego = models.CharField(max_length=150, null=True, blank=True)
+    horario_trabalho = models.TimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.nome_proprio} {self. apelido}, Responsavel Educativo Id: {self.responsavel_educativo_id}"
+
+
+
+
+class Vacinacao(models.Model):
+    class Meta:
+        db_table = 'vacinacao'
+
+    vac_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    vacina_name = models.CharField(max_length=250, default='')
+    data_vacina = models.DateField(default= du.timezone.now, null=True, blank=True)
+
+    plano_vacina = models.BooleanField(default=False, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.aluno_id} {self. vacina_name}, Vac Id: {self.vac_id}"
+
+
+
+
+class AlunoSaida(models.Model):
+    class Meta:
+        db_table = 'aluno_saida'
+
+    saida_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    hora_entrada = models.DateTimeField(null=True, blank=True)
+    hora_saida = models.DateTimeField(null=True, blank=True)
+
+    autorizacao_sair = models.CharField(max_length=250, null=True, blank=True)
+    valencia = models.ForeignKey(to='AlunoFinacasCalc', on_delete=models.CASCADE, db_column='valencia')
+
+    def __str__(self):
+        return f"{self.aluno_id} {self. hora_entrada}, Saida Id: {self.saida_id}"
+
+
+
+
+class DespesasVariavel(models.Model):
+    class Meta:
+        db_table = 'despesas_variavel'
+
+    despvar_id = models.AutoField(primary_key=True)
+    produto = models.CharField(max_length=250, default='')
+    valor = models.FloatField()
+    data = models.DateTimeField()
+
+    fatura = models.IntegerField()
+    pagamento = models.CharField(max_length=250, default='')
+    notas = models.CharField(max_length=250, default='')
+    fornecedor = models.CharField(max_length=250, default='')
+
+    def __str__(self):
+        return f"{self.produto} {self. valor}, Despvar Id: {self.despvar_id}"
+
+
+
+
+class DespesaFixa(models.Model):
+    class Meta:
+        db_table = 'despesa_fixa'
+
+    despfix_id = models.AutoField(primary_key=True)
+    produto = models.CharField(max_length=250, default='')
+    valor = models.FloatField()
+    data = models.DateTimeField()
+
+    fatura = models.IntegerField()
+    pagamento = models.CharField(max_length=250, default='')
+    notas = models.CharField(max_length=250, default='')
+    fornecedor = models.CharField(max_length=250, default='')
+
+    def __str__(self):
+        return f"{self.produto} {self. valor}, Despfix Id: {self.despfix_id}"
+
+
+
+
+class Salario(models.Model):
+    class Meta:
+        db_table = 'salario'
+
+    salario_id = models.AutoField(primary_key=True)
+    valor = models.FloatField()
+    descricao = models.CharField(max_length=250, null=True, blank=True)
+    data_pagamento = models.DateField(default= du.timezone.now, null=True, blank=True)
+
+    subsidio_tipo = models.CharField(max_length=20, default='')
+    subsidio_valor = models.FloatField()
+
+    def __str__(self):
+        return f"{self.valor} {self. descricao}, Salario Id: {self.salario_id}"
+
+
+
+
+class LinkFiliacao(models.Model):
+    class Meta:
+        db_table = 'link_filiacao'
+
+    aluno_id = models.OneToOneField(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    re_id = models.OneToOneField(to='ResponsavelEducativo', on_delete=models.CASCADE, db_column='re_id')
+    type = models.CharField(max_length=100, default='')
+
+    encarr_educacao = models.BooleanField(default=False, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.re_id} {self. type}, Aluno Id: {self.aluno_id}"
+
+
+
+
+class Sala(models.Model):
+    class Meta:
+        db_table = 'sala'
+
+    sala_id = models.AutoField(primary_key=True)
+    sala_nome = models.CharField(max_length=255, default='')
+    sala_local = models.CharField(max_length=255, null=True, blank=True)
+    sala_valencia = models.CharField(max_length=255, default='')
+
+    func_id = models.ForeignKey(to='Funcionario', on_delete=models.CASCADE, null=True, blank=True, db_column='func_id')
+
+    def __str__(self):
+        return f"{self.sala_nome} {self. sala_local}, Sala Id: {self.sala_id}"
+
+
+
+
+class AlunoFinacasCalc(models.Model):
+    class Meta:
+        db_table = 'aluno_finacas_calc'
+
+    aluno_financa_calc_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    type = models.CharField(max_length=100, default='')
+    value = models.CharField(max_length=100, default='')
+
+    unit = models.CharField(max_length=100, default='')
+
+    def __str__(self):
+        return f"Aluno: {self.aluno_id}, Type: {self.type}, Value: {self.value} {self.unit}, ID: {self.aluno_financa_calc_id}"
+
+
+
+
+class AlunoFinancas(models.Model):
+    class Meta:
+        db_table = 'aluno_financas'
+
+    af_id = models.AutoField(primary_key=True)
+    ano_letivo = models.CharField(max_length=255, default='')
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    data = models.DateTimeField(null=True, blank=True)
+
+    agregado = models.IntegerField()
+    rendim_líquido = models.IntegerField()
+    despesa_anual = models.IntegerField()
+    irs = models.CharField(max_length=255, default='')
+
+    tax_soc = models.CharField(max_length=255, default='')
+    tax_impos = models.CharField(max_length=255, null=True, blank=True)
+    renda = models.IntegerField(null=True, blank=True)
+    med_transp = models.CharField(max_length=255, null=True, blank=True)
+
+    medicacao = models.CharField(max_length=255, null=True, blank=True)
+    outros = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.ano_letivo} {self. aluno_id}, Af Id: {self.af_id}"
+
+
+
+
+class MensalidadeAluno(models.Model):
+    class Meta:
+        db_table = 'mensalidade_aluno'
+
+    ma_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+
+    data_inicio = models.DateTimeField(default=timezone.now)
+    data_fim = models.DateField(null=True, blank=True)
+
+    mensalidade_calc = models.FloatField(null=True, blank=True)
+    mensalidade_retific = models.IntegerField(null=True, blank=True)
+    mensalidade_paga = models.FloatField(null=True, blank=True)
+
+    programa_ss = models.CharField(max_length=255, null=True, blank=True)
+    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
+
+    acordo = models.CharField(max_length=255, null=True, blank=True)
+    escalao = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.aluno_id} {self.data_inicio}, Ma Id: {self.ma_id}"
+
+
+
+
+class EscaloesRendimento(models.Model):
+    class Meta:
+        db_table = 'escaloes_rendim'
+
+    escal_rend_id =  models.AutoField(primary_key=True)
+    perc_rend_per_capita_min = models.FloatField(null=False, blank=False)
+    perc_rend_per_capita_max = models.FloatField(null=True, blank=True)
+    escalao = models.CharField(max_length=255, null=False, blank=False)
+    comparticipacao_da_familia = models.IntegerField(null=False, blank=False)
+
+
+
+
+class ComparticaoMensalSS(models.Model):
+    class Meta:
+        db_table = "comparticipacao_mensal_ss"
+
+    mss_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, db_column='aluno_id')
+    aluno_mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, db_column='aluno_mensalidade_id', related_name="comparticao", unique=True)
+    ano_letivo = models.DateField(null=True, blank=True)
+
+    data_inicio = models.DateTimeField(default=timezone.now)
+    data_fim = models.DateTimeField(null=True, blank=True)
+    mensalidade_valor = models.FloatField(null=True, blank=True)
+    mensalidade_paga = models.FloatField(null=True, blank=True)
+
+    modo_pagamento = models.CharField(max_length=255, null=True, blank=True)
+    programa_ss = models.CharField(max_length=255, null=True, blank=True)
+    acordo = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.aluno_id} {self.ano_letivo}, MSS Id: {self.mss_id}"
+
+
+
+
+class ConfigIpss(models.Model):
+    class Meta:
+        db_table = "config_ipss"
+
+    ci_id = models.AutoField(primary_key=True)
+    key = models.CharField(max_length=255, null=True, blank=True)
+    value = models.CharField(max_length=255, null=True, blank=True)
+    active_flag = models.BooleanField(default= True, null=False, blank=False)
+    create_datetime = models.DateField(null=True, blank=True, default=du.timezone.now)
+
+    def __str__(self):
+        return f"{self.key}: {self.value}"
+
+
+
+
+class SaudeFinanceiraBalancoGlobal(models.Model):
+    class Meta:
+        db_table = "saude_financeira"
+
+    sf_id = models.AutoField(primary_key=True)
+
+    custo_despesas_totais = models.FloatField()
+    mensalidades_pagas_total = models.FloatField()
+    mensalidades_nao_pagas_total = models.FloatField()
+    receita = models.FloatField()
+
+    comparticoes_pagas_total = models.FloatField(default=0)
+    comparticoes_nao_pagas_total = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
+class SaudeFinanceiraBalancoValencia(models.Model):
+    class Meta:
+        db_table = "saude_financeira_balanco_valencia"
+
+    sfv_id = models.AutoField(primary_key=True)
+    valencia = models.CharField(max_length=255)
+    mensalidades_pagas_total = models.FloatField(default=0)
+    comparticoes_pagas_total = models.FloatField(default=0)
+    num_alunos = models.IntegerField(default=0)
+    custo_por_crianca = models.FloatField(default=0)
+    balanco = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
+class SaudeFinanceiraBalancoEscalao(models.Model):
+    class Meta:
+        db_table = "saude_financeira_balanco_escalao"
+
+    sfe_id = models.AutoField(primary_key=True)
+    escalao = models.CharField(max_length=255)
+    mensalidades_pagas_total = models.FloatField(default=0)
+    comparticoes_pagas_total = models.FloatField(default=0)
+    num_alunos = models.IntegerField(default=0)
+    custo_por_crianca = models.FloatField(default=0)
+    balanco = models.FloatField(default=0)
+    data_inicio = models.DateField(default=date.today)
+    data_fim = models.DateField(default=date.today)
+
+
+
+
+
+class SaudeFinanceiraBalancoAluno(models.Model):
+    class Meta:
+        db_table = 'saude_financeira_balanco_aluno'
+
+    sfba_id = models.AutoField(primary_key=True)
+    aluno_id = models.ForeignKey(to='Aluno', on_delete=models.CASCADE, null=True, blank=True, db_column='aluno_id')
+
+    mensalidades_pagas_total = models.FloatField(null=True, blank=True)
+    comparticoes_pagas_total = models.FloatField(null=True, blank=True)
+    custo_por_crianca = models.FloatField(null=True, blank=True)
+    balanco = models.FloatField(null=True, blank=True)
+
+    data_inicio = models.DateField(default=timezone.now)
+    data_fim = models.DateField(null=True, blank=True)
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Balanço {self.sfba_id} - {self.data_inicio} até {self.data_fim}"
+
+
+
+
+class MetodoPagamento(models.Model):
+    class Meta:
+        db_table = "metodo_pagamento"
+
+    metodo_pagamento_id = models.AutoField(primary_key=True)
+    metodo = models.CharField(max_length=255, blank=False)
+
+    def __str__(self):
+        return f"{self.metodo}"
+
+
+
+
+class PagamentoMensalidade(models.Model):
+    class Meta:
+        db_table = "pagamento_mensalidade"
+
+    pagamento_mensalidade_id = models.AutoField(primary_key=True)
+    mensalidade_id = models.ForeignKey(to='MensalidadeAluno', on_delete=models.CASCADE, related_name="pagamentos", db_column='mensalidade_id')
+    metodo_pagamento_id = models.ForeignKey(to='MetodoPagamento', on_delete=models.PROTECT, db_column='metodo_pagamento_id')
+    valor = models.FloatField()
+    data = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Mensalidade {self.mensalidade_id_id}: {self.valor}€, Pagamento Id: {self.pagamento_mensalidade_id}"
+
+
+
+
+class PagamentoComparticao(models.Model):
+    class Meta:
+        db_table = "pagamento_comparticao"
+
+    pagamento_comparticao_id = models.AutoField(primary_key=True)
+    comparticao_id = models.ForeignKey(to='ComparticaoMensalSS', on_delete=models.CASCADE, related_name="pagamentos", db_column='comparticao_id')
+    metodo_pagamento_id = models.ForeignKey(to='MetodoPagamento', on_delete=models.PROTECT, db_column='metodo_pagamento_id')
+    valor = models.FloatField()
+    data = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Comparticao {self.comparticao_id_id}: {self.valor}€, Pagamento Id: {self.pagamento_comparticao_id}"

@@ -29,7 +29,7 @@ Your branch is up to date with 'origin/dev'.
 
 nothing to commit, working tree clean
 ```
-
+ 
 Step 3: Create a feature branch
 
 Create the local feature branch using a name that follows the common _feature/issue-title_ pattern. After creating the local branch, push the change to the remote repository. An example using the branch name _feature/issue10-standardize-cdm_:
@@ -73,3 +73,12 @@ After doing changes to the (data) model:
 To run the server:
 
 6. `python manage.py runserver`
+
+# DOCKER
+
+Here are instructions for using the application with Docker.
+
+1. `git clone --branch dev https://github.com/akls/faz-e-conta.git`
+2. In the directory where the clone was made, run `docker compose up` (Have Docker initialized on your PC)
+3. Open the app on localHost
+

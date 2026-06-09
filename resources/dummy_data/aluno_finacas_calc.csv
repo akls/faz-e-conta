@@ -1,21 +1,21 @@
-﻿sala_id,nome,local,valencia,func_id
-1,Sala Azul,Bloco A,Pre-escolar,3
-2,Sala Verde,Bloco B,Creche,5
-3,Sala Amarela,Bloco C,Jardim Infância,7
-4,Sala Vermelha,Bloco A,Berçário,2
-5,Sala Rosa,Bloco B,Pre-escolar,6
-6,Sala Laranja,Bloco C,Creche,8
-7,Sala Branca,Bloco A,Jardim Infância,1
-8,Sala Roxa,Bloco B,Berçário,4
-9,Sala Cinza,Bloco C,Pre-escolar,9
-10,Sala Dourada,Bloco A,Creche,10
-11,Sala Prata,Bloco B,Jardim Infância,11
-12,Sala Turquesa,Bloco C,Berçário,12
-13,Sala Lilás,Bloco A,Pre-escolar,13
-14,Sala Bege,Bloco B,Creche,14
-15,Sala Bordeaux,Bloco C,Jardim Infância,15
-16,Sala Preto e Branco,Bloco A,Berçário,16
-17,Sala Neon,Bloco B,Pre-escolar,17
-18,Sala Pastel,Bloco C,Creche,18
-19,Sala Violeta,Bloco A,Jardim Infância,19
-20,Sala Celeste,Bloco B,Berçário,20
+﻿aluno_financa_calc_id,aluno_id,type,value,unit
+1,1,Rendimento Familiar,5000,EUR
+2,2,Rendimento Familiar,3500,EUR
+3,3,Rendimento Familiar,4200,EUR
+4,4,Rendimento Familiar,2800,EUR
+5,5,Rendimento Familiar,6000,EUR
+6,6,Rendimento Familiar,3100,EUR
+7,7,Rendimento Familiar,4700,EUR
+8,8,Rendimento Familiar,3900,EUR
+9,9,Rendimento Familiar,4500,EUR
+10,10,Rendimento Familiar,5200,EUR
+11,11,Rendimento Familiar,3300,EUR
+12,12,Rendimento Familiar,4100,EUR
+13,13,Rendimento Familiar,2950,EUR
+14,14,Rendimento Familiar,5050,EUR
+15,15,Rendimento Familiar,3700,EUR
+16,16,Rendimento Familiar,4800,EUR
+17,17,Rendimento Familiar,3600,EUR
+18,18,Rendimento Familiar,4300,EUR
+19,19,Rendimento Familiar,4000,EUR
+20,20,Rendimento Familiar,4500,EUR

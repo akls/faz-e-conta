@@ -1,108 +1,137 @@
 from django import forms
+from django.contrib.auth.models import User
+
 from .models import *
 from .widgets import *
 
 class AlunoForm(forms.ModelForm):
     class Meta:
         model = Aluno
-        fields = ['aluno_id', 'nome_proprio', 'apelido', 'archive_flag', 'processo', 'data_admissao', 'data_ultima_renovacao', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'escolaridade_anterior', 'motivo_admissao', 'cuidados_especias', 'sala_id']
+        fields = ['aluno_id', 'nome_proprio', 'apelido', 'archive_flag', 'processo', 'data_admissao', 'data_ultima_renovacao', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'escolaridade_anterior', 'motivo_admissao', 'cuidados_especias', 'sala_id', 'responsaveis_educativos_ids', "programa_id", "comparticao_ss_custom"]
+
 
         # Adiciona atributos aos campos do formulário
         widgets = Aluno_widget()
 
+        # Labels mais legíveis
+        labels = {
+            "archive_flag": "Alumni (antigo aluno)",
+            "comparticao_ss_custom": "Valor custom para a compartição da segurança social"
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['responsaveis_educativos_ids'].queryset = ResponsavelEducativo.objects.order_by('nome_proprio', 'apelido')
+        self.fields['sala_id'].queryset = Sala.objects.order_by("sala_nome")
+
 class Responsavel_educativoForm(forms.ModelForm):
     class Meta:
         model = ResponsavelEducativo
-        fields = ['responsavel_educativo_id', 'nome_proprio', 'apelido', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'telefone', 'email', 'profissao', 'morada_emprego', 'horario_trabalho', 'aluno_id']
+        fields = ['responsavel_educativo_id', 'nome_proprio', 'apelido', 'data_nascimento', 'documento', 'numero_documento', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'fregesia', 'telefone', 'email', 'profissao', 'morada_emprego', 'horario_trabalho']
 
         # Adiciona atributos aos campos do formulário
         widgets = Responsavel_educativo_widget()
 
-class Aluno_saidaForm(forms.ModelForm):
-    class Meta:
-        model = AlunoSaida
-        fields = ['saida_id', 'aluno_id', 'hora_entrada', 'hora_saida', 'autorizacao_sair', 'valencia']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Aluno_saida_widget()
-
-class VacinacaoForm(forms.ModelForm):
-    class Meta:
-        model = Vacinacao
-        fields = ['vac_id', 'aluno_id', 'vacina_name', 'data_vacina', 'plano_vacina']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Vacinacao_widget()
-
-class Despesa_fixaForm(forms.ModelForm):
-    class Meta:
-        model = DespesaFixa
-        fields = ['despfix_id', 'produto', 'valor', 'data', 'fatura', 'pagamento']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Despesa_fixa_widget()
-
-class Despesas_variavelForm(forms.ModelForm):
-    class Meta:
-        model = DespesasVariavel
-        fields = ['despvar_id', 'produto', 'valor', 'data', 'fatura', 'pagamento']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Despesas_variavel_widget()
-
-class SalarioForm(forms.ModelForm):
-    class Meta:
-        model = Salario
-        fields = ['salario_id', 'valor', 'descricao', 'data_pagamento', 'subsidio_tipo', 'subsidio_valor']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Salario_widget()
-
-class Link_filiacaoForm(forms.ModelForm):
-    class Meta:
-        model = LinkFiliacao
-        fields = ['aluno_id', 're_id', 'type', 'encarr_educacao']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Link_filiacao_widget()
-
 class SalaForm(forms.ModelForm):
     class Meta:
         model = Sala
-        fields = ['sala_id', 'sala_nome', 'sala_local', 'sala_valencia', 'func_id']
+        fields = ["sala_nome", "sala_local", "sala_valencia"]
 
-        # Adiciona atributos aos campos do formulário
-        widgets = Sala_widget()
-
-class Mensalidade_alunoForm(forms.ModelForm):
-    class Meta:
-        model = MensalidadeAluno
-        fields = ['ma_id', 'aluno_id', 'ano_letivo', 'periodo_inicio', 'periodo_fim', 'mensalidade_calc', 'mensalidade_retific', 'mensalidade_paga', 'data_pagamento', 'modo_pagamento', 'acordo']
-
-        # Adiciona atributos aos campos do formulário
-        widgets = Mensalidade_aluno_widget()
-
-class Aluno_financasForm(forms.ModelForm):
+class FinancasForm(forms.ModelForm):
     class Meta:
         model = AlunoFinancas
-        fields = ['af_id', 'ano_letivo', 'aluno_id', 'data', 'agregado', 'rendim_líquido', 'despesa_anual', 'irs', 'tax_soc', 'tax_impos', 'renda', 'med_transp', 'medicacao', 'outros']
+        fields = [
+            "ano_letivo",
+            "aluno_id",
+            "data",
+            "agregado",
+            "rendim_líquido",
+            "despesa_anual",
+            "irs",
+            "tax_soc",
+            "tax_impos",
+            "renda",
+            "med_transp",
+            "medicacao",
+            "outros",
+        ]
+        labels = {
+            "ano_letivo": "Ano Letivo",
+            "aluno_id": "Aluno",
+            "data": "Data",
+            "agregado": "Numero do agregado Familiar",
+            "rendim_líquido": "Rendimento Líquido",
+            "despesa_anual": "Despesa Anual",
+            "irs": "IRS",
+            "tax_soc": "Taxa Social",
+            "tax_impos": "Taxa de Imposto",
+            "renda": "Renda",
+            "med_transp": "Medicina e Transportes",
+            "medicacao": "Medicação",
+            "outros": "Outros",
+        }
 
-        # Adiciona atributos aos campos do formulário
-        widgets = Aluno_financas_widget()
+    def clean(self):
+        cleaned_data = super().clean()
 
-class Aluno_finacas_calcForm(forms.ModelForm):
+        rendimento = cleaned_data.get("rendim_líquido")
+        despesa = cleaned_data.get("despesa_anual")
+
+        if rendimento is not None and despesa is not None:
+            if rendimento < despesa:
+                raise forms.ValidationError(
+                    "O rendimento líquido não pode ser inferior à despesa anual."
+                )
+
+        return cleaned_data
+
+class DespesaFixaForm(forms.ModelForm):
     class Meta:
-        model = AlunoFinacasCalc
-        fields = ['sala_id', 'nome', 'local', 'valencia', 'func_id']
+        model = DespesaFixa
+        fields = ["produto", "valor", "data", "fatura", "pagamento", "notas", "fornecedor"]
+        widgets = Despesa_widget()
 
-        # Adiciona atributos aos campos do formulário
-        widgets = Aluno_finacas_calc_widget()
+    def clean_valor(self):
+        valor = self.cleaned_data.get("valor")
+        if valor is not None and valor < 0:
+            raise forms.ValidationError("O valor da despesa não pode ser negativo.")
+        return valor
 
-class FuncionarioForm(forms.ModelForm):
+
+class DespesasVariavelForm(forms.ModelForm):
     class Meta:
-        model = Funcionario
-        fields = ['func_id', 'nome_proprio', 'apelido', 'data_nascimento', 'tipo_documento_identificacao', 'numero_documento_identificacao', 'data_validade', 'niss', 'nif', 'morada', 'codigo_postal', 'concelho', 'freguesia_residencia', 'contacto_telefonico', 'email', 'funcao', 'salario', 'escalao_profissional', 'ativo']
+        model = DespesasVariavel
+        fields = ["produto", "valor", "data", "fatura", "pagamento", "notas", "fornecedor"]
+        widgets = Despesa_widget()
 
-        # Adiciona atributos aos campos do formulário
-        widgets = Funcionario_widget()
+    def clean_valor(self):
+        valor = self.cleaned_data.get("valor")
+        if valor is not None and valor < 0:
+            raise forms.ValidationError("O valor da despesa não pode ser negativo.")
+        return valor
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email", "password"]
+
+class MetodoPagamentoForm(forms.ModelForm):
+    class Meta:
+        model = MetodoPagamento
+        fields = ["metodo"]
+
+class PagamentoMensalidadeForm(forms.ModelForm):
+    class Meta:
+        model = PagamentoMensalidade
+        fields = ["valor", "data", "metodo_pagamento_id"]
+        widgets = {
+            "data": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
+        }
+
+class PagamentoComparticaoForm(forms.ModelForm):
+    class Meta:
+        model = PagamentoComparticao
+        fields = ["valor", "data", "metodo_pagamento_id"]
+        widgets = {
+            "data": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
+        }

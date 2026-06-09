@@ -1,21 +1,21 @@
-ma_id,aluno_id,ano_letivo,periodo_inicio,periodo_fim,mensalidade_calc,mensalidade_retific,mensalidade_paga,data_pagamento,modo_pagamento,acordo
-1,1,2023/2024,2023-09-01,2023-09-30,200,180,180,2023-09-05,Transferência,Desconto por bolsa
-2,2,2023/2024,2023-09-01,2023-09-30,220,220,220,2023-09-07,Débito Direto,
-3,3,2023/2024,2023-09-01,2023-09-30,250,240,240,2023-09-10,Cheque,Atraso justificado
-4,4,2023/2024,2023-09-01,2023-09-30,180,180,180,2023-09-02,Numerário,
-5,5,2023/2024,2023-09-01,2023-09-30,190,190,190,2023-09-03,Cheque Creche,
-6,6,2023/2024,2023-09-01,2023-09-30,210,210,200,2023-09-09,Outro,Pagamento parcial acordado
-7,7,2023/2024,2023-09-01,2023-09-30,230,230,230,2023-09-06,Transferência,
-8,8,2023/2024,2023-09-01,2023-09-30,170,170,170,2023-09-04,Numerário,
-9,9,2023/2024,2023-09-01,2023-09-30,200,190,190,2023-09-08,Cheque Creche,Desconto por pontualidade
-10,10,2023/2024,2023-09-01,2023-09-30,250,250,250,2023-09-05,Débito Direto,
-11,11,2023/2024,2023-09-01,2023-09-30,180,170,170,2023-09-10,Transferência,Desconto por irmão matriculado
-12,12,2023/2024,2023-09-01,2023-09-30,220,220,220,2023-09-07,Cheque,
-13,13,2023/2024,2023-09-01,2023-09-30,240,240,230,2023-09-06,Numerário,Redução por dificuldades financeiras
-14,14,2023/2024,2023-09-01,2023-09-30,210,210,210,2023-09-04,Outro,
-15,15,2023/2024,2023-09-01,2023-09-30,250,250,250,2023-09-05,Cheque Creche,
-16,16,2023/2024,2023-09-01,2023-09-30,180,180,180,2023-09-09,Transferência,
-17,17,2023/2024,2023-09-01,2023-09-30,190,190,190,2023-09-08,Débito Direto,
-18,18,2023/2024,2023-09-01,2023-09-30,230,230,220,2023-09-07,Outro,Reajuste por atraso
-19,19,2023/2024,2023-09-01,2023-09-30,210,210,210,2023-09-06,Numerário,
-20,20,2023/2024,2023-09-01,2023-09-30,200,200,190,2023-09-05,Cheque,Pagou parcialmente
+ma_id,aluno_id,data_inicio,data_fim,mensalidade_calc,mensalidade_retific,mensalidade_paga,modo_pagamento,programa_ss,acordo,escalao
+1,1,2026-01-05 00:00:00,,120.50,0,120,Transferência,Sim,Acordo A,Escalão 1
+2,2,2026-01-10 00:00:00,,95.00,5,90,MB Way,Não,Acordo B,Escalão 2
+3,3,2026-01-08 00:00:00,,110.00,0,110,Dinheiro,Sim,Acordo A,Escalão 1
+4,4,2026-01-12 00:00:00,,130.75,10,120,Transferência,Não,Acordo C,Escalão 3
+5,5,2026-01-07 00:00:00,,100.00,0,100,MB Way,Sim,Acordo B,Escalão 2
+6,6,2026-01-15 00:00:00,,90.25,0,90,Dinheiro,Não,Acordo A,Escalão 1
+7,7,2026-01-20 00:00:00,,115.00,15,100,Transferência,Sim,Acordo C,Escalão 3
+8,8,2026-01-18 00:00:00,,105.50,0,105,MB Way,Não,Acordo B,Escalão 2
+9,9,2026-01-22 00:00:00,,98.00,3,95,Dinheiro,Sim,Acordo A,Escalão 1
+10,10,2026-01-25 00:00:00,,125.00,0,125,Transferência,Não,Acordo C,Escalão 3
+11,11,2026-01-06 00:00:00,,102.00,0,102,MB Way,Sim,Acordo A,Escalão 1
+12,12,2026-01-11 00:00:00,,118.50,8,110,Dinheiro,Não,Acordo B,Escalão 2
+13,13,2026-01-09 00:00:00,,99.75,0,99,Transferência,Sim,Acordo C,Escalão 3
+14,14,2026-01-13 00:00:00,,121.00,0,121,MB Way,Não,Acordo A,Escalão 1
+15,15,2026-01-16 00:00:00,,107.25,5,102,Dinheiro,Sim,Acordo B,Escalão 2
+16,16,2026-01-17 00:00:00,,112.50,0,112,Transferência,Não,Acordo C,Escalão 3
+17,17,2026-01-19 00:00:00,,96.00,0,96,MB Way,Sim,Acordo A,Escalão 1
+18,18,2026-01-21 00:00:00,,123.75,10,114,Dinheiro,Não,Acordo B,Escalão 2
+19,19,2026-01-23 00:00:00,,108.50,0,108,Transferência,Sim,Acordo C,Escalão 3
+20,20,2026-01-24 00:00:00,,97.25,0,97,MB Way,Não,Acordo A,Escalão 1

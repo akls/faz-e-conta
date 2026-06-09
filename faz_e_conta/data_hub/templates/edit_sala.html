@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <h1>Editar Sala</h1>
+
+    <form method="post" class="form-container" id="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{% url 'show_salas' %}" class="btn cancel">Cancelar</a>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/forms.js' %}"></script>
+{% endblock %}

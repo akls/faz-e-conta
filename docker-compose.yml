@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    container_name: faz_e_conta_web
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/fazeconta.sqlite3:/app/data/fazeconta.sqlite3
+      - .:/app
+    command: sh entrypoint.sh

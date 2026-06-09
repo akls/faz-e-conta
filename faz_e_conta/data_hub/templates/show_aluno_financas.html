@@ -1,53 +1,365 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
+{% load static %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/financas.css' %}">
+{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang='en'>
 
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Aluno Financas Information</title>
-</head>
+    <h1>Tabela Alunos Finanças</h1>
+    <a href="{% url 'insert_financas' %}">Adicionar Finanças</a>
+    <div>
+        <table>
 
-<body>
-    <h1>{{ data_dict.nome_proprio }} {{ data_dict.apelido }}</h1>
+            <thead>
+                <tr>
+                    <th>
+                        Nome
+                    </th>
 
-    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif;">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                {% for item in head %}
-                {% if item != id %}
-                <th style="border: 1px solid #ddd; padding: 10px;">
-                    {{ item|replace:"_, " }}
-                </th>
-                {% endif %}
+                    <th>
+                        Agregado familiar
+                    </th>
+
+                    <th>
+                        Ano Letivo
+                    </th>
+
+                    <th>
+                        Rendimento Líquido
+                    </th>
+
+                    <th>
+                        Despesa Anual
+                    </th>
+
+                    <th>
+                        Documento
+                    </th>
+
+                    <th>
+                        Editar finança
+                    </th>
+                </tr>
+            </thead>
+
+
+
+
+            <tbody>
+
+                {% for financa in financas %}
+                    <tr>
+
+                        <td>
+                            {{ financa.aluno_id.nome_proprio }} {{ financa.aluno_id.apelido }}
+                        </td>
+
+                        <td>
+                            {{ financa.agregado }}
+                        </td>
+
+                        <td>
+                            {{ financa.ano_letivo }}
+                        </td>
+
+                        <td>
+                            {{ financa.rendim_líquido|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ financa.despesa_anual|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ financa.aluno_id.numero_documento }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'edit_financas' financa_id=financa.af_id %}">Editar finança</a>
+                        </td>
+                    </tr>
                 {% endfor %}
 
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data_dict %}
-            <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %};">
-                {% for field in head %}
-                {% if field != id %}
-                <td>
-                    {% if item|get_item:field == None %}
-                    <hr style="border: none; border-top: 2px dashed black;">
-                    {% else %}
-                    {{ item|get_item:field }}
-                    {% endif %}
-                </td>
-                {% endif %}
+            </tbody>
+
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+    <h1>Tabela Mensalidade Alunos</h1>
+    <section id="mensalidadesFilt">
+
+        <a href="{% url 'insert_pagamentos' %}">Adicionar pagamentos</a>
+        <!-- Form para pesquisar mensalidades -->
+        <form method="get" id="filter-form">
+            <label>Nome:</label>
+            <input type="text" name="nome" id="input_nome" placeholder="Ex: Nuno Matos" value="{{ filtros.nome }}">
+
+
+            <label>Sala:</label>
+            <select name="sala" id="select_sala">
+                <option value="" {% if filtros.sala == "" %} selected {% endif %}> Todas as salas </option>
+
+                {% for sala in valoresDosFiltros.salas %}
+                <option value="{{ sala.sala_nome }}" {% if filtros.sala == sala.sala_nome %} selected {% endif %}>
+                    {{ sala.sala_nome }}
+                </option>
                 {% endfor %}
-            </tr>
+            </select>
+
+
+            <label>Mês:</label>
+            <select name="mes" id="select_mes">
+                <option value="" {% if filtros.mes == None %} selected {% endif %}>Todos os meses</option>
+                {% for m in valoresDosFiltros.meses_range %}
+                <option value="{{ m }}" {% if filtros.mes == m %} selected {% endif %}>
+                    {{ m }}
+                </option>
+                {% endfor %}
+            </select>
+
+
+            <label>Ano:</label>
+            <select name="ano" id="select_ano">
+                <option value="" {% if filtros.ano == None %} selected {% endif %}>Todos os anos</option>
+                {% for a in valoresDosFiltros.anos_range %}
+                <option value="{{ a }}" {% if filtros.ano == a %} selected {% endif %}>
+                    {{ a }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filtrar</button>
+        </form>
+
+
+
+
+        <!-- Form para calcular as mensalidades -->
+        <form method="post" id="calc-form">
+            {% csrf_token %}
+
+            <input type="hidden" name="filter_nome" id="hidden_nome">
+            <input type="hidden" name="filter_sala" id="hidden_sala">
+            <input type="hidden" name="filter_mes" id="hidden_mes">
+            <input type="hidden" name="filter_ano" id="hidden_ano">
+
+            <button type="submit" name="mensalidadeFinal" value="true" onclick="return syncAndConfirm()">
+                Calcular Mensalidades
+            </button>
+
+            {% if messages %}
+            <div id="message-container">
+                {% for message in messages %}
+                <div class="alert-box {{ message.tags }}">
+                    {{ message }}
+                    <span onclick="this.parentElement.style.display='none'" class="close-btn">&times;</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </form>
+
+
+
+    </section>
+
+
+
+
+    <div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Nome
+                    </th>
+
+                    <th>
+                        Data
+                    </th>
+
+                    <th>
+                        Sala
+                    </th>
+
+                    <th>
+                        Escalão
+                    </th>
+
+                    <th>
+                        Valor a pagar
+                    </th>
+
+                    <th>
+                        Valor pago
+                    </th>
+
+                    <th>
+                        Data pagamento
+                    </th>
+
+                    <th>
+                        Modo pagamento
+                    </th>
+
+                    <th>
+                        Total da divida
+                    </th>
+
+                    <th>
+                        Detalhes
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for mensalidade in mensalidades %}
+                    <tr>
+
+                        <td>
+                            {{ mensalidade.aluno_id.nome_proprio }} {{ mensalidade.aluno_id.apelido }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.data_inicio }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.aluno_id.sala_id.sala_nome }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.escalao }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.mensalidade_calc|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.mensalidade_paga|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.data_fim }}
+                        </td>
+
+                        <td>
+                            {{ mensalidade.modo_pagamento }}
+                        </td>
+
+                        <td>
+                            {{ dividas|get_item:mensalidade.aluno_id.aluno_id|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'show_pagamentos_mensalidade' mensalidade_id=mensalidade.ma_id %}">Ver pagamentos</a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+
+    <h1>Tabela das compartiçoes mensais da Segurança social</h1>
+    <div>
+        <table>
+
+            <thead>
+                <tr>
+                    <th>
+                        Nome
+                    </th>
+
+                    <th>
+                        Data
+                    </th>
+
+                    <th>
+                        Sala
+                    </th>
+
+                    <th>
+                        Comparticipação da SS
+                    </th>
+
+                    <th>
+                        Comparticipação paga
+                    </th>
+
+                    <th>
+                        Data do pagamento
+                    </th>
+
+                    <th>
+                        Detalhes
+                    </th>
+                </tr>
+            </thead>
+
+            {% for comparticao in comparticoesSS %}
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ comparticao.aluno_id.nome_proprio }} {{ comparticao.aluno_id.apelido }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.data_inicio }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.aluno_id.sala_id.sala_nome }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.mensalidade_valor|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.mensalidade_paga|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ comparticao.data_fim }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'show_pagamentos_comparticao' comparticao_id=comparticao.mss_id %}">Ver pagamentos</a>
+                        </td>
+                    </tr>
+                </tbody>
             {% endfor %}
-        </tbody>
-    </table>
-</body>
 
-</html>
+        </table>
+    </div>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/financas.js' %}"></script>
 {% endblock %}
