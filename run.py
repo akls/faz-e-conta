@@ -6,19 +6,10 @@ def main():
 
     # Verifica se já existem dados
     cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) FROM aluno")
+    count = cursor.fetchone()[0]
 
-    total = 0
-    for (table_name,) in tables:
-        cursor.execute(f"SELECT COUNT(*) FROM '{table_name}'")
-        count = cursor.fetchone()[0]
-        total += count
-        print(f"{table_name}: {count} registos")
-
-    print(f"\nTotal global: {total} registos")
-
-    if total > 0:
+    if count > 0:
         print("Base de dados já tem dados, a ignorar o populamento.")
         return
 
