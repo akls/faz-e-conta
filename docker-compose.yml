@@ -5,5 +5,5 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ./data/fazeconta.sqlite3:/app/data/fazeconta.sqlite3
     command: sh entrypoint.sh
