@@ -60,7 +60,7 @@ class FinancasForm(forms.ModelForm):
             "aluno_id": "Aluno",
             "data": "Data",
             "agregado": "Numero do agregado Familiar",
-            "rendim_líquido": "Rendimento Líquido",
+            "rendim_líquido": "Rendimento Líquido Anual",
             "despesa_anual": "Despesa Anual",
             "irs": "IRS",
             "tax_soc": "Taxa Social",
