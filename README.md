@@ -57,10 +57,11 @@ Para criar um PR para um branch de funcionalidade, vai à secção _Pull Request
 
 ## 5. Fazer Merge do PR para `dev`
 
-# DOCKER 
+# DOCKER
 
 Aqui estão as instruções para utilizar a aplicação com Docker.
 
 1. `git clone <url-do-repositório>`
 2. Na diretoria onde foi feito o clone, executa `docker compose up` (ter o Docker iniciado no PC)
 3. Abre a aplicação no localHost
+4. Conta de administrador padrão: username: `rodri` password: `nuno2013` — recomenda-se alterar após o primeiro login
