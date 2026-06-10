@@ -1,84 +1,66 @@
 # faz-e-conta
 
+# Contribuir com Código
 
+Em resumo, contribuir com código envolve os seguintes três passos detalhados abaixo:
 
-# Contributing Code
+1. Criar um branch de funcionalidade
+2. Fazer commit do código no branch de funcionalidade
+3. Criar um pull request (PR) do branch de funcionalidade para `dev` seguido de revisão de código
+4. Fazer merge do PR para `dev`
 
-In short, contributing code involves the following three steps that are outlined in detail below:
+## 1. Criar um Branch de Funcionalidade
 
-1. Creating a feature branch
-2. Commiting code to the feature branch
-3. Create a pull request (PR) from feature branch to `dev` followed by code review
-5. Merge the PR to `dev`
-
-## 1. Creating a Feature Branch
-
-Step 1: Clone the repository
+Passo 1: Clonar o repositório
 
 `git clone https://github.com/akls/faz-e-conta`
 
-Step 2: Switch to the `dev` branch
+Passo 2: Mudar para o branch `dev`
 
 `git switch dev`
 
-You can confirm the current local branch with `git status`. The output should be something like
+Podes confirmar o branch local atual com `git status`. O resultado deve ser algo como:
 
-```
+​```
 On branch dev
 Your branch is up to date with 'origin/dev'.
 
 nothing to commit, working tree clean
-```
- 
-Step 3: Create a feature branch
+​```
 
-Create the local feature branch using a name that follows the common _feature/issue-title_ pattern. After creating the local branch, push the change to the remote repository. An example using the branch name _feature/issue10-standardize-cdm_:
+Passo 3: Criar um branch de funcionalidade
 
-```
+Cria o branch de funcionalidade local usando um nome que siga o padrão _feature/titulo-da-issue_. Após criar o branch local, faz push para o repositório remoto. Exemplo usando o nome _feature/issue10-standardize-cdm_:
+
+​```
 git branch -m feature/issue10-standardize-cdm
 git push -u origin feature/issue10-standardize-cdm
-```
+​```
 
-## 2. Commiting Code Changes to the Feature Branch
+## 2. Fazer Commit das Alterações de Código no Branch de Funcionalidade
 
-In order to add new files or modified files to the next commit, use the following command:
+Para adicionar ficheiros novos ou modificados ao próximo commit, usa os seguintes comandos:
 
-```
-git add <file_name>
-git -m "This is a short description of the changes"`
+​```
+git add <nome_do_ficheiro>
+git commit -m "Descrição curta das alterações"
 git push
-```
+​```
 
-## 3. Create a pull request (PR) to merge the feature branch into `dev`
+## 3. Criar um Pull Request (PR) para fazer merge do branch de funcionalidade para `dev`
 
-Pull requests (PRs) from the feature branches should be created for the `dev` branch and merged only after completed code review. That is, feature branches should not be merged directly to the `main` branch.
+Os pull requests (PRs) dos branches de funcionalidade devem ser criados para o branch `dev` e só devem ser feitos merge após revisão de código completa. Ou seja, os branches de funcionalidade não devem ser diretamente merged para o branch `main`.
 
-To create a PR for a feature branch, go to the section _Pull Requests_ on the Github website and select _New pull request_. Choose the feature branch and `dev` branch and click `Create pull request`.
+Para criar um PR para um branch de funcionalidade, vai à secção _Pull Requests_ no site do Github e seleciona _New pull request_. Escolhe o branch de funcionalidade e o branch `dev` e clica em _Create pull request_.
 
-## 4. Code review
+## 4. Revisão de Código
 
-## 5. Merge the PR to `dev`
+## 5. Fazer Merge do PR para `dev`
 
-# First-time Django Installation
+# DOCKER 
 
-1. `pip install django`
-2. `python -m django startproject faz_e_conta`
-3. `python manage.py startapp data_hub`
+Aqui estão as instruções para utilizar a aplicação com Docker.
 
-After doing changes to the (data) model:
-
-4. `python manage.py makemigrations`
-5. `python manage.py migrate`
-
-To run the server:
-
-6. `python manage.py runserver`
-
-# DOCKER
-
-Here are instructions for using the application with Docker.
-
-1. `git clone --branch dev https://github.com/akls/faz-e-conta.git`
-2. In the directory where the clone was made, run `docker compose up` (Have Docker initialized on your PC)
-3. Open the app on localHost
-
+1. `git clone <url-do-repositório>`
+2. Na diretoria onde foi feito o clone, executa `docker compose up` (ter o Docker iniciado no PC)
+3. Abre a aplicação no localHost
