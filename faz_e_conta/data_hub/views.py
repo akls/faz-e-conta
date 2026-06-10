@@ -489,6 +489,7 @@ def edit_financas(request, financa_id):
             return redirect('show_aluno_financas')
         else:
             print(form.errors)
+            return render(request, 'insert_financas.html', {'form': form})
     else:
         form = FinancasForm(instance=alunoFinanca)
         return render(request, 'insert_financas.html', {'form': form})
